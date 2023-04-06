@@ -1,0 +1,25 @@
+{
+	"name": "SQLServerlessPool_Bronze",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQL Servless",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"schema": {
+					"value": "@dataset().database",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"database": {
+				"type": "String",
+				"defaultValue": "silver"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

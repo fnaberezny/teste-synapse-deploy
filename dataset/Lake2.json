@@ -1,0 +1,18 @@
+{
+	"name": "Lake2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Jarvis_Lake664",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"database": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

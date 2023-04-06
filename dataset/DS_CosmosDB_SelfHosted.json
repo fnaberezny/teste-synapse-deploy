@@ -1,0 +1,24 @@
+{
+	"name": "DS_CosmosDB_SelfHosted",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SelfHosted Cosmo",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container_name": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {},
+		"typeProperties": {
+			"collectionName": {
+				"value": "@dataset().container_name",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

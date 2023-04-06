@@ -1,0 +1,45 @@
+{
+	"name": "DS_LakeStorage_CSV_SelfHosted",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SelfHosted Azure",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fs": {
+				"type": "string"
+			},
+			"path": {
+				"type": "string"
+			},
+			"file": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@trim(dataset().file)",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@trim(dataset().path)",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().fs",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": ""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

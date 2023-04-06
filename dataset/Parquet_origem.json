@@ -1,0 +1,29 @@
+{
+	"name": "Parquet_origem",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn_tlf_jarvis_prod_WorkspaceAzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Input_table_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@concat('data/silver/tables/',dataset().Input_table_name)",
+					"type": "Expression"
+				},
+				"container": "datalake"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,15 @@
+{
+	"name": "SelfHosted Azure",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://dlstlfjarvisprod.dfs.core.windows.net/"
+		},
+		"connectVia": {
+			"referenceName": "SelfHost",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

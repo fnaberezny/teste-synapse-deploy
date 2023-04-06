@@ -1,0 +1,80 @@
+{
+	"name": "SqlPoolTable11212",
+	"properties": {
+		"parameters": {
+			"table_name_select": {
+				"type": "String"
+			},
+			"table_schema_select": {
+				"type": "String",
+				"defaultValue": "Silver"
+			}
+		},
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "ingestion_table_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "table_name",
+				"type": "varchar"
+			},
+			{
+				"name": "full_processing",
+				"type": "bit"
+			},
+			{
+				"name": "query_path",
+				"type": "varchar"
+			},
+			{
+				"name": "schema_path",
+				"type": "varchar"
+			},
+			{
+				"name": "last_update",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "status_last_update",
+				"type": "varchar"
+			},
+			{
+				"name": "message_last_update",
+				"type": "varchar"
+			},
+			{
+				"name": "last_process_start",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "last_process_end",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().table_schema_select",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table_name_select",
+				"type": "Expression"
+			}
+		},
+		"sqlPool": {
+			"referenceName": "syndpjarvisprod",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
