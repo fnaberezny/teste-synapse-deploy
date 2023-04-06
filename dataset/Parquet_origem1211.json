@@ -1,0 +1,182 @@
+{
+	"name": "Parquet_origem1211",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-tlf-jarvis-prod-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Input_table_name": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat('data/silver/tables/',dataset().Input_table_name)",
+					"type": "Expression"
+				},
+				"fileSystem": "datalake"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "table",
+				"type": "UTF8"
+			},
+			{
+				"name": "op_type",
+				"type": "UTF8"
+			},
+			{
+				"name": "op_ts",
+				"type": "UTF8"
+			},
+			{
+				"name": "current_ts",
+				"type": "UTF8"
+			},
+			{
+				"name": "pos",
+				"type": "UTF8"
+			},
+			{
+				"name": "sig_advogado",
+				"type": "UTF8"
+			},
+			{
+				"name": "nom_advogado",
+				"type": "UTF8"
+			},
+			{
+				"name": "sig_escritorio_contratado",
+				"type": "UTF8"
+			},
+			{
+				"name": "nom_apelido",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_cpf",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_rg",
+				"type": "UTF8"
+			},
+			{
+				"name": "des_endereco",
+				"type": "UTF8"
+			},
+			{
+				"name": "des_comp_endereco",
+				"type": "UTF8"
+			},
+			{
+				"name": "sig_estado",
+				"type": "UTF8"
+			},
+			{
+				"name": "sig_municipio",
+				"type": "UTF8"
+			},
+			{
+				"name": "nom_bairro",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_tel_fixo",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_tel_fax",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_cep",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_tel_celular",
+				"type": "UTF8"
+			},
+			{
+				"name": "cod_estado_civil",
+				"type": "UTF8"
+			},
+			{
+				"name": "des_email",
+				"type": "UTF8"
+			},
+			{
+				"name": "sts_advogado_interno",
+				"type": "UTF8"
+			},
+			{
+				"name": "sts_advogado_ativo",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_prioridade",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_quant_contratos",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_quant_pareceres",
+				"type": "UTF8"
+			},
+			{
+				"name": "sts_resp_consultivo",
+				"type": "UTF8"
+			},
+			{
+				"name": "sts_responsavel_seguranca",
+				"type": "UTF8"
+			},
+			{
+				"name": "sts_coresponsavel_seguranca",
+				"type": "UTF8"
+			},
+			{
+				"name": "sts_migracao_benner",
+				"type": "UTF8"
+			},
+			{
+				"name": "num_oab",
+				"type": "UTF8"
+			},
+			{
+				"name": "sts_migracao_cpj",
+				"type": "UTF8"
+			},
+			{
+				"name": "updated_at",
+				"type": "INT96"
+			},
+			{
+				"name": "created_at",
+				"type": "INT96"
+			},
+			{
+				"name": "updated_by",
+				"type": "UTF8"
+			},
+			{
+				"name": "created_by",
+				"type": "UTF8"
+			},
+			{
+				"name": "newpk",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

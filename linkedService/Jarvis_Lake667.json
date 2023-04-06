@@ -1,0 +1,15 @@
+{
+	"name": "Jarvis_Lake667",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=syn-tlf-jarvis-prod-ondemand.sql.azuresynapse.net;Initial Catalog=bronze"
+		},
+		"connectVia": {
+			"referenceName": "SelfHost",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

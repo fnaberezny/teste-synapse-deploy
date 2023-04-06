@@ -1,0 +1,25 @@
+{
+	"name": "Monitora_tabela_param_processo",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PARAM_PROCESSO_EXCEL_P3",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/datalake/blobs/data/silver/tables/param_processo_excel_p3",
+			"blobPathEndsWith": ".parquet",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Storage/storageAccounts/dlstlfjarvisprod",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

@@ -1,0 +1,2652 @@
+{
+	"name": "P3_FOTOGRAFIA_TRANSFORM",
+	"properties": {
+		"activities": [
+			{
+				"name": "SCPTFotografia",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "update f\nset status = 5\nfrom Silver.fotografia f\n\tinner join silver.param_fotografia_evh as p\n\t\ton( f.cod_calendario_monetario = P.cod_calendario_monetario\n\t\t\tand f.sig_escritorio_contratado = p.sig_escritorio_contratado\n\t\t\tand f.cod_divisao_processo = p.cod_divisao_processo)\nwhere f.status = 1\n\tand p.status = 0\n    and p.id = '@{pipeline().parameters.id_raw}';\n\ninsert into Silver.fotografia \nselect distinct\n\t getdate() [dtc_cadastro] \n\t,p.[photographyid]\n\t,p.[cod_calendario_monetario]\n\t,p.[sig_escritorio_contratado]\n\t,p.[nom_usuario_responsavel] \n\t,null [sts_foto]\n\t,p.[nom_usuario_fotografo]\n\t,p.[dtc_data_fotografia]\n\t,null [pending_processing]\n\t,1 [status] \n\t,ISNULL(f.[MAX_cod_ver_foto],0)+1 as cod_ver_fotografia\n\t,p.[cod_divisao_processo]\n\t,1 [sts_ativo]\nfrom (\n\tselect cod_calendario_monetario, sig_escritorio_contratado, cod_divisao_processo, max(cod_ver_fotografia) as MAX_cod_ver_foto\n\tfrom Silver.fotografia\n\tgroup by cod_calendario_monetario, sig_escritorio_contratado, cod_divisao_processo\n\t) as f\n\tright join silver.param_fotografia_evh as p\n\t\ton( f.cod_calendario_monetario = P.cod_calendario_monetario\n\t\t\tand f.sig_escritorio_contratado = p.sig_escritorio_contratado\n\t\t\tand f.cod_divisao_processo = p.cod_divisao_processo)\nwhere 1=1\n\tand p.status = 0\n    and p.id = '@{pipeline().parameters.id_raw}';\n",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "dados_cadastrais",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "SCPTFotografia",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "select cast(f.cod_fotografia as int) COD_FOTOGRAFIA\n     , cast(p.num_processo as varchar(50)) NUM_PROCESSO\n     , p.cod_tipo_acao COD_OBJETO_ACAO\n     , cast(p.dtc_citacao as date) DTC_CITACAO\n     , cast(p.sig_escritorio_contratado as varchar(50)) SIG_ESCRITORIO_CONTRATADO\n     , cast(p.dtc_cadastro as date) DTC_CADASTRO\n     , cast(p.dtc_protocolo_aforamento as date) DTC_PROTOCOLO_AFORAMENTO\n     , case when fai.sts_ativo = 1\n            then null\n            else cast(p.dtc_fim as date)\n             end DTC_FIM\n     , case when fai.sts_ativo = 1\n            then null\n            else cast(p.dtc_arquivamento as date) \n             end DTC_ARQUIVAMENTO\n     , p.cod_natureza COD_NATUREZA\n     , p.cod_especificacao_natureza COD_ESPECIFICACAO_NATUREZA\n     , p.cod_detalhe_especific_natureza COD_DETALHE_ESPECIFIC_NATUREZA\n     , p.cod_tipo_acao_processo COD_TIPO_ACAO\n     , cast(p.sig_estado as varchar(50)) SIG_ESTADO\n     , cast(p.sig_municipio as varchar(50)) SIG_MUNICIPIO\n     , p.cod_comarca COD_COMARCA\n     , p.cod_juizo COD_JUIZO\n     , cast(p.num_processo1_instancia as varchar(50)) NUM_PROCESSO1_INSTANCIA\n     , p.cod_divisao_processo COD_DIVISAO_PROCESSO\n     , p.cod_fase_processual COD_FASE_PROCESSUAL\n     , p.cod_tipo_contingencia COD_TIPO_CONTINGENCIA\n     , p.cod_especif_tipo_contingencia COD_ESPECIF_TIPO_CONTINGENCIA\n     , p.cod_pre_objeto_empresa COD_PRE_OBJETO_EMPRESA\n     , cast(p.num_pj as varchar(100)) SEGMENTACAO_DO_CLIENTE\n     , p.cod_especific_tipo_acao COD_ESP_OBJETO_ACAO\n     , p.cod_canal_habilitador COD_CANAL_HABILITADOR\n     , cast(p.log_dtc_citacao as date) LOG_DTC_CITACAO\n     , cast(p.sig_advogado_responsavel as varchar(50)) SIG_ADVOGADO_RESPONSAVEL\n     , cast(p.num_tel_parte_contraria as varchar(50)) REFERENCIA\n     , mn.cod_modulo COD_MODULO\n     , cast(fai.sts_ativo as varchar(50)) SITUACAO\n     , p.cod_det_especific_tipo_acao COD_DET_ESPECIFIC_OBJETO_ACAO\n     , case when p.sts_origem_processo = 'C'\n            then 'CITAÇÃO'\n            when p.sts_origem_processo = 'D'\n            then 'DISTRIBUIÇÃO'\n            else 'NÃO INFORMADO'\n             end ORIGEM_PROCESSO\n     , 'p3' ORIGEM\n     , 1 [STATUS]\n     , f.cod_ver_fotografia cod_ver_fotografia\n     , p.cod_empresa COD_EMPRESA\n     , p.cod_tipo_indice_atualizacao COD_TIPO_INDICE_ATUALIZACAO\n     , nom_tipo_indice_atualizacao NOM_TIPO_INDICE_ATUALIZACAO\n     , case p.cod_tipo_indice_atualizacao when '1'\n                                          then cm.var_taxa_selic\n                                          when '2'\n                                          then cm.val_taxa_trabalhista\n                                          when '3'\n                                          then cm.val_taxa_civel\n                                           end aliquota\n     , case when nom_tipo_indice_atualizacao = 'SELIC'\n            then 0\n            else cm.val_juros \n             end val_taxa\n     , cm.sts_selic_simples\n     , case when fai.sts_ativo = 1\n            then null\n            else des_especific_tipo_ocorrencia\n             end des_especific_tipo_ocorrencia\n     , cast(p.dtc_distribuicao as date) dtc_distribuicao\n     , p.pasta_benner\n  from Silver.processo p\n inner join Silver.modulo_natureza mn\n    on mn.cod_natureza = p.cod_natureza\n   and mn.cod_especificacao_natureza = p.cod_especificacao_natureza\n   and mn.cod_detalhe_especific_natureza = p.cod_detalhe_especific_natureza\n inner join Silver.fotografia f\n    on f.sig_escritorio_contratado = p.sig_escritorio_contratado\n   and f.cod_divisao_processo = p.cod_divisao_processo\n inner join Silver.tmp_fti_ativo_inativo__@{pipeline().parameters.id} fai\n    on f.cod_calendario_monetario = fai.cod_calendario_monetario\n   and p.num_processo = fai.num_processo\n   and p.cod_empresa = fai.cod_empresa\n inner join Silver.tipo_indice_atualizacao tia\n    on tia.cod_tipo_indice_atualizacao = p.cod_tipo_indice_atualizacao\n inner join Silver.calendario_monetario cm\n    on cm.cod_calendario_monetario = fai.cod_calendario_monetario\n  left join (select num_processo\n                  , cod_empresa\n                  , cod_tipo_ocorrencia\n                  , cod_especific_tipo_ocorrencia\n               from (select o.num_processo\n                          , o.cod_empresa\n                          , o.cod_tipo_ocorrencia\n                          , o.cod_especific_tipo_ocorrencia\n                          , row_number() over (partition by o.num_processo, o.cod_empresa order by o.dtc_cadastro desc) rn\n                       from Silver.ocorrencia o\n                      inner join Silver.tipo_ocorrencia tpo\n                         on tpo.cod_tipo_ocorrencia = o.cod_tipo_ocorrencia\n                      where tpo.sts_arquivamento = '1'\n                    ) t\n              where rn = 1\n            ) o\n    on o.num_processo = p.num_processo\n   and o.cod_empresa = p.cod_empresa\n  left join Silver.especific_tipo_ocorrencia eto\n    on eto.cod_tipo_ocorrencia = o.cod_tipo_ocorrencia\n   and eto.cod_especific_tipo_ocorrencia = o.cod_especific_tipo_ocorrencia\n where f.[status] = 1",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"writeBehavior": "Insert",
+						"sqlWriterUseTableLock": true,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Jarvis_Pool_Dedicado16152",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": " "
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Jarvis_Pool_Dedicado16152",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": {
+								"value": "tmp_fti_dados_cadastrais__@{pipeline().parameters.id}",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "dados_cadastrais_calculados",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "dados_cadastrais",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "SELECT\n    CAST(FOTOGRAFIA.COD_FOTOGRAFIA AS INT) AS COD_FOTOGRAFIA,\n    CAST(PROCESSO.NUM_PROCESSO AS VARCHAR(50)) AS NUM_PROCESSO,\n    PROCESSO.COD_EMPRESA AS COD_EMPRESA,\n    PROCESSO.COD_TIPO_INDICE_ATUALIZACAO AS INDICE,\n    CAST(AUXLA.NOM_AUTOR AS VARCHAR(200)) AS AUTOR,\n    CAST(AUXLR.NOM_REU AS VARCHAR(200)) AS REU,\n    ISNULL(AUXLR.FLG_INSOLVENTE,'') AS CLASSIFICACAO_SOLVENCIA, \n    ISNULL(CAST(AUXLR.NOM_INSOLVENTE AS VARCHAR(200)),'') AS INSOLVENTE,\n    CAST(AUXLA.DOC_AUTOR AS VARCHAR(200)) AS CPF_CNPJ,\n    CAST(AUXTA.TIPO_AUTOR AS VARCHAR(50)) AS TIPO_AUTOR,\n    CAST(AUXPP.DESC_PRODUTO  AS VARCHAR(200)) AS PRODUTO,\n    NULL AS MOTIVO_ARQUIVAMENTO,\n    EMPRESA.NOM_EMPRESA AS EMPRESA,\n    EMPRESA.OPERACAO AS OPERACAO,\n    NULL AS ALIQUOTA, -- VALIDAR A ORIGEM DOS DADOS\n    CALENDARIO_MONETARIO.VAL_JUROS AS ALIQUOTA_JUROS,\n    AUXFT.FOTO AS FOTO,\n    AUXSA.SIT_ANTERIOR  AS SITUACAO_ANTERIOR,\n    AUXOAA.DES_TIPO_ACAO AS OBJ_ACAO_ANTERIOR\nFROM  [Silver].PROCESSO PROCESSO\nJOIN [Silver].tmp_fti_ativo_inativo__@{pipeline().parameters.id} TMP_TABLE_ATIVOS_INATIVOS \n    ON PROCESSO.NUM_PROCESSO = TMP_TABLE_ATIVOS_INATIVOS.NUM_PROCESSO \n    AND PROCESSO.COD_EMPRESA = TMP_TABLE_ATIVOS_INATIVOS.COD_EMPRESA\nLEFT JOIN  [Silver].TB_EMPRESA EMPRESA\n    ON EMPRESA.COD_EMPRESA = PROCESSO.COD_EMPRESA\nJOIN [Silver].fotografia FOTOGRAFIA\n    ON FOTOGRAFIA.SIG_ESCRITORIO_CONTRATADO = PROCESSO.SIG_ESCRITORIO_CONTRATADO\n    AND FOTOGRAFIA.COD_DIVISAO_PROCESSO = PROCESSO.COD_DIVISAO_PROCESSO\n    AND FOTOGRAFIA.COD_CALENDARIO_MONETARIO = TMP_TABLE_ATIVOS_INATIVOS.COD_CALENDARIO_MONETARIO\n    and FOTOGRAFIA.status = 1\nJOIN [Silver].CALENDARIO_MONETARIO CALENDARIO_MONETARIO\n    ON FOTOGRAFIA.COD_CALENDARIO_MONETARIO = CALENDARIO_MONETARIO.COD_CALENDARIO_MONETARIO\n-- INCLUSAO DAS TABELAS AUXILIARES\nLEFT JOIN [Silver].[aux_foto] AUXFT \n    ON CALENDARIO_MONETARIO.COD_CALENDARIO_MONETARIO = AUXFT.COD_CALENDARIO_MONETARIO\nLEFT JOIN [Silver].[aux_list_autor] AUXLA\n    ON PROCESSO.NUM_PROCESSO = AUXLA.NUM_PROCESSO\n    AND PROCESSO.COD_EMPRESA = AUXLA.COD_EMPRESA\nLEFT JOIN [Silver].[aux_list_reu] AUXLR \n    ON  PROCESSO.COD_EMPRESA = AUXLR.COD_EMPRESA \n    AND PROCESSO.NUM_PROCESSO = AUXLR.NUM_PROCESSO\nLEFT JOIN  [Silver].[aux_objeto_acao_ant] AUXOAA\n    ON PROCESSO.NUM_PROCESSO = AUXOAA.NUM_PROCESSO\n    AND PROCESSO.COD_EMPRESA = AUXOAA.COD_EMPRESA\n    AND AUXOAA.COD_FOTOGRAFIA = FOTOGRAFIA.COD_FOTOGRAFIA\nLEFT JOIN [Silver].[aux_processo_produto] AUXPP \n    on  PROCESSO.COD_EMPRESA = AUXPP.COD_EMPRESA \n    AND PROCESSO.NUM_PROCESSO = AUXPP.NUM_PROCESSO\nLEFT JOIN [Silver].[aux_situacao_anterior] AUXSA \n    ON PROCESSO.COD_EMPRESA = AUXSA.COD_EMPRESA\n    AND PROCESSO.NUM_PROCESSO = AUXSA.NUM_PROCESSO\n    AND AUXSA.COD_FOTOGRAFIA = FOTOGRAFIA.COD_FOTOGRAFIA\nLEFT JOIN [Silver].[aux_tipo_autor] AUXTA\n    ON PROCESSO.COD_EMPRESA = AUXTA.COD_EMPRESA \n    AND PROCESSO.NUM_PROCESSO = AUXTA.NUM_PROCESSO",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"writeBehavior": "Insert",
+						"sqlWriterUseTableLock": true,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Jarvis_Pool_Dedicado16152",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": "tmp_fti_ativo_inativo"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Jarvis_Pool_Dedicado16152",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": {
+								"value": "tmp_fti_dados_cadastrais_calculados__@{pipeline().parameters.id}",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "vlr_valor_pago_condenacao",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "SCPT_Calculos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "UPDATE fi\nSET vlr_valor_pago_condenacao = (ISNULL((select sum(VLR_PAGAMENTO)\n\t\tfrom Silver.VALOR_DATA_PROCESSO\n\t\twhere\n\t\tVALOR_DATA_PROCESSO.NUM_PROCESSO = fi.NUM_PROCESSO and\n\t\tVALOR_DATA_PROCESSO.COD_EMPRESA = fi.COD_EMPRESA and\n\t\tVALOR_DATA_PROCESSO.COD_TIPO_PAGAMENTO = 102 and VALOR_DATA_PROCESSO.sts_inativo is null) - ISNULL((SELECT\n\t\t\tSUM(VLR_PAGAMENTO)\n\t\t\tFROM\n\t\t\tSilver.VALOR_DATA_PROCESSO\n\t\t\tWHERE\n\t\t\tVALOR_DATA_PROCESSO.COD_EMPRESA = COD_EMPRESA AND\n\t\t\tVALOR_DATA_PROCESSO.NUM_PROCESSO = fi.NUM_PROCESSO AND\n\t\t\tVALOR_DATA_PROCESSO.COD_VALOR_DATA_PROCESSO_PAI IN (SELECT VDP.COD_VALOR_DATA_PROCESSO FROM Silver.VALOR_DATA_PROCESSO VDP WHERE VDP.COD_TIPO_PAGAMENTO IN (102)  AND VDP.NUM_PROCESSO = VALOR_DATA_PROCESSO.NUM_PROCESSO AND VDP.COD_EMPRESA = VALOR_DATA_PROCESSO.COD_EMPRESA) AND\n\t\t\t((VALOR_DATA_PROCESSO.COD_TIPO_PAGAMENTO = 105 AND VALOR_DATA_PROCESSO.COD_ESPECIFIC_TIPO_PAGAMENTO not in (9)) OR (VALOR_DATA_PROCESSO.COD_TIPO_PAGAMENTO = 106 AND VALOR_DATA_PROCESSO.COD_ESPECIFIC_TIPO_PAGAMENTO not in (8))) AND\n\t\t\tVALOR_DATA_PROCESSO.STS_INATIVO IS NULL AND\n\t\t\tVALOR_DATA_PROCESSO.COD_PRESTACAO_CONTAS_FORM IN (SELECT COD_PRESTACAO_CONTAS_FORM FROM Silver.PRESTACAO_CONTAS_FORM WHERE COD_PRESTACAO_CONTAS_STATUS IN (2,3,6)))\n\t\t\t, 0),0)),\n\tvlr_custas =(ISNULL((select sum(VLR_PAGAMENTO) \n\t\tfrom Silver.VALOR_DATA_PROCESSO \n\t\twhere \n\t\tVALOR_DATA_PROCESSO.NUM_PROCESSO = fi.NUM_PROCESSO \n\t\tand VALOR_DATA_PROCESSO.COD_EMPRESA = fi.COD_EMPRESA \n\t\tand VALOR_DATA_PROCESSO.sts_inativo is null\n\t\tand VALOR_DATA_PROCESSO.COD_TIPO_PAGAMENTO = 100 \n\t\t) - ISNULL((SELECT\n\t\tSUM(VLR_PAGAMENTO)\n\t\tFROM\n\t\tSilver.VALOR_DATA_PROCESSO\n\t\tWHERE\n\t\tVALOR_DATA_PROCESSO.COD_EMPRESA = COD_EMPRESA\n\t\tAND VALOR_DATA_PROCESSO.NUM_PROCESSO = fi.NUM_PROCESSO\n\t\tAND VALOR_DATA_PROCESSO.COD_VALOR_DATA_PROCESSO_PAI IN (SELECT VDP.COD_VALOR_DATA_PROCESSO FROM Silver.VALOR_DATA_PROCESSO VDP WHERE VDP.COD_TIPO_PAGAMENTO IN (100)  AND VDP.NUM_PROCESSO = VALOR_DATA_PROCESSO.NUM_PROCESSO AND VDP.COD_EMPRESA = VALOR_DATA_PROCESSO.COD_EMPRESA)\n\t\tAND ((VALOR_DATA_PROCESSO.COD_TIPO_PAGAMENTO = 105 AND VALOR_DATA_PROCESSO.COD_ESPECIFIC_TIPO_PAGAMENTO not in (9)) OR (VALOR_DATA_PROCESSO.COD_TIPO_PAGAMENTO = 106 AND VALOR_DATA_PROCESSO.COD_ESPECIFIC_TIPO_PAGAMENTO not in (8)))\n\t\tAND VALOR_DATA_PROCESSO.STS_INATIVO IS NULL\n\t\tAND VALOR_DATA_PROCESSO.COD_PRESTACAO_CONTAS_FORM IN (SELECT COD_PRESTACAO_CONTAS_FORM FROM Silver.PRESTACAO_CONTAS_FORM WHERE COD_PRESTACAO_CONTAS_STATUS IN (2,3,6)))\n\t\t, 0),0)),\n\tvlr_bens_penhorados = ISNULL((select sum(VLR_PAGAMENTO) \n\t\tfrom Silver.VALOR_DATA_PROCESSO \n\t\twhere \n\t\tVALOR_DATA_PROCESSO.COD_EMPRESA = fi.COD_EMPRESA and \n\t\tVALOR_DATA_PROCESSO.NUM_PROCESSO = fi.NUM_PROCESSO and VALOR_DATA_PROCESSO.sts_inativo is null and \n\t\tVALOR_DATA_PROCESSO.COD_TIPO_PAGAMENTO = 101 and \n\t\tVALOR_DATA_PROCESSO.sts_aproveitamento is null and \n\t\tVALOR_DATA_PROCESSO.COD_ESPECIFIC_TIPO_PAGAMENTO in(1, 2, 3)),0),\n\tvlr_demais_garantias = (select sum(VLR_PAGAMENTO) \n\t\tfrom Silver.VALOR_DATA_PROCESSO \n\t\twhere \n\t\tVALOR_DATA_PROCESSO.COD_EMPRESA = fi.COD_EMPRESA and \n\t\tVALOR_DATA_PROCESSO.NUM_PROCESSO = fi.NUM_PROCESSO and \n\t\tVALOR_DATA_PROCESSO.sts_inativo is null and \n\t\tVALOR_DATA_PROCESSO.COD_TIPO_PAGAMENTO = 101 and \n\t\tVALOR_DATA_PROCESSO.sts_aproveitamento is null and \n\t\tVALOR_DATA_PROCESSO.COD_ESPECIFIC_TIPO_PAGAMENTO in(4,6,9)),\n\tVLR_RECURSO_ORDINARIO =  ISNULL((SELECT SUM(saldo)\n        FROM Silver.valor_data_processo\n        WHERE 1=1  \n            and VALOR_DATA_PROCESSO.sts_inativo is null\n            AND VALOR_DATA_PROCESSO.COD_EMPRESA = fi.COD_EMPRESA\n            AND VALOR_DATA_PROCESSO.NUM_PROCESSO = fi.NUM_PROCESSO\n            AND (\n                    (valor_data_processo.cod_tipo_pagamento = 103\n                        AND    valor_data_processo.cod_especific_tipo_pagamento = 1)\n                    OR     \n                    (valor_data_processo.cod_tipo_pagamento = 101\n                        AND    valor_data_processo.cod_especific_tipo_pagamento = 5\n                        AND    valor_data_processo.cod_detalhe_especific_tipo_pag = 1)\n                    )),0),\n    VLR_RECURS_ODEREVISTA =  ISNULL((SELECT SUM(saldo)\n        FROM   Silver.valor_data_processo\n        WHERE  valor_data_processo.cod_empresa = fi.cod_empresa\n            AND    valor_data_processo.num_processo = fi.num_processo\n            and VALOR_DATA_PROCESSO.sts_inativo is null\n            AND    ((\n                valor_data_processo.cod_tipo_pagamento = 103\n                AND    valor_data_processo.cod_especific_tipo_pagamento = 2)\n                OR     (\n                valor_data_processo.cod_tipo_pagamento = 101\n                AND    valor_data_processo.cod_especific_tipo_pagamento = 5\n                AND    valor_data_processo.cod_detalhe_especific_tipo_pag = 2))),0),\n    VLR_DEPOSITO_JUDICIAL =  ISNULL((SELECT SUM(saldo)\n        FROM   Silver.valor_data_processo\n        WHERE  valor_data_processo.cod_empresa = fi.cod_empresa\n            and VALOR_DATA_PROCESSO.sts_inativo is null\n            AND    valor_data_processo.num_processo = fi.num_processo\n            AND    ((valor_data_processo.cod_tipo_pagamento = 101\n            AND    valor_data_processo.cod_especific_tipo_pagamento = 8)\n                OR     (\n                valor_data_processo.cod_tipo_pagamento = 103\n                AND    valor_data_processo.cod_especific_tipo_pagamento = 3))),0)\nFROM [Silver].[param_fotografia_evh] p\n    INNER JOIN silver.fotografia f\n        on p.cod_calendario_monetario = f.cod_calendario_monetario\n            and p.photographyId = f.cod_fotografia\n            and p.sig_escritorio_contratado =  f.sig_escritorio_contratado\n            and f.[cod_divisao_processo] = p.[cod_divisao_processo]\n            and f.status = 1\n            and p.status = 0\n            and p.id = '@{pipeline().parameters.id_raw}'\n\tINNER JOIN Silver.fotografia_item AS fi\n\t\ton(fi.cod_fotografia = f.cod_fotografia\n\t\t\tand f.sig_escritorio_contratado = fi.sig_escritorio_contratado\n            and f.cod_divisao_processo = fi.cod_divisao_processo\n            and f.cod_ver_fotografia = fi.cod_ver_fotografia )",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "FTI_ANT",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "fotografia_item",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "UPDATE ft\nSET\n    ft.PROV_CP_OPERACIONAL_ANTERIOR = tmp.VLR_CURTO_PRAZO,\n    ft.PROV_CP_FINANCEIRA_ANTERIOR = tmp.VLR_CURTO_PRAZO_FIN,\n    ft.PROV_LP_OPERACIONAL_ANTERIOR = tmp.VLR_LONGO_PRAZO,\n    ft.PROV_LP_FINANCEIRA_ANTERIOR = tmp.VLR_LONGO_PRAZO_FIN,\n    ft.PROVISAO_CURTO_ANTERIOR = tmp.VLR_CURTO_PRAZO + tmp.VLR_CURTO_PRAZO_FIN,\n    ft.PROVISAO_LONGO_ANTERIOR = tmp.VLR_LONGO_PRAZO + tmp.VLR_LONGO_PRAZO_FIN,\n    ft.cod_divisao_processo_ant = tmp.cod_divisao_processo\nFROM [Silver].[param_fotografia_evh] p\n    INNER JOIN silver.fotografia f\n        on p.cod_calendario_monetario = f.cod_calendario_monetario\n            and p.photographyId = f.cod_fotografia\n            and p.sig_escritorio_contratado =  f.sig_escritorio_contratado\n            and f.[cod_divisao_processo] = p.[cod_divisao_processo]\n            and f.status = 1\n            and p.status = 0\n            and p.id = '@{pipeline().parameters.id_raw}'\n\tINNER JOIN Silver.fotografia_item AS ft\n\t\ton(ft.cod_fotografia = f.cod_fotografia\n\t\t\tand f.sig_escritorio_contratado = ft.sig_escritorio_contratado\n            and f.cod_divisao_processo = ft.cod_divisao_processo\n            and f.cod_ver_fotografia = ft.cod_ver_fotografia )\nLEFT JOIN Silver.tmp_fti_anterior__@{pipeline().parameters.id} AS tmp\n    on ft.num_processo = tmp.num_processo\n    and ft.cod_empresa = tmp.cod_empresa",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "ajuste_rp_fotografiaitem",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "fotografia_item",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "UPDATE ft\n    SET ft.AJUSTE_OPERACIONAL_PROV_CP = rp.vlr_curto_prazo,\n        ft.AJUSTE_FINANCEIRO_PROV_CP = rp.vlr_curto_prazo_fin,\n        ft.AJUSTE_OPERACIONAL_PROV_LP = rp.vlr_longo_prazo,\n        ft.AJUSTE_FINANCEIRO_PROV_LP = rp.vlr_longo_prazo_fin\nFROM [Silver].[param_fotografia_evh] p\n    INNER JOIN silver.fotografia f\n        on p.cod_calendario_monetario = f.cod_calendario_monetario\n            and p.photographyId = f.cod_fotografia\n            and p.sig_escritorio_contratado =  f.sig_escritorio_contratado\n            and f.[cod_divisao_processo] = p.[cod_divisao_processo]\n            and f.status = 1\n            and p.status = 0    \n            and p.id = '@{pipeline().parameters.id_raw}'\n\tINNER JOIN Silver.fotografia_item AS ft\n\t\ton(ft.cod_fotografia = f.cod_fotografia\n\t\t\tand f.sig_escritorio_contratado = ft.sig_escritorio_contratado\n            and f.cod_divisao_processo = ft.cod_divisao_processo\n            and f.cod_ver_fotografia = ft.cod_ver_fotografia )\n        inner JOIN  Silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} AS rp\n            ON ft.COD_EMPRESA = rp.COD_EMPRESA\n                and ft.num_processo = rp.num_processo\n                and ( cod_tipo_reav_curto_prov = 1\n                    or cod_tipo_reav_longo_prov = 1\n                    or cod_tipo_reav_remo = 1\n                    or cod_tipo_reav_poss = 1\n                )\n",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "SCPT_Calculos",
+				"description": "",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "fotografia_item",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "update FI\n\tset sts_solvencia = case when (select count(1)\n\t\t\t\t\t\t\t\t\t\t\t\tfrom silver.modulo_natureza MN\n\t\t\t\t\t\t\t\t\t\t\t  inner join silver.modulo M\n\t\t\t\t\t\t\t\t\t\t\t\t  on M.cod_modulo = MN.cod_modulo\n\t\t\t\t\t\t\t\t\t\t\t  where FI.cod_natureza = 101\n\t\t\t\t\t\t\t\t\t\t\t\t and trim(M.nom_modulo) = 'TRABALHISTA'\n\t\t\t\t\t\t\t\t\t\t\t\t and MN.cod_natureza = FI.cod_natureza\n\t\t\t\t\t\t\t\t\t\t\t\t and MN.cod_especificacao_natureza = FI.cod_especificacao_natureza\n\t\t\t\t\t\t\t\t\t\t\t\t and MN.cod_detalhe_especific_natureza = FI.cod_detalhe_especific_natureza\n\t\t\t\t\t\t\t\t\t\t\t) > 0\n\t\t\t\t\t\t\t\t\t then case when (select count(1)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t from silver.reu R\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhere R.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and R.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and R.sts_solvencia = 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t ) > 0\n\t\t\t\t\t\t\t\t\t\t\t\t  then 0\n\t\t\t\t\t\t\t\t\t\t\t\t  else 1\n\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t else null\n\t\t\t\t\t\t\t\t\t  end\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n\nupdate FI\n\tset classificacao_solvencia = case when FI.sts_solvencia = 1\n\t\t\t\t\t\t\t\t\t\t\t\t  then 'SOLVENTE'\n\t\t\t\t\t\t\t\t\t\t\t\t  when FI.sts_solvencia = 0\n\t\t\t\t\t\t\t\t\t\t\t\t  then 'INSOLVENTE'\n\t\t\t\t\t\t\t\t\t\t\t\t   end\n\t  , insolvente = nom_insolvente\n\t  , polo_passivo = nom_reu\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join (select num_processo\n\t\t\t\t\t\t, cod_empresa\n\t\t\t\t\t\t, string_agg(cast(nom_insolvente as varchar(256)), ';') nom_insolvente\n\t\t\t\t\t\t, string_agg(nom_reu, ';') within group (order by nom_reu) nom_reu\n\t\t\t\t\tfrom (select distinct DC.num_processo\n\t\t\t\t\t\t\t\t  , DC.cod_empresa\n\t\t\t\t\t\t\t\t  , case when R.sts_solvencia = 0\n\t\t\t\t\t\t\t\t\t\t\tthen cast(PP.nom_parte_processo as varchar(256))\n\t\t\t\t\t\t\t\t\t\t\t end nom_insolvente\n\t\t\t\t\t\t\t\t  , cast(PP.nom_parte_processo as varchar(256)) nom_reu\n\t\t\t\t\t\t\t  from silver.reu R\n\t\t\t\t\t\t\t inner join silver.parte_processo PP\n\t\t\t\t\t\t\t\t on PP.cod_parte_processo = R.cod_parte_processo\n\t\t\t\t\t\t\t inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t\t\t\t\t\t\t\t on DC.num_processo = R.num_processo\n\t\t\t\t\t\t\t\tand DC.cod_empresa = R.cod_empresa\n\t\t\t\t\t\t  ) reu\n\t\t\t\t  group by num_processo\n\t\t\t\t\t\t, cod_empresa\n\t\t\t\t) R\n\t on R.num_processo = FI.num_processo\n\tand R.cod_empresa = FI.cod_empresa\n\nupdate FI\n\tset vlr_pgt_pos_corte_op_cp_mes_an = case when FA.vlr_curto_prazo <= 0 and FA.vlr_longo_prazo <= 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen isnull(PC.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse case when FA.vlr_curto_prazo > 0 and FA.vlr_curto_prazo >= isnull(PC.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then isnull(PC.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else case when FA.vlr_curto_prazo > 0 and FA.vlr_curto_prazo < isnull(PC.valor_operacional, 0) and FA.vlr_longo_prazo <= 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then isnull(PC.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else case when FA.vlr_curto_prazo > 0 and FA.vlr_curto_prazo < isnull(PC.valor_operacional, 0) and FA.vlr_longo_prazo > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen FA.vlr_curto_prazo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_pgt_pos_corte_op_lp_mes_an = case when FA.vlr_curto_prazo > 0 and FA.vlr_curto_prazo < isnull(PC.valor_operacional, 0) and FA.vlr_longo_prazo > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen isnull(PC.valor_operacional, 0) - FA.vlr_curto_prazo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse case when FA.vlr_curto_prazo <= 0 and FA.vlr_longo_prazo > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then isnull(PC.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_pgt_pos_corte_fi_cp_mes_an = case when FA.vlr_curto_prazo_fin <= 0 and FA.vlr_longo_prazo_fin <= 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen isnull(PC.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse case when FA.vlr_curto_prazo_fin > 0 and FA.vlr_curto_prazo_fin >= isnull(PC.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then isnull(PC.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else case when FA.vlr_curto_prazo_fin > 0 and FA.vlr_curto_prazo_fin < isnull(PC.valor_financeiro, 0) and FA.vlr_longo_prazo_fin <= 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then isnull(PC.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else case when FA.vlr_curto_prazo_fin > 0 and FA.vlr_curto_prazo_fin < isnull(PC.valor_financeiro, 0) and FA.vlr_longo_prazo_fin > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen FA.vlr_curto_prazo_fin\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t  , vlr_pgt_pos_corte_fi_lp_mes_an = case when FA.vlr_curto_prazo_fin > 0 and FA.vlr_curto_prazo_fin < isnull(PC.valor_financeiro, 0) and FA.vlr_longo_prazo > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen isnull(PC.valor_financeiro, 0) - FA.vlr_curto_prazo_fin\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse case when FA.vlr_curto_prazo_fin <= 0 and FA.vlr_longo_prazo_fin > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then isnull(PC.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_pgt_pos_corte_op_mes_an = isnull(PC.valor_operacional, 0)\n\t  , vlr_pgt_pos_corte_fi_mes_an = isnull(PC.valor_financeiro, 0)\n\t  , vlr_pgt_pos_corte_tt_mes_an = isnull(PC.valor_total_pgto, 0)\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\t on FA.num_processo = FI.num_processo\n\tand FA.cod_empresa = FI.cod_empresa\n  left join silver.tmp_fti_pos_corte__@{pipeline().parameters.id} PC\n\t on PC.num_processo = FA.num_processo\n\tand PC.cod_empresa = FA.cod_empresa\n\t\nupdate FI\n\tset vlr_bai_pos_corte_op_cp_mes_an = case when FA.vlr_curto_prazo >= vlr_pgt_pos_corte_op_cp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen vlr_pgt_pos_corte_op_cp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse FA.vlr_curto_prazo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_bai_pos_corte_op_lp_mes_an = case when FA.vlr_longo_prazo >= vlr_pgt_pos_corte_op_lp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen vlr_pgt_pos_corte_op_lp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse FA.vlr_longo_prazo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_bai_pos_corte_fi_cp_mes_an = case when FA.vlr_curto_prazo_fin >= vlr_pgt_pos_corte_fi_cp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen vlr_pgt_pos_corte_fi_cp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse FA.vlr_curto_prazo_fin\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_bai_pos_corte_fi_lp_mes_an = case when FA.vlr_longo_prazo_fin >= vlr_pgt_pos_corte_fi_lp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen vlr_pgt_pos_corte_fi_lp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse FA.vlr_longo_prazo_fin\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , valSaldoOperacionalCP = case when FA.vlr_curto_prazo >= vlr_pgt_pos_corte_op_cp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\tthen FA.vlr_curto_prazo - vlr_pgt_pos_corte_op_cp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , valSaldoOperacionalLP = case when FA.vlr_longo_prazo >= vlr_pgt_pos_corte_op_lp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\tthen FA.vlr_longo_prazo - vlr_pgt_pos_corte_op_lp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , valSaldoFinanceiroCP = case when FA.vlr_curto_prazo_fin >= vlr_pgt_pos_corte_fi_cp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t  then FA.vlr_curto_prazo_fin - vlr_pgt_pos_corte_fi_cp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t  else 0\n\t\t\t\t\t\t\t\t\t\t\t   end\n\t  , valSaldoFinanceiroLP = case when FA.vlr_longo_prazo_fin >= vlr_pgt_pos_corte_fi_lp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t  then FA.vlr_longo_prazo_fin - vlr_pgt_pos_corte_fi_lp_mes_an\n\t\t\t\t\t\t\t\t\t\t\t  else 0\n\t\t\t\t\t\t\t\t\t\t\t   end\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\t on FA.num_processo = FI.num_processo\n\tand FA.cod_empresa = FI.cod_empresa\n  left join silver.tmp_fti_definitivo__@{pipeline().parameters.id} DF\n\t on DF.num_processo = FA.num_processo\n\tand DF.cod_empresa = FA.cod_empresa\n\nupdate FI\n\tset vlr_deposito_cp_op = case when valSaldoOperacionalCP <= 0 and valSaldoOperacionalLP <= 0\n\t\t\t\t\t\t\t\t\t\t\tthen isnull(DF.valor_baixa_deposito, 0) + isnull(PC.valor_baixa_deposito, 0)\n\t\t\t\t\t\t\t\t\t\t\telse case when valSaldoOperacionalCP > 0 and valSaldoOperacionalCP >= isnull(DF.valor_baixa_deposito, 0) + isnull(PC.valor_baixa_deposito, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t then isnull(DF.valor_baixa_deposito, 0) + isnull(PC.valor_baixa_deposito, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t else case when valSaldoOperacionalCP > 0 and valSaldoOperacionalCP < isnull(DF.valor_baixa_deposito, 0) + isnull(PC.valor_baixa_deposito, 0) and valSaldoOperacionalLP <= 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then isnull(DF.valor_baixa_deposito, 0) + isnull(PC.valor_baixa_deposito, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else case when valSaldoOperacionalCP > 0 and valSaldoOperacionalCP < isnull(DF.valor_baixa_deposito, 0) + isnull(PC.valor_baixa_deposito, 0) and valSaldoOperacionalLP > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen valSaldoOperacionalCP\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_deposito_lp_op = case when valSaldoOperacionalCP > 0 and valSaldoOperacionalCP < isnull(DF.valor_baixa_deposito, 0) + isnull(PC.valor_baixa_deposito, 0) and valSaldoOperacionalLP > 0\n\t\t\t\t\t\t\t\t\t\t\tthen isnull(DF.valor_baixa_deposito, 0) + isnull(PC.valor_baixa_deposito, 0) - valSaldoOperacionalCP\n\t\t\t\t\t\t\t\t\t\t\telse case when valSaldoOperacionalCP <= 0 and valSaldoOperacionalLP > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t then isnull(DF.valor_baixa_deposito, 0) + isnull(PC.valor_baixa_deposito, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t else 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t\t\t end\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\t on FA.num_processo = FI.num_processo\n\tand FA.cod_empresa = FI.cod_empresa\n  left join silver.tmp_fti_pos_corte__@{pipeline().parameters.id} PC\n\t on PC.num_processo = FA.num_processo\n\tand PC.cod_empresa = FA.cod_empresa\n  left join silver.tmp_fti_definitivo__@{pipeline().parameters.id} DF\n\t on DF.num_processo = FA.num_processo\n\tand DF.cod_empresa = FA.cod_empresa\n\nupdate FI \n\tset vlr_baixa_deposito_cp_op = case when valSaldoOperacionalCP >= vlr_deposito_cp_op\n\t\t\t\t\t\t\t\t\t\t\t\t\tthen vlr_deposito_cp_op\n\t\t\t\t\t\t\t\t\t\t\t\t\telse valSaldoOperacionalCP\n\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_baixa_deposito_lp_op = case when valSaldoOperacionalLP >= vlr_deposito_lp_op\n\t\t\t\t\t\t\t\t\t\t\t\t\tthen vlr_deposito_lp_op\n\t\t\t\t\t\t\t\t\t\t\t\t\telse valSaldoOperacionalLP\n\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , valSaldoOperacionalCP = case when valSaldoOperacionalCP >= vlr_deposito_cp_op\n\t\t\t\t\t\t\t\t\t\t\t\tthen valSaldoOperacionalCP - vlr_deposito_cp_op\n\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , valSaldoOperacionalLP = case when valSaldoOperacionalLP >= vlr_deposito_lp_op\n\t\t\t\t\t\t\t\t\t\t\t\tthen valSaldoOperacionalLP - vlr_deposito_lp_op\n\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t end\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\t on FA.num_processo = FI.num_processo\n\tand FA.cod_empresa = FI.cod_empresa\n\nupdate FI\n\tset vlr_pgt_on_going_op_cp = case when valSaldoOperacionalCP <= 0 and valSaldoOperacionalLP <= 0\n\t\t\t\t\t\t\t\t\t\t\t\t then isnull(DF.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t else case when valSaldoOperacionalCP > 0 and valSaldoOperacionalCP >= isnull(DF.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then isnull(DF.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else case when valSaldoOperacionalCP > 0 and valSaldoOperacionalCP < isnull(DF.valor_operacional, 0) and valSaldoOperacionalLP <= 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen isnull(DF.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse case when valSaldoOperacionalCP > 0 and valSaldoOperacionalCP < isnull(DF.valor_operacional, 0) and valSaldoOperacionalLP > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then valSaldoOperacionalCP\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t   end\n\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t  , vlr_pgt_on_going_op_lp = case when valSaldoOperacionalCP > 0 and valSaldoOperacionalCP < isnull(DF.valor_operacional, 0) and valSaldoOperacionalLP > 0\n\t\t\t\t\t\t\t\t\t\t\t\t then isnull(DF.valor_operacional, 0) - valSaldoOperacionalCP\n\t\t\t\t\t\t\t\t\t\t\t\t else case when valSaldoOperacionalCP <= 0 and valSaldoOperacionalLP > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then isnull(DF.valor_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t  , vlr_pgt_on_going_fi_cp = case when valSaldoFinanceiroCP <= 0 and valSaldoFinanceiroLP <= 0\n\t\t\t\t\t\t\t\t\t\t\t\t then isnull(DF.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t else case when valSaldoFinanceiroCP > 0 and valSaldoFinanceiroCP >= isnull(DF.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then isnull(DF.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else case when valSaldoFinanceiroCP > 0 and valSaldoFinanceiroCP < isnull(DF.valor_financeiro, 0) and valSaldoFinanceiroLP <= 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tthen isnull(DF.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\telse case when valSaldoFinanceiroCP > 0 and valSaldoFinanceiroCP < isnull(DF.valor_financeiro, 0) and valSaldoFinanceiroLP > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t then valSaldoFinanceiroCP\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t else 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t  , vlr_pgt_on_going_fi_lp = case when valSaldoFinanceiroCP > 0 and valSaldoFinanceiroCP < isnull(DF.valor_financeiro, 0) and valSaldoFinanceiroLP > 0\n\t\t\t\t\t\t\t\t\t\t\t\t then isnull(DF.valor_financeiro, 0) - valSaldoFinanceiroCP\n\t\t\t\t\t\t\t\t\t\t\t\t else case when valSaldoFinanceiroCP <= 0 and valSaldoFinanceiroLP > 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then isnull(DF.valor_financeiro, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t\t  end\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\t on FA.num_processo = FI.num_processo\n\tand FA.cod_empresa = FI.cod_empresa\n  left join silver.tmp_fti_definitivo__@{pipeline().parameters.id} DF\n\t on DF.num_processo = FA.num_processo\n\tand DF.cod_empresa = FA.cod_empresa\n\nupdate FI\n\tset vlr_bai_on_going_op_cp = case when valSaldoOperacionalCP >= vlr_pgt_on_going_op_cp\n\t\t\t\t\t\t\t\t\t\t\t\t then vlr_pgt_on_going_op_cp\n\t\t\t\t\t\t\t\t\t\t\t\t else valSaldoOperacionalCP\n\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t, vlr_bai_on_going_op_lp = case when valSaldoOperacionalLP >= vlr_pgt_on_going_op_lp\n\t\t\t\t\t\t\t\t\t\t\t\t  then vlr_pgt_on_going_op_lp\n\t\t\t\t\t\t\t\t\t\t\t\t  else valSaldoOperacionalLP\n\t\t\t\t\t\t\t\t\t\t\t\t   end\n\t\t, vlr_bai_on_going_fi_cp = case when valSaldoFinanceiroCP >= vlr_pgt_on_going_fi_cp\n\t\t\t\t\t\t\t\t\t\t\t\t  then vlr_pgt_on_going_fi_cp\n\t\t\t\t\t\t\t\t\t\t\t\t  else valSaldoFinanceiroCP\n\t\t\t\t\t\t\t\t\t\t\t\t   end\n\t\t, vlr_bai_on_going_fi_lp = case when valSaldoFinanceiroLP >= vlr_pgt_on_going_fi_lp\n\t\t\t\t\t\t\t\t\t\t\t\t  then vlr_pgt_on_going_fi_lp\n\t\t\t\t\t\t\t\t\t\t\t\t  else valSaldoFinanceiroLP\n\t\t\t\t\t\t\t\t\t\t\t\t   end\n\t\t, valSaldoOperacionalCP = case when valSaldoOperacionalCP >= vlr_pgt_on_going_op_cp\n\t\t\t\t\t\t\t\t\t\t\t\t then valSaldoOperacionalCP - vlr_pgt_on_going_op_cp\n\t\t\t\t\t\t\t\t\t\t\t\t else 0\n\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t, valSaldoOperacionalLP = case when valSaldoOperacionalLP >= vlr_pgt_on_going_op_lp\n\t\t\t\t\t\t\t\t\t\t\t\t then valSaldoOperacionalLP - vlr_pgt_on_going_op_lp\n\t\t\t\t\t\t\t\t\t\t\t\t else 0\n\t\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t, valSaldoFinanceiroCP = case when valSaldoFinanceiroCP >= vlr_pgt_on_going_fi_cp\n\t\t\t\t\t\t\t\t\t\t\t\tthen valSaldoFinanceiroCP - vlr_pgt_on_going_fi_cp\n\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t, valSaldoFinanceiroLP = case when valSaldoFinanceiroLP >= vlr_pgt_on_going_fi_lp\n\t\t\t\t\t\t\t\t\t\t\t\tthen valSaldoFinanceiroLP - vlr_pgt_on_going_fi_lp\n\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t end\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\t on FA.num_processo = FI.num_processo\n\tand FA.cod_empresa = FI.cod_empresa\n\nupdate FI\n\tset vlr_bai_reav_op_cp = case when valSaldoOperacionalCP >= isnull(RV.vlr_curto_prazo, 0)\n\t\t\t\t\t\t\t\t\t\t\tthen isnull(RV.vlr_curto_prazo, 0)\n\t\t\t\t\t\t\t\t\t\t\telse valSaldoOperacionalCP\n\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_bai_reav_fi_cp = case when valSaldoFinanceiroCP >= isnull(RV.vlr_curto_prazo_fin, 0)\n\t\t\t\t\t\t\t\t\t\t\tthen isnull(RV.vlr_curto_prazo_fin, 0)\n\t\t\t\t\t\t\t\t\t\t\telse valSaldoFinanceiroCP\n\t\t\t\t\t\t\t\t\t\t\t end\n\t  , valSaldoOperacionalCP = case when valSaldoOperacionalCP >= isnull(RV.vlr_curto_prazo, 0)\n\t\t\t\t\t\t\t\t\t\t\t\tthen valSaldoOperacionalCP - isnull(RV.vlr_curto_prazo, 0)\n\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , valSaldoFinanceiroCP = case when valSaldoFinanceiroCP >= isnull(RV.vlr_longo_prazo_fin, 0)\n\t\t\t\t\t\t\t\t\t\t\t  then valSaldoFinanceiroCP - isnull(RV.vlr_longo_prazo_fin, 0)\n\t\t\t\t\t\t\t\t\t\t\t  else 0\n\t\t\t\t\t\t\t\t\t\t\t\tend\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\t on FA.num_processo = FI.num_processo\n\tand FA.cod_empresa = FI.cod_empresa\n inner join silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} RV\n\t on RV.num_processo = DC.num_processo\n\tand RV.cod_empresa = DC.cod_empresa\n\tand cod_tipo_reav_curto_prov = 2\n\nupdate FI\n\tset vlr_bai_reav_op_lp = case when valSaldoOperacionalLP >= isnull(RV.vlr_longo_prazo, 0)\n\t\t\t\t\t\t\t\t\t\t\tthen isnull(RV.vlr_longo_prazo, 0)\n\t\t\t\t\t\t\t\t\t\t\telse valSaldoOperacionalLP\n\t\t\t\t\t\t\t\t\t\t\t end\n\t  , vlr_bai_reav_fi_lp = case when valSaldoFinanceiroLP >= isnull(RV.vlr_longo_prazo_fin, 0)\n\t\t\t\t\t\t\t\t\t\t\tthen isnull(RV.vlr_longo_prazo_fin, 0)\n\t\t\t\t\t\t\t\t\t\t\telse valSaldoFinanceiroLP\n\t\t\t\t\t\t\t\t\t\t\t end\n\t  , valSaldoOperacionalLP = case when valSaldoOperacionalLP >= isnull(RV.vlr_longo_prazo, 0)\n\t\t\t\t\t\t\t\t\t\t\t\tthen valSaldoOperacionalLP - isnull(RV.vlr_longo_prazo, 0)\n\t\t\t\t\t\t\t\t\t\t\t\telse 0\n\t\t\t\t\t\t\t\t\t\t\t\t end\n\t  , valSaldoFinanceiroLP = case when valSaldoFinanceiroLP >= isnull(RV.vlr_longo_prazo_fin, 0)\n\t\t\t\t\t\t\t\t\t\t\t  then valSaldoFinanceiroLP - isnull(RV.vlr_longo_prazo_fin, 0)\n\t\t\t\t\t\t\t\t\t\t\t  else 0\n\t\t\t\t\t\t\t\t\t\t\t\tend\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\t on FA.num_processo = FI.num_processo\n\tand FA.cod_empresa = FI.cod_empresa\n inner join silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} RV\n\t on RV.num_processo = DC.num_processo\n\tand RV.cod_empresa = DC.cod_empresa\n\tand cod_tipo_reav_longo_prov = 2\n\nupdate FI\n\tset baixa_prov_curto_operacional = isnull(vlr_bai_pos_corte_op_cp_mes_an, 0) + isnull(vlr_baixa_deposito_cp_op, 0) + isnull(vlr_bai_on_going_op_cp, 0) + isnull(vlr_bai_reav_op_cp, 0)\n\t  , baixa_prov_curto_financeira = isnull(vlr_bai_pos_corte_fi_cp_mes_an, 0) + isnull(vlr_bai_on_going_fi_cp, 0) + isnull(vlr_bai_reav_fi_cp, 0)\n\t  , baixa_prov_longo_operacional = isnull(vlr_bai_pos_corte_op_lp_mes_an, 0) + isnull(vlr_baixa_deposito_lp_op, 0) + isnull(vlr_bai_on_going_op_lp, 0) + isnull(vlr_bai_reav_op_lp, 0)\n\t  , baixa_prov_longo_financeira = isnull(vlr_bai_pos_corte_fi_lp_mes_an, 0) + isnull(vlr_bai_on_going_fi_lp, 0) + isnull(vlr_bai_reav_fi_lp, 0)\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n inner join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\t on FA.num_processo = FI.num_processo\n\tand FA.cod_empresa = FI.cod_empresa\n\nupdate FI\n\tset correcao_prov_curto = case when upper(DC.nom_tipo_indice_atualizacao) <> 'SELIC'\n\t\t\t\t\t\t\t\t\t\t\t then (FA.vlr_curto_prazo - baixa_prov_curto_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t+ (FA.vlr_curto_prazo_fin - baixa_prov_curto_financeira) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\t\t then case when DC.sts_selic_simples = 1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then (FA.vlr_curto_prazo - baixa_prov_curto_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t + 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else (FA.vlr_curto_prazo - baixa_prov_curto_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t + (FA.vlr_curto_prazo_fin - baixa_prov_curto_financeira) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t  end\n\t  , correcao_prov_longo = case when upper(DC.nom_tipo_indice_atualizacao) <> 'SELIC'\n\t\t\t\t\t\t\t\t\t\t\t then (FA.vlr_longo_prazo - baixa_prov_longo_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t+ (FA.vlr_longo_prazo_fin - baixa_prov_longo_financeira) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\t\t then case when DC.sts_selic_simples = 1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then (FA.vlr_longo_prazo - baixa_prov_longo_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t + 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else (FA.vlr_longo_prazo - baixa_prov_longo_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t + (FA.vlr_longo_prazo_fin - baixa_prov_longo_financeira) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t  end\n\t  , juros_prov_curto = case when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\t then 0\n\t\t\t\t\t\t\t\t\t\t else (FA.vlr_curto_prazo - baixa_prov_curto_operacional) * (DC.val_taxa / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t+ (FA.vlr_curto_prazo_fin - baixa_prov_curto_financeira) * (DC.val_taxa / 100)\n\t\t\t\t\t\t\t\t\t\t  end\n\t  , juros_prov_longo = case when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\t then 0\n\t\t\t\t\t\t\t\t\t\t else case when DC.aliquota = 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t  then (\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  (FA.vlr_longo_prazo - baixa_prov_longo_operacional)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  + (FA.vlr_longo_prazo_fin - baixa_prov_longo_financeira)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t * (DC.val_taxa / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t  else (\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  (FA.vlr_longo_prazo - baixa_prov_longo_operacional)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  + (FA.vlr_longo_prazo_fin - baixa_prov_longo_financeira)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t * (DC.val_taxa / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t  end\n\t  , vlr_curto_prazo = (FA.vlr_curto_prazo - baixa_prov_curto_operacional)\n\t\t\t\t\t\t\t\t +\n\t\t\t\t\t\t\t\t case when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\tthen 0\n\t\t\t\t\t\t\t\t\t\telse (FA.vlr_curto_prazo - baixa_prov_curto_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t +\n\t\t\t\t\t\t\t\t (select isnull(sum(vlr_curto_prazo), 0)\n\t\t\t\t\t\t\t\t\t from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} RV\n\t\t\t\t\t\t\t\t\twhere cod_tipo_reav_curto_prov = 1\n\t\t\t\t\t\t\t\t\t  and RV.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t  and RV.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t )\n\t  , vlr_curto_prazo_fin = (FA.vlr_curto_prazo_fin - baixa_prov_curto_financeira)\n\t\t\t\t\t\t\t\t\t  + -- correcao prov cp\n\t\t\t\t\t\t\t\t\t  case when upper(DC.nom_tipo_indice_atualizacao) <> 'SELIC'\n\t\t\t\t\t\t\t\t\t\t\t then (FA.vlr_curto_prazo - baixa_prov_curto_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t+ (FA.vlr_curto_prazo_fin - baixa_prov_curto_financeira) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\t\t then case when DC.sts_selic_simples = 1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then (FA.vlr_curto_prazo - baixa_prov_curto_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t + 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else (FA.vlr_curto_prazo - baixa_prov_curto_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t + (FA.vlr_curto_prazo_fin - baixa_prov_curto_financeira) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t  + -- juros prov cp\n\t\t\t\t\t\t\t\t\t  case when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\t then 0\n\t\t\t\t\t\t\t\t\t\t else (FA.vlr_curto_prazo - baixa_prov_curto_operacional) * (DC.val_taxa / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t+ (FA.vlr_curto_prazo_fin - baixa_prov_curto_financeira) * (DC.val_taxa / 100)\n\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t  + -- ajuste_financeiro prov cp\n\t\t\t\t\t\t\t\t\t  (select isnull(sum(vlr_curto_prazo_fin), 0)\n\t\t\t\t\t\t\t\t\t\t  from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} ING\n\t\t\t\t\t\t\t\t\t\t where cod_tipo_reav_curto_prov = 1\n\t\t\t\t\t\t\t\t\t\t\tand ING.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t\tand ING.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t  )\n\t  , vlr_longo_prazo = (FA.vlr_longo_prazo - baixa_prov_longo_operacional)\n\t\t\t\t\t\t\t\t +\n\t\t\t\t\t\t\t\t case when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\tthen 0\n\t\t\t\t\t\t\t\t\t\telse (FA.vlr_longo_prazo - baixa_prov_longo_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t +\n\t\t\t\t\t\t\t\t (select isnull(sum(vlr_longo_prazo), 0)\n\t\t\t\t\t\t\t\t\t from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} RV\n\t\t\t\t\t\t\t\t\twhere cod_tipo_reav_longo_prov = 1\n\t\t\t\t\t\t\t\t\t  and RV.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t  and RV.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t )\n\t  , vlr_longo_prazo_fin = (FA.vlr_longo_prazo_fin - baixa_prov_longo_financeira)\n\t\t\t\t\t\t\t\t\t  + -- correcao prov lp\n\t\t\t\t\t\t\t\t\t  case when upper(DC.nom_tipo_indice_atualizacao) <> 'SELIC'\n\t\t\t\t\t\t\t\t\t\t\t then (FA.vlr_longo_prazo - baixa_prov_longo_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t+ (FA.vlr_longo_prazo_fin - baixa_prov_longo_financeira) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\t\t then case when DC.sts_selic_simples = 1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  then (FA.vlr_longo_prazo - baixa_prov_longo_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t + 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  else (FA.vlr_longo_prazo - baixa_prov_longo_operacional) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t + (FA.vlr_longo_prazo_fin - baixa_prov_longo_financeira) * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t  + -- juros prov lp\n\t\t\t\t\t\t\t\t\t  case when upper(DC.nom_tipo_indice_atualizacao) = 'SELIC'\n\t\t\t\t\t\t\t\t\t\t then 0\n\t\t\t\t\t\t\t\t\t\t else case when DC.aliquota = 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t  then (\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  (FA.vlr_longo_prazo - baixa_prov_longo_operacional)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  + (FA.vlr_longo_prazo_fin - baixa_prov_longo_financeira)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t * (DC.val_taxa / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t  else (\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  (FA.vlr_longo_prazo - baixa_prov_longo_operacional)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  + (FA.vlr_longo_prazo_fin - baixa_prov_longo_financeira)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t * (DC.aliquota / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t * (DC.val_taxa / 100)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tend\n\t\t\t\t\t\t\t\t\t\t  end\n\t\t\t\t\t\t\t\t\t  + -- ajuste_financeiro prov lp\n\t\t\t\t\t\t\t\t\t  (select isnull(sum(vlr_longo_prazo_fin), 0)\n\t\t\t\t\t\t\t\t\t\t  from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} ING\n\t\t\t\t\t\t\t\t\t\t where cod_tipo_reav_longo_prov = 1\n\t\t\t\t\t\t\t\t\t\t\tand ING.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t\tand ING.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t  )\n\t  , vlr_possivel = abs(isnull(FA.vlr_possivel, 0)\n\t\t\t\t\t\t\t\t  - (select isnull(sum(vlr_possivel), 0)\n\t\t\t\t\t\t\t\t\t\t from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} RV\n\t\t\t\t\t\t\t\t\t\twhere cod_tipo_reav_poss = 2\n\t\t\t\t\t\t\t\t\t\t  and RV.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t  and RV.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t  + (select isnull(sum(vlr_possivel), 0)\n\t\t\t\t\t\t\t\t\t\t from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} ING\n\t\t\t\t\t\t\t\t\t\twhere cod_tipo_reav_poss = 1\n\t\t\t\t\t\t\t\t\t\t  and ING.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t  and ING.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t )\n\t  , vlr_remoto = abs(case when isnull(baixa_prov_curto_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t + isnull(baixa_prov_curto_financeira, 0)\n\t\t\t\t\t\t\t\t\t\t\t + isnull(baixa_prov_longo_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t + isnull(baixa_prov_longo_financeira, 0) = 0\n\t\t\t\t\t\t\t\t\t  then case when not exists (select 1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} RV\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhere cod_tipo_reav_remo = 1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and RV.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and RV.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\t and not exists (select 1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} ING\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhere cod_tipo_reav_remo = 2\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and ING.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and ING.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\tthen isnull(FA.vlr_remoto, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\telse isnull(FA.vlr_remoto, 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  - (select isnull(sum(vlr_remoto), 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} RV\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhere cod_tipo_reav_remo = 2\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and RV.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and RV.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t +\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t (select isnull(sum(vlr_remoto), 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t from silver.tmp_fti_reavaliacao_processo__@{pipeline().parameters.id} ING\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhere cod_tipo_reav_remo = 1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and ING.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  and ING.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\t end\n\t\t\t\t\t\t\t\t\t  else isnull(FA.vlr_remoto, 0)\n\t\t\t\t\t\t\t  \t\t\t\t + isnull(baixa_prov_curto_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t + isnull(baixa_prov_longo_operacional, 0)\n\t\t\t\t\t\t\t\t\t\t\t + isnull(baixa_prov_curto_financeira, 0)\n\t\t\t\t\t\t\t\t\t\t\t + isnull(baixa_prov_longo_financeira, 0)\n\t\t\t\t\t\t\t  \t\t\tend\n\t\t\t\t\t\t\t  )\n from silver.fotografia_item FI\ninner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\ton DC.num_processo = FI.num_processo\n  and DC.cod_empresa = FI.cod_empresa\n  and DC.cod_ver_fotografia = FI.cod_ver_fotografia\n left join silver.tmp_fti_anterior__@{pipeline().parameters.id} FA\n\ton FA.num_processo = FI.num_processo\n  and FA.cod_empresa = FI.cod_empresa\n\nupdate FI\n\tset vlr_pedido = isnull(FI.vlr_curto_prazo, 0)\n\t\t\t\t\t\t+ isnull(FI.vlr_curto_prazo_fin, 0)\n\t\t\t\t\t\t+ isnull(FI.vlr_longo_prazo, 0)\n\t\t\t\t\t\t+ isnull(FI.vlr_longo_prazo_fin, 0)\n\t\t\t\t\t\t+ isnull(FI.vlr_possivel, 0)\n\t\t\t\t\t\t+ isnull(FI.vlr_remoto, 0)\n\t  , vlr_valor_levantado_vivo = isnull((select sum(vlr_pagamento) \n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  from silver.valor_data_processo VDP\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t where VDP.cod_empresa = fi.cod_empresa\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t   and VDP.num_processo = fi.num_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tand VDP.cod_tipo_pagamento in (105, 106)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tand VDP.cod_valor_data_processo_pai in (select cod_valor_data_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tfrom silver.valor_data_processo PAI\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  where PAI.cod_tipo_pagamento in (100, 102)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t and PAI.num_processo = VDP.num_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t and PAI.cod_empresa = VDP.cod_empresa\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tand VDP.cod_prestacao_contas_form in (select cod_prestacao_contas_form\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t from silver.prestacao_contas_form\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\twhere cod_prestacao_contas_status in (2, 3, 6)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tand VDP.sts_inativo is null), 0)\n\t  , vlr_penhora_online = isnull((select sum(saldo)\n\t\t\t\t\t\t\t\t\t\t\t\t  from silver.valor_data_processo VDP\n\t\t\t\t\t\t\t\t\t\t\t\t where VDP.cod_empresa = FI.cod_empresa\n\t\t\t\t\t\t\t\t\t\t\t\t\tand VDP.num_processo = FI.num_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\tand ((VDP.cod_tipo_pagamento = 107\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t   and VDP.cod_especific_tipo_pagamento = 1)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  or (VDP.cod_tipo_pagamento = 101\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tand VDP.cod_especific_tipo_pagamento = 7)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\tand (VDP.sts_aproveitamento is null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  or (VDP.sts_aproveitamento <> 'C'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tand VDP.sts_aproveitamento <> 'D')\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t )\n\t\t\t\t\t\t\t\t\t\t\t\t\tand VDP.sts_inativo is null\n\t\t\t\t\t\t\t\t\t\t\t  ), 0)\n\t  , vlr_pgt_on_going_op = vlr_pgt_on_going_op_cp + vlr_pgt_on_going_op_lp\n\t  , vlr_pgt_on_going_fi = vlr_pgt_on_going_fi_cp + vlr_pgt_on_going_fi_lp\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n\nupdate FI\n\tset vlr_valor_economizado = vlr_pedido - (select isnull(sum(vlr_pagamento), 0)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  from silver.valor_data_processo VP\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t where VP.num_processo = DC.num_processo\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t   and VP.cod_empresa = DC.cod_empresa\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tand VP.cod_tipo_pagamento = 102\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tand VP.sts_inativo is null\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t  )\n  from silver.fotografia_item FI\n inner join silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} DC\n\t on DC.num_processo = FI.num_processo\n\tand DC.cod_empresa = FI.cod_empresa\n\tand DC.cod_ver_fotografia = FI.cod_ver_fotografia\n where FI.situacao in (0, 2)",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "fotografia_item",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "dados_cadastrais_calculados",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "SELECT\ndc.num_processo\n, dcc.cod_empresa\n, dc.cod_fotografia\n,NULL AS vlr_longo_prazo\n,NULL AS vlr_curto_prazo\n,NULL AS vlr_possivel\n,NULL AS vlr_remoto\n,NULL AS vlr_pedido\n,NULL AS vlr_longo_prazo_anterior\n,NULL AS vlr_curto_prazo_anterior\n,NULL AS vlr_possivel_anterior\n,NULL AS vlr_remoto_anterior\n,NULL AS vlr_pedido_anterior\n,NULL AS vlr_deposito_judicial\n,NULL AS vlr_recurso_ordinario\n,NULL AS vlr_recurs_oderevista\n,NULL AS vlr_penhora_online\n,NULL AS vlr_bens_penhorados\n,NULL AS vlr_demais_garantias\n, dc.situacao\n,NULL AS motivodo_arquivamento\n,NULL AS vlr_valor_pago_acordo\n,NULL AS vlr_valor_pago_condenacao\n,NULL AS vlr_valor_economizado\n,NULL AS vlr_custas\n,NULL AS vlr_valor_levantado_vivo\n, dcc.cpf_cnpj AS [num_cpf_cnpj]\n,GETDATE() AS dtc_cadastro_processo\n,NULL AS cod_fotografia_modulo\n, dc.dtc_arquivamento\n, dc.dtc_fim\n, dc.cod_objeto_acao\n, dc.cod_esp_objeto_acao\n, dc.des_especific_tipo_ocorrencia AS motivo_arquivamento\n, dc.dtc_citacao\n, dc.sig_escritorio_contratado\n, dc.dtc_cadastro\n, dc.dtc_protocolo_aforamento\n, dc.cod_natureza\n, dc.cod_especificacao_natureza\n, dc.cod_detalhe_especific_natureza\n, dc.cod_tipo_acao\n, dc.sig_estado\n, dc.cod_comarca\n, dc.cod_juizo\n, dc.num_processo1_instancia\n, dc.cod_divisao_processo\n,NULL AS cod_tipo_ocorrencia_arquiva\n, dc.cod_fase_processual\n,NULL AS vlr_correcao_monetaria\n, dc.cod_tipo_contingencia\n, dc.cod_especif_tipo_contingencia\n,NULL AS sts_solvencia\n,NULL AS cod_tipo_provisao\n, dc.cod_pre_objeto_empresa\n, dc.pasta_benner\n,NULL AS cod_fotografia_divisao\n,NULL AS vlr_curto_prazo_fin\n,NULL AS vlr_longo_prazo_fin\n,NULL AS vlr_pagamento\n,NULL AS baixa_prov_curto_operacional\n,NULL AS baixa_prov_curto_financeira\n,NULL AS correcao_prov_curto\n,NULL AS juros_prov_curto\n,NULL AS prov_operacional_anterior\n,NULL AS prov_financeira_anterior\n,NULL AS prov_cp_operacional_anterior\n,NULL AS prov_cp_financeira_anterior\n,NULL AS prov_lp_operacional_anterior\n,NULL AS prov_lp_financeira_anterior\n,NULL AS provisao_curto_anterior\n,NULL AS provisao_longo_anterior\n,NULL AS baixa_prov_operacional\n,NULL AS baixa_prov_financeira\n,NULL AS correcao_prov\n,NULL AS juros_prov\n,NULL AS ajuste_operacional\n,NULL AS ajuste_financeiro\n,NULL AS ajuste_operacional_prov_cp\n,NULL AS ajuste_financeiro_prov_cp\n,NULL AS ajuste_operacional_prov_lp\n,NULL AS ajuste_financeiro_prov_lp\n,NULL AS baixa_prov_longo_operacional\n,NULL AS baixa_prov_longo_financeira\n,NULL AS correcao_prov_longo\n,NULL AS juros_prov_longo\n,NULL AS total_provavel_operacional\n,NULL AS total_provavel_financeiro\n,NULL AS cod_det_especific_tipo_acao\n, dc.cod_canal_habilitador\n, dc.dtc_distribuicao\n, dc.origem_processo\n,NULL AS sts_empresa_citada\n,NULL AS sts_origem_segregacao\n, dc.segmentacao_do_cliente\n,NULL AS vlr_pgt_pos_corte_tt_mes_an\n,NULL AS vlr_pgt_pos_corte_op_mes_an\n,NULL AS vlr_pgt_pos_corte_fi_mes_an\n,NULL AS vlr_dep_pos_corte_tt_mes_an\n,NULL AS vlr_dep_pos_corte_op_mes_an\n,NULL AS vlr_dep_pos_corte_fi_mes_an\n,NULL AS vlr_pgt_pos_corte_op_cp_mes_an\n,NULL AS vlr_pgt_pos_corte_op_lp_mes_an\n,NULL AS vlr_bai_pos_corte_op_cp_mes_an\n,NULL AS vlr_bai_pos_corte_op_lp_mes_an\n,NULL AS vlr_pgt_pos_corte_fi_cp_mes_an\n,NULL AS vlr_pgt_pos_corte_fi_lp_mes_an\n,NULL AS vlr_bai_pos_corte_fi_cp_mes_an\n,NULL AS vlr_bai_pos_corte_fi_lp_mes_an\n,NULL AS vlr_deposito_cp_op\n,NULL AS vlr_deposito_lp_op\n,NULL AS vlr_baixa_deposito_cp_op\n,NULL AS vlr_baixa_deposito_lp_op\n,NULL AS vlr_pgt_on_going_tt\n,NULL AS vlr_pgt_on_going_op\n,NULL AS vlr_pgt_on_going_fi\n,NULL AS vlr_dep_on_going_tt\n,NULL AS vlr_dep_on_going_op\n,NULL AS vlr_dep_on_going_fi\n,NULL AS vlr_pgt_on_going_op_cp\n,NULL AS vlr_pgt_on_going_op_lp\n,NULL AS vlr_bai_on_going_op_cp\n,NULL AS vlr_bai_on_going_op_lp\n,NULL AS vlr_pgt_on_going_fi_cp\n,NULL AS vlr_pgt_on_going_fi_lp\n,NULL AS vlr_bai_on_going_fi_cp\n,NULL AS vlr_bai_on_going_fi_lp\n,NULL AS vlr_bai_reav_op_cp\n,NULL AS vlr_bai_reav_op_lp\n,NULL AS vlr_bai_reav_fi_cp\n,NULL AS vlr_bai_reav_fi_lp\n,NULL AS situacao_processo\n, dc.log_dtc_citacao\n, dc.aliquota AS [aliquota_indice]\n, dc.val_taxa AS aliquota_juros\n, dc.COD_TIPO_INDICE_ATUALIZACAO AS [cod_tipo_indice]\n, dc.sig_municipio\n,GETDATE() AS updated_at\n,GETDATE() AS created_at\n, 'p3' AS updated_by\n, 'p3' AS created_by\n,NULL AS newpk\n,NULL AS pending_processing\n, dc.origem\n, dc.[status]\n,dcc.autor AS [polo_ativo]\n, dcc.reu AS [polo_passivo]\n, dcc.classificacao_solvencia\n, dcc.insolvente\n, dcc.tipo_autor\n, dcc.produto\n, dc.cod_modulo\n, dc.cod_det_especific_objeto_acao AS COD_DET_ESPECIFIC_OBJETO_ACAO\n, dc.sig_advogado_responsavel AS SIG_ADVOGADO\n, dc.referencia AS REFERENCIA\n, dcc.empresa AS EMPRESA_DETALHADA\n, dcc.operacao AS EMPRESA\n, dc.cod_ver_fotografia\n, NULL as valSaldoOperacionalCP\n, NULL as valSaldoOperacionalLP\n, NULL as valSaldoFinanceiroCP \n, NULL as valSaldoFinanceiroLP\n, NULL as cod_divisao_processo_ant\n, NULL as sts_processo\nFROM Silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id} AS dc\nJOIN Silver.tmp_fti_dados_cadastrais_calculados__@{pipeline().parameters.id} AS dcc\nON dc.num_processo = dcc.num_processo\nAND dc.cod_fotografia = dcc.cod_fotografia",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"writeBehavior": "Insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "num_processo",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "num_processo",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_empresa",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_empresa",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_fotografia",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_fotografia",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_longo_prazo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_longo_prazo",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_curto_prazo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_curto_prazo",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_possivel",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_possivel",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_remoto",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_remoto",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pedido",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pedido",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_longo_prazo_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_longo_prazo_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_curto_prazo_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_curto_prazo_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_possivel_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_possivel_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_remoto_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_remoto_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pedido_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pedido_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_deposito_judicial",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_deposito_judicial",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_recurso_ordinario",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_recurso_ordinario",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_recurs_oderevista",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_recurs_oderevista",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_penhora_online",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_penhora_online",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bens_penhorados",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bens_penhorados",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_demais_garantias",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_demais_garantias",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "situacao",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "situacao",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "motivodo_arquivamento",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "motivodo_arquivamento",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 10
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_valor_pago_acordo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_valor_pago_acordo",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_valor_pago_condenacao",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_valor_pago_condenacao",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_valor_economizado",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_valor_economizado",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_custas",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_custas",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_valor_levantado_vivo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_valor_levantado_vivo",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "num_cpf_cnpj",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "num_cpf_cnpj",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "dtc_cadastro_processo",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "dtc_cadastro_processo",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_fotografia_modulo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_fotografia_modulo",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "dtc_arquivamento",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "dtc_arquivamento",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "dtc_fim",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "dtc_fim",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_objeto_acao",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_objeto_acao",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_esp_objeto_acao",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_esp_objeto_acao",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "motivo_arquivamento",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "motivo_arquivamento",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "dtc_citacao",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "dtc_citacao",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "sig_escritorio_contratado",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "sig_escritorio_contratado",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "dtc_cadastro",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "dtc_cadastro",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "dtc_protocolo_aforamento",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "dtc_protocolo_aforamento",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_natureza",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_natureza",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_especificacao_natureza",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_especificacao_natureza",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_detalhe_especific_natureza",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_detalhe_especific_natureza",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_tipo_acao",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_tipo_acao",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "sig_estado",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "sig_estado",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_comarca",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_comarca",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_juizo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_juizo",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "num_processo1_instancia",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "num_processo1_instancia",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_divisao_processo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_divisao_processo",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_tipo_ocorrencia_arquiva",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_tipo_ocorrencia_arquiva",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_fase_processual",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_fase_processual",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_correcao_monetaria",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_correcao_monetaria",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "cod_tipo_contingencia",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_tipo_contingencia",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_especif_tipo_contingencia",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_especif_tipo_contingencia",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "sts_solvencia",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "sts_solvencia",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_tipo_provisao",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_tipo_provisao",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_pre_objeto_empresa",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_pre_objeto_empresa",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "pasta_benner",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "pasta_benner",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_fotografia_divisao",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_fotografia_divisao",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_curto_prazo_fin",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_curto_prazo_fin",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_longo_prazo_fin",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_longo_prazo_fin",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pagamento",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pagamento",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "baixa_prov_curto_operacional",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "baixa_prov_curto_operacional",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "baixa_prov_curto_financeira",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "baixa_prov_curto_financeira",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "correcao_prov_curto",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "correcao_prov_curto",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "juros_prov_curto",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "juros_prov_curto",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "prov_operacional_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "prov_operacional_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "prov_financeira_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "prov_financeira_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "prov_cp_operacional_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "prov_cp_operacional_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "prov_cp_financeira_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "prov_cp_financeira_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "prov_lp_operacional_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "prov_lp_operacional_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "prov_lp_financeira_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "prov_lp_financeira_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "provisao_curto_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "provisao_curto_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "provisao_longo_anterior",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "provisao_longo_anterior",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "baixa_prov_operacional",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "baixa_prov_operacional",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "baixa_prov_financeira",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "baixa_prov_financeira",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "correcao_prov",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "correcao_prov",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "juros_prov",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "juros_prov",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "ajuste_operacional",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ajuste_operacional",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "ajuste_financeiro",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ajuste_financeiro",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "ajuste_operacional_prov_cp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ajuste_operacional_prov_cp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "ajuste_financeiro_prov_cp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ajuste_financeiro_prov_cp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "ajuste_operacional_prov_lp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ajuste_operacional_prov_lp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "ajuste_financeiro_prov_lp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ajuste_financeiro_prov_lp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "baixa_prov_longo_operacional",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "baixa_prov_longo_operacional",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "baixa_prov_longo_financeira",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "baixa_prov_longo_financeira",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "correcao_prov_longo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "correcao_prov_longo",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "juros_prov_longo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "juros_prov_longo",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "total_provavel_operacional",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "total_provavel_operacional",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "total_provavel_financeiro",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "total_provavel_financeiro",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "cod_det_especific_tipo_acao",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_det_especific_tipo_acao",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_canal_habilitador",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_canal_habilitador",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "dtc_distribuicao",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "dtc_distribuicao",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "origem_processo",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "origem_processo",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "sts_empresa_citada",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "sts_empresa_citada",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "sts_origem_segregacao",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "sts_origem_segregacao",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "segmentacao_do_cliente",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "segmentacao_do_cliente",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_pos_corte_tt_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_pos_corte_tt_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_pos_corte_op_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_pos_corte_op_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_pos_corte_fi_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_pos_corte_fi_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_dep_pos_corte_tt_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_dep_pos_corte_tt_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_dep_pos_corte_op_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_dep_pos_corte_op_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_dep_pos_corte_fi_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_dep_pos_corte_fi_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_pos_corte_op_cp_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_pos_corte_op_cp_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_pos_corte_op_lp_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_pos_corte_op_lp_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_pos_corte_op_cp_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_pos_corte_op_cp_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_pos_corte_op_lp_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_pos_corte_op_lp_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_pos_corte_fi_cp_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_pos_corte_fi_cp_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_pos_corte_fi_lp_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_pos_corte_fi_lp_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_pos_corte_fi_cp_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_pos_corte_fi_cp_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_pos_corte_fi_lp_mes_an",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_pos_corte_fi_lp_mes_an",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_deposito_cp_op",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_deposito_cp_op",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_deposito_lp_op",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_deposito_lp_op",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_baixa_deposito_cp_op",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_baixa_deposito_cp_op",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_baixa_deposito_lp_op",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_baixa_deposito_lp_op",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_on_going_tt",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_on_going_tt",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_on_going_op",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_on_going_op",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_on_going_fi",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_on_going_fi",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_dep_on_going_tt",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_dep_on_going_tt",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_dep_on_going_op",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_dep_on_going_op",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_dep_on_going_fi",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_dep_on_going_fi",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_on_going_op_cp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_on_going_op_cp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_on_going_op_lp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_on_going_op_lp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_on_going_op_cp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_on_going_op_cp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_on_going_op_lp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_on_going_op_lp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_on_going_fi_cp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_on_going_fi_cp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_pgt_on_going_fi_lp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_pgt_on_going_fi_lp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_on_going_fi_cp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_on_going_fi_cp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_on_going_fi_lp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_on_going_fi_lp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_reav_op_cp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_reav_op_cp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_reav_op_lp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_reav_op_lp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_reav_fi_cp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_reav_fi_cp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "vlr_bai_reav_fi_lp",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "vlr_bai_reav_fi_lp",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "situacao_processo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "situacao_processo",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "log_dtc_citacao",
+									"type": "DateTime",
+									"physicalType": "date"
+								},
+								"sink": {
+									"name": "log_dtc_citacao",
+									"type": "DateTime",
+									"physicalType": "date"
+								}
+							},
+							{
+								"source": {
+									"name": "aliquota_indice",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 4,
+									"precision": 10
+								},
+								"sink": {
+									"name": "aliquota_indice",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 4,
+									"precision": 10
+								}
+							},
+							{
+								"source": {
+									"name": "aliquota_juros",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 4,
+									"precision": 10
+								},
+								"sink": {
+									"name": "aliquota_juros",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 10
+								}
+							},
+							{
+								"source": {
+									"name": "cod_tipo_indice",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_tipo_indice",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "sig_municipio",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "sig_municipio",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "updated_at",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "updated_at",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								}
+							},
+							{
+								"source": {
+									"name": "created_at",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "created_at",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								}
+							},
+							{
+								"source": {
+									"name": "updated_by",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "updated_by",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "created_by",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "created_by",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "newpk",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "newpk",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "pending_processing",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "pending_processing",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "origem",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "origem",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "status",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "status",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "polo_ativo",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "polo_ativo",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "polo_passivo",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "polo_passivo",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "classificacao_solvencia",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "classificacao_solvencia",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "insolvente",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "insolvente",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "tipo_autor",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "tipo_autor",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "produto",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "produto",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_modulo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_modulo",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "COD_DET_ESPECIFIC_OBJETO_ACAO",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "COD_DET_ESPECIFIC_OBJETO_ACAO",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "SIG_ADVOGADO",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "SIG_ADVOGADO",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "REFERENCIA",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "REFERENCIA",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "EMPRESA_DETALHADA",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "EMPRESA_DETALHADA",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "EMPRESA",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "EMPRESA",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "cod_ver_fotografia",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_ver_fotografia",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "valSaldoOperacionalCP",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "valSaldoOperacionalCP",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "valSaldoOperacionalLP",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "valSaldoOperacionalLP",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "valSaldoFinanceiroCP",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "valSaldoFinanceiroCP",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "valSaldoFinanceiroLP",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "valSaldoFinanceiroLP",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 2,
+									"precision": 20
+								}
+							},
+							{
+								"source": {
+									"name": "cod_divisao_processo_ant",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "cod_divisao_processo_ant",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "sts_processo",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "sts_processo",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Jarvis_Pool_Dedicado16152",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": "tmp_fti_dados_cadastrais"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Jarvis_Pool_Dedicado16152",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": "fotografia_item"
+						}
+					}
+				]
+			},
+			{
+				"name": "cosmo_photographs_item",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "dados_cadastrais",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "select concat(REPLACE(REPLACE(num_processo, '-', 'A'),'/','B'),'C', cod_fotografia) as id\n, num_processo\n, cod_fotografia \nfrom Silver.tmp_fti_dados_cadastrais__@{pipeline().parameters.id}\n",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "CosmosDbSqlApiSink",
+						"writeBehavior": "upsert",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Jarvis_Pool_Dedicado16182",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": "fotografia_item"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CosmosDB_app1242",
+						"type": "DatasetReference",
+						"parameters": {
+							"cotainer_name": "photographs_item"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"photographyId": {
+				"type": "string",
+				"defaultValue": "45183"
+			},
+			"sig_escritorio_contratado": {
+				"type": "string",
+				"defaultValue": "UVA"
+			},
+			"cod_divisao_processo": {
+				"type": "string",
+				"defaultValue": "3"
+			},
+			"cod_calendario_monetario": {
+				"type": "string",
+				"defaultValue": "153"
+			},
+			"dtc_data_fotografia": {
+				"type": "string",
+				"defaultValue": "2022-08-01 00:00:00"
+			},
+			"nom_usuario_responsavel": {
+				"type": "string",
+				"defaultValue": "BA86365"
+			},
+			"nom_usuario_fotografo": {
+				"type": "string",
+				"defaultValue": "BA86365"
+			},
+			"id": {
+				"type": "string",
+				"defaultValue": "TESTE_CALCULOS4"
+			},
+			"id_raw": {
+				"type": "string",
+				"defaultValue": "TESTE_CALCULOS4"
+			}
+		},
+		"variables": {
+			"teste": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "P3/OLD"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-31T20:28:53Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

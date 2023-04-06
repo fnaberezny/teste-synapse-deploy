@@ -1,0 +1,21 @@
+{
+	"name": "SelfHosted Lakes",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"parameters": {
+			"Database": {
+				"type": "string",
+				"defaultValue": "silver"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=syn-tlf-jarvis-prod-ondemand.sql.azuresynapse.net;Initial Catalog=@{linkedService().Database}"
+		},
+		"connectVia": {
+			"referenceName": "SelfHost",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

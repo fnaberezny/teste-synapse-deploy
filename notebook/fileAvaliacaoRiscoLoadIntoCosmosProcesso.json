@@ -1,0 +1,227 @@
+{
+	"name": "fileAvaliacaoRiscoLoadIntoCosmosProcesso",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "812393a0-e678-4ad9-898b-67b82a4c889d"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"filename = \"carga_inicial_avaliacao_risco.parquet\""
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql.functions import col\r\n",
+					"\r\n",
+					"env = mssparkutils.env.getWorkspaceName()\r\n",
+					"\r\n",
+					"if(env == 'syn-tlf-jarvis-prod'):\r\n",
+					"    sqlWorkspaceName = 'dlstlfjarvisprod'\r\n",
+					"elif(env == 'syn-tlf-jarvis-test'):\r\n",
+					"    sqlWorkspaceName = 'dlstlfjarvistest'\r\n",
+					"else:\r\n",
+					"    sqlWorkspaceName = 'dlstlfjarvisdev'\r\n",
+					"\r\n",
+					"path = \"abfss://datalake@\" + sqlWorkspaceName + \".dfs.core.windows.net/load_files/avaliacao_risco/\" + filename\r\n",
+					"\r\n",
+					"dfAvaliacaoRisco = spark.read.parquet(path).select(\r\n",
+					"    col(\"SEQUENCIAL\"),\r\n",
+					"    col(\"AVALICAO_RISCO_PROCESSO\")\r\n",
+					"    )\r\n",
+					"\r\n",
+					"dfAvaliacaoRisco.createOrReplaceTempView('vw_avaliacao_risco')\r\n",
+					""
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"create or replace temp view avaliacao_risco as\r\n",
+					"select cast(regexp_replace(p.newpk, \"^[0]|[/_]\", \"-\") as string) as id\r\n",
+					"     , ar.AVALICAO_RISCO_PROCESSO as avaliacao_risco\r\n",
+					"  from silver.processo p -- delta lake: silver\r\n",
+					"  left join silver.especif_tipo_contingencia etc\r\n",
+					"    on etc.cod_especif_tipo_contingencia = p.cod_especif_tipo_contingencia\r\n",
+					" inner join vw_avaliacao_risco ar\r\n",
+					"    on ar.SEQUENCIAL = p.num_processo \r\n",
+					" where etc.nome in\r\n",
+					"     ( 'AC - Inestimável'\r\n",
+					"     , 'AC - Não há valor envolvido'\r\n",
+					"     , 'PC - Inestimável'\r\n",
+					"     , 'PC - Não há valor envolvido'\r\n",
+					"     )"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"select count(*) from avaliacao_risco"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_final = spark.sql(\"\"\"select *, True as pending_update\r\n",
+					"                          from avaliacao_risco\r\n",
+					"                     \"\"\"\r\n",
+					"                    )\r\n",
+					"df_final.show()"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"(\r\n",
+					"    df_final.write\r\n",
+					"    .format(\"cosmos.oltp\")\r\n",
+					"    .option(\"spark.synapse.linkedService\", 'CosmosDb')\r\n",
+					"    .option(\"spark.cosmos.container\", 'processo')\r\n",
+					"    .option(\"spark.cosmos.write.strategy\", \"ItemPatch\")\r\n",
+					"    .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"    .option(\"spark.cosmos.write.patch.columnConfigs\", \"[col(avaliacao_risco).op(set)]\")\r\n",
+					"    .mode(\"append\")\r\n",
+					"    .save()\r\n",
+					")"
+				],
+				"execution_count": 10
+			}
+		]
+	}
+}

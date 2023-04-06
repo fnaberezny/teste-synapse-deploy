@@ -1,0 +1,3505 @@
+{
+	"name": "carga_cosmos_tipo_pedido",
+	"properties": {
+		"folder": {
+			"name": "cargas_cosmos/Carga manual"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "577ef6e8-a1f2-4ec6-a086-e4ba0e9dc164"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1",
+				"state": {
+					"5533fbad-5dde-4aa6-9bbb-4cf2ad5b9fcc": {
+						"type": "Synapse.DataFrame",
+						"sync_state": {
+							"table": {
+								"rows": [
+									{
+										"0": "423",
+										"1": "COMPLEMENTAÇÃO DE APOSENTADORIA"
+									},
+									{
+										"0": "289",
+										"1": "REAJUSTE DA CATEGORIA"
+									},
+									{
+										"0": "547",
+										"1": "HORAS IN ITINERE/REFLEXOS"
+									},
+									{
+										"0": "489",
+										"1": "EXIBIÇÃO DE DOCUMENTOS"
+									},
+									{
+										"0": "830",
+										"1": "ENQUADRAMENTO SINDICAL"
+									},
+									{
+										"0": "634",
+										"1": "PRONTIDÃO"
+									},
+									{
+										"0": "44",
+										"1": "ANISTIA"
+									},
+									{
+										"0": "701",
+										"1": "DIFERENÇA DE JUROS"
+									},
+									{
+										"0": "702",
+										"1": "DIFERENÇA DE JUROS"
+									},
+									{
+										"0": "487",
+										"1": "ESTABILIDADE/INDENIZAÇÃO"
+									},
+									{
+										"0": "284",
+										"1": "PRODUTIVIDADE"
+									},
+									{
+										"0": "723",
+										"1": "DIVISOR 180 HORAS E REFLEXOS"
+									},
+									{
+										"0": "285",
+										"1": "PROMOÇÕES"
+									},
+									{
+										"0": "649",
+										"1": "RESTITUIÇÃO - PREVIDÊNCIA PRIVADA"
+									},
+									{
+										"0": "266",
+										"1": "PARTICIPACAO NOS LUCROS"
+									},
+									{
+										"0": "389",
+										"1": "AJUDA DE CUSTO INSTALAÇÃO"
+									},
+									{
+										"0": "246",
+										"1": "MULTA DESCUMPRIMENTO TAC"
+									},
+									{
+										"0": "187",
+										"1": "HONORÁRIOS ASSISTENCIAIS"
+									},
+									{
+										"0": "350",
+										"1": "13o SALARIO"
+									},
+									{
+										"0": "600",
+										"1": "NULIDADE MIGRAÇÃO VALE MAIS"
+									},
+									{
+										"0": "115",
+										"1": "DIFERENCA SALARIAL - PAGAMENTO POR FORA"
+									},
+									{
+										"0": "598",
+										"1": "MULTA RESCISÓRIA (ART.477)"
+									},
+									{
+										"0": "356",
+										"1": "ABONO SALARIAL"
+									},
+									{
+										"0": "58",
+										"1": "AUXILIO - MATERNIDADE"
+									},
+									{
+										"0": "636",
+										"1": "REAJUSTE DA CATEGORIA"
+									},
+									{
+										"0": "380",
+										"1": "ADICIONAL DE TURNO"
+									},
+									{
+										"0": "139",
+										"1": "ESTABILIDADE SINDICAL"
+									},
+									{
+										"0": "629",
+										"1": "PRÊMIO POR DESEMPENHO INDIVIDUAL"
+									},
+									{
+										"0": "169",
+										"1": "FUNÇÃO GRATIFICADA"
+									},
+									{
+										"0": "4",
+										"1": "13º SALÁRIO PROPORCIONAL"
+									},
+									{
+										"0": "337",
+										"1": "VALE - REFEICAO "
+									},
+									{
+										"0": "656",
+										"1": "SALÁRIO FAMÍLIA"
+									},
+									{
+										"0": "142",
+										"1": "EXIBIÇÃO DE DOCUMENTOS"
+									},
+									{
+										"0": "771",
+										"1": "INTEGRAÇÃO DE VERBAS EM HORAS EXTRAS E REFLEXOS"
+									},
+									{
+										"0": "497",
+										"1": "FÉRIAS INDENIZADAS"
+									},
+									{
+										"0": "690",
+										"1": "VERBA DE REPRESENTAÇÃO - DIRETOR"
+									},
+									{
+										"0": "911",
+										"1": "DESCUMPRIMENTO DA MP COVID"
+									},
+									{
+										"0": "617",
+										"1": "PDV"
+									},
+									{
+										"0": "12",
+										"1": "AÇÃO DE COBRANÇA CONTRIBUIÇÃO SINDICAL"
+									},
+									{
+										"0": "708",
+										"1": "JUROS"
+									},
+									{
+										"0": "153",
+										"1": "FÉRIAS VENCIDAS INDENIZADAS"
+									},
+									{
+										"0": "505",
+										"1": "FGTS - ESTIMATIVA"
+									},
+									{
+										"0": "783",
+										"1": "FGTS"
+									},
+									{
+										"0": "72",
+										"1": "COMISSÃO - DIFERENÇAS"
+									},
+									{
+										"0": "488",
+										"1": "ESTABILIDADE/REINTEGRAÇÃO"
+									},
+									{
+										"0": "150",
+										"1": "FÉRIAS INDENIZADAS"
+									},
+									{
+										"0": "296",
+										"1": "REINTEGRACAO "
+									},
+									{
+										"0": "3",
+										"1": "13o SALARIO"
+									},
+									{
+										"0": "85",
+										"1": "CONTROLE - CARTÃO DE PONTO"
+									},
+									{
+										"0": "467",
+										"1": "DIFERENÇA SALARIAL - SALÁRIO IN NATURA"
+									},
+									{
+										"0": "539",
+										"1": "HORA EXTRA/ JORNADA - ADVOGADO"
+									},
+									{
+										"0": "557",
+										"1": "INDENIZAÇÃO POR ASSÉDIO MORAL"
+									},
+									{
+										"0": "271",
+										"1": "PENSÃO ALIMENTÍCIA"
+									},
+									{
+										"0": "288",
+										"1": "QUITAÇÃO DÉBITO - CONTA SALÁRIO"
+									},
+									{
+										"0": "280",
+										"1": "PLANO DE SAUDE"
+									},
+									{
+										"0": "515",
+										"1": "FRANQUIA"
+									},
+									{
+										"0": "422",
+										"1": "COMPENSAÇÃO PAGAMENTO"
+									},
+									{
+										"0": "359",
+										"1": "AÇÃO DE COBRANÇA CONTRIBUIÇÃO SINDICAL"
+									},
+									{
+										"0": "735",
+										"1": "CORREÇÃO DE CURVA SALARIAL"
+									},
+									{
+										"0": "233",
+										"1": "MEMBRO CIPA - ART.522 CLT"
+									},
+									{
+										"0": "307",
+										"1": "SALÁRIO - FUNÇÃO DIVERSA"
+									},
+									{
+										"0": "668",
+										"1": "SEGURO DE VIDA"
+									},
+									{
+										"0": "345",
+										"1": "VERBAS RESCISÓRIAS - DIFERENÇA"
+									},
+									{
+										"0": "293",
+										"1": "REEMBOLSO EDUCACIONAL"
+									},
+									{
+										"0": "316",
+										"1": "SALÁRIO-FAMÍLIA"
+									},
+									{
+										"0": "559",
+										"1": "INDENIZACAO POR DANOS MORAIS"
+									},
+									{
+										"0": "457",
+										"1": "DIFERENCA SALARIAL "
+									},
+									{
+										"0": "767",
+										"1": "DEIXAR DE CUMPRIR A NR 8"
+									},
+									{
+										"0": "499",
+										"1": "FÉRIAS PROPORCIONAIS"
+									},
+									{
+										"0": "460",
+										"1": "DIFERENÇA SALARIAL - GRATIF/ACÚMULO"
+									},
+									{
+										"0": "409",
+										"1": "AVISO PRÉVIO INDENIZADO"
+									},
+									{
+										"0": "395",
+										"1": "APURAÇÃO FALTA GRAVE"
+									},
+									{
+										"0": "105",
+										"1": "DIÁRIAS"
+									},
+									{
+										"0": "450",
+										"1": "DEVOLUÇÃO DE VALORES"
+									},
+									{
+										"0": "592",
+										"1": "MULTA DESCUMPRIMENTO ACT"
+									},
+									{
+										"0": "810",
+										"1": "OBRIGAÇÃO DE FAZER"
+									},
+									{
+										"0": "79",
+										"1": "CONTRATAÇÃO APRENDIZ"
+									},
+									{
+										"0": "689",
+										"1": "VERBA DE REPRESENTAÇÃO"
+									},
+									{
+										"0": "168",
+										"1": "FRANQUIA"
+									},
+									{
+										"0": "428",
+										"1": "CONTRIBUIÇÃO DA SISTEL"
+									},
+									{
+										"0": "27",
+										"1": "ADICIONAL DE PRODUTIVIDADE"
+									},
+									{
+										"0": "816",
+										"1": "VALE - TRANSPORTE"
+									},
+									{
+										"0": "678",
+										"1": "TERCEIRIZACAO DE SERVICOS"
+									},
+									{
+										"0": "177",
+										"1": "GRATIFICAÇÃO PESSOAL"
+									},
+									{
+										"0": "255",
+										"1": "OBRIGACAO DE FAZER"
+									},
+									{
+										"0": "536",
+										"1": "HONORÁRIOS PERICIAIS"
+									},
+									{
+										"0": "772",
+										"1": "INTERVALO TELEFONISTA/DIGITADOR"
+									},
+									{
+										"0": "472",
+										"1": "DISSÍDIO COLETIVO - REVISÃO"
+									},
+									{
+										"0": "502",
+										"1": "FGTS - 1/3 CONSTITUCIONAL"
+									},
+									{
+										"0": "650",
+										"1": "RESTITUIÇÃO DOS DESCONTOS DO PASA"
+									},
+									{
+										"0": "677",
+										"1": "TERCEIRIZAÇÃO ATIVIDADE-FIM"
+									},
+									{
+										"0": "235",
+										"1": "MPT - ASSÉDIO MORAL"
+									},
+									{
+										"0": "342",
+										"1": "VERBA DE REPRESENTAÇÃO"
+									},
+									{
+										"0": "43",
+										"1": "ALUGUEL DE VEICULO/MOTO"
+									},
+									{
+										"0": "526",
+										"1": "GRATIFICAÇÃO POR SUBSTITUIÇÃO"
+									},
+									{
+										"0": "143",
+										"1": "EXIBIÇÃO DE PCS"
+									},
+									{
+										"0": "806",
+										"1": "AUSÊNCIA DE REGISTRO EM LIVRO, FICHA OU SISTEMA ELETRONICO"
+									},
+									{
+										"0": "512",
+										"1": "FGTS/JORNADA ADVOGADO"
+									},
+									{
+										"0": "900",
+										"1": "COVID19"
+									},
+									{
+										"0": "579",
+										"1": "LICENÇA PRÊMIO"
+									},
+									{
+										"0": "338",
+										"1": "VALE - TRANSPORTE "
+									},
+									{
+										"0": "242",
+										"1": "MULTA ADMINISTRATIVA"
+									},
+									{
+										"0": "514",
+										"1": "FORNECIMENTO RESP"
+									},
+									{
+										"0": "717",
+										"1": "PAGAMENTO INCENTIVO DESLIGAMENTO"
+									},
+									{
+										"0": "76",
+										"1": "COMPLEMENTAÇÃO DE APOSENTADORIA"
+									},
+									{
+										"0": "391",
+										"1": "ANISTIA"
+									},
+									{
+										"0": "709",
+										"1": "LITIGANCIA DE MÁ FÉ"
+									},
+									{
+										"0": "569",
+										"1": "INSTITUIR PROGRAMAS MEDICINA DO TRABALHO"
+									},
+									{
+										"0": "707",
+										"1": "JUROS"
+									},
+									{
+										"0": "606",
+										"1": "PAGAMENTO COMBUSTÍVEL"
+									},
+									{
+										"0": "81",
+										"1": "CONTRIBUIÇÃO DA SISTEL"
+									},
+									{
+										"0": "22",
+										"1": "ADICIONAL DE INSALUBRIDADE"
+									},
+									{
+										"0": "116",
+										"1": "DIFERENÇA SALARIAL - PLANO BRESSER"
+									},
+									{
+										"0": "507",
+										"1": "FGTS - LIBERAÇÃO GUIA"
+									},
+									{
+										"0": "763",
+										"1": "FERIADOS LABORADOS"
+									},
+									{
+										"0": "665",
+										"1": "SALÁRIO-FAMÍLIA INSS"
+									},
+									{
+										"0": "913",
+										"1": "MULTA"
+									},
+									{
+										"0": "805",
+										"1": "NÃO PAGAMENTO DO SALÁRIO ATÉ 5º DAI ÚTIL DO MÊS (ARTIGO 459, § 1º)"
+									},
+									{
+										"0": "62",
+										"1": "AVISO PRÉVIO INDENIZADO"
+									},
+									{
+										"0": "553",
+										"1": "INDENIZACAO ESTABILIDADE GESTANTE "
+									},
+									{
+										"0": "755",
+										"1": "FINANCIAMENTO COLÔNIA DE FÉRIAS"
+									},
+									{
+										"0": "382",
+										"1": "ADICIONAL POR DIRIGIR"
+									},
+									{
+										"0": "825",
+										"1": "HORAS EXTRAS"
+									},
+									{
+										"0": "336",
+										"1": "UNICIDADE CONTRATUAL"
+									},
+									{
+										"0": "910",
+										"1": "DESCUMPRIMENTO DA MP COVID"
+									},
+									{
+										"0": "549",
+										"1": "INDEN. POR MORTE EM ACIDENTE DE TRABALHO"
+									},
+									{
+										"0": "412",
+										"1": "BENEFÍCIOS"
+									},
+									{
+										"0": "172",
+										"1": "GRATIFICAÇÃO DE FÉRIAS"
+									},
+									{
+										"0": "666",
+										"1": "SALDO DE SALARIO"
+									},
+									{
+										"0": "691",
+										"1": "VERBAS RESCISORIAS"
+									},
+									{
+										"0": "171",
+										"1": "GRATIFICAÇÃO DE APOSENTADORIA"
+									},
+									{
+										"0": "439",
+										"1": "DÉCIMO TERCEIRO SALÁRIO"
+									},
+									{
+										"0": "468",
+										"1": "DIFERENÇA SALARIAL - SALDO DE SALÁRIO"
+									},
+									{
+										"0": "694",
+										"1": "VINCULO EMPREGATICIO"
+									},
+									{
+										"0": "418",
+										"1": "COMISSAO"
+									},
+									{
+										"0": "572",
+										"1": "INTERVALO INTER-JORNADA"
+									},
+									{
+										"0": "161",
+										"1": "FGTS - MULTA 40%"
+									},
+									{
+										"0": "96",
+										"1": "DESPESAS DE VIAGEM"
+									},
+									{
+										"0": "421",
+										"1": "COMISSÕES SOBRE VENDAS"
+									},
+									{
+										"0": "365",
+										"1": "ADICIONAL DE ASSIDUIDADE"
+									},
+									{
+										"0": "807",
+										"1": "REINTEGRAÇÃO"
+									},
+									{
+										"0": "102",
+										"1": "DEVOLUCAO DE DESCONTOS INDEVIDOS"
+									},
+									{
+										"0": "765",
+										"1": "MULTA DO ARTIGO 477 DA CLT"
+									},
+									{
+										"0": "302",
+										"1": "RESTITUIÇÃO - PREVIDÊNCIA PRIVADA"
+									},
+									{
+										"0": "119",
+										"1": "DIFERENÇA SALARIAL - REFLEXOS"
+									},
+									{
+										"0": "571",
+										"1": "INTERVALO ALIMENTAÇÃO"
+									},
+									{
+										"0": "148",
+										"1": "FERIAS + 1/3 CONSTITUICAO"
+									},
+									{
+										"0": "335",
+										"1": "TRCT - ENTREGA"
+									},
+									{
+										"0": "427",
+										"1": "CONTRATAÇÃO DEFICIENTES FÍSICOS"
+									},
+									{
+										"0": "54",
+										"1": "AUXÍLIO - ACIDENTE"
+									},
+									{
+										"0": "16",
+										"1": "ACIDENTE DE TRABALHO - MORTE"
+									},
+									{
+										"0": "916",
+										"1": "VINCULO EMPREGATICIO COM A TERCEIRA"
+									},
+									{
+										"0": "402",
+										"1": "AUXILIO - CRECHE"
+									},
+									{
+										"0": "207",
+										"1": "INDENIZAÇÃO P/ INCAPACIDADE LABORAL"
+									},
+									{
+										"0": "815",
+										"1": "VERBAS RESCISÓRIAS"
+									},
+									{
+										"0": "631",
+										"1": "PRODUTIVIDADE"
+									},
+									{
+										"0": "262",
+										"1": "PAGAMENTO DE ABONO EXONERAÇÃO"
+									},
+									{
+										"0": "503",
+										"1": "FGTS - CONTRIBUIÇÃO PREVIDENCIÁRIA"
+									},
+									{
+										"0": "575",
+										"1": "JORNADA ADVOGADO"
+									},
+									{
+										"0": "573",
+										"1": "INTERVALO INTRA-JORNADA"
+									},
+									{
+										"0": "661",
+										"1": "SALÁRIO VENCIDO E REFLEXOS"
+									},
+									{
+										"0": "174",
+										"1": "GRATIFICAÇÃO DE INVENÇÃO"
+									},
+									{
+										"0": "917",
+										"1": "VINCULO EMPREGATICIO COM A TERCEIRA"
+									},
+									{
+										"0": "371",
+										"1": "ADICIONAL DE PENOSIDADE"
+									},
+									{
+										"0": "354",
+										"1": "ABONO PECUNIÁRIO APOSENTADO (PDV)"
+									},
+									{
+										"0": "902",
+										"1": "DESCUMPRIMENTO DA MP 936/927"
+									},
+									{
+										"0": "828",
+										"1": "BAIXA PREMATURA / SUPRESSAO DOS VALORES DE COMISSAO"
+									},
+									{
+										"0": "419",
+										"1": "COMISSÃO - DIFERENÇAS"
+									},
+									{
+										"0": "200",
+										"1": "HORAS IN ITINERE/REFLEXOS"
+									},
+									{
+										"0": "311",
+										"1": "SALÁRIO IN NATURA/UTILIDADE"
+									},
+									{
+										"0": "69",
+										"1": "BONUS ANUAL"
+									},
+									{
+										"0": "746",
+										"1": "BONIFICAÇÃO E ADIANTEMENTO DE FÉRIAS"
+									},
+									{
+										"0": "453",
+										"1": "DIÁRIAS DE VIAGEM"
+									},
+									{
+										"0": "914",
+										"1": "VINCULO EMPREGATICIO COM A TBRA"
+									},
+									{
+										"0": "770",
+										"1": "NÃO PAGAMENTO DO SALÁRIO ATÉ 5º DAI ÚTIL DO MÊS (ARTIGO 459, § 1º)"
+									},
+									{
+										"0": "156",
+										"1": "FGTS - CONTRIBUIÇÃO PREVIDENCIÁRIA"
+									},
+									{
+										"0": "459",
+										"1": "DIFERENÇA SALARIAL - EQUIP/REENQUAD"
+									},
+									{
+										"0": "159",
+										"1": "FGTS - EXPURGOS"
+									},
+									{
+										"0": "637",
+										"1": "REAJUSTE SALARIAL"
+									},
+									{
+										"0": "191",
+										"1": "HORA EXTRA - REFLEXOS"
+									},
+									{
+										"0": "827",
+										"1": "ASSEDIO SEXUAL"
+									},
+									{
+										"0": "641",
+										"1": "REEMBOLSO ESCOLAR"
+									},
+									{
+										"0": "475",
+										"1": "DOMINGOS E FERIADOS"
+									},
+									{
+										"0": "823",
+										"1": "FGTS"
+									},
+									{
+										"0": "40",
+										"1": "AJUDA DE CUSTO"
+									},
+									{
+										"0": "627",
+										"1": "PLANO DE SAUDE"
+									},
+									{
+										"0": "814",
+										"1": "13° SALÁRIO INTEGRAL"
+									},
+									{
+										"0": "718",
+										"1": "GRATIFICAÇÃO FÉRIAS PROPORCIONAL / ABONO"
+									},
+									{
+										"0": "308",
+										"1": "SALARIO - SUBSTITUICAO"
+									},
+									{
+										"0": "643",
+										"1": "REINTEGRACAO "
+									},
+									{
+										"0": "77",
+										"1": "COMPLEMENTAÇÃO DE AUXÍLIO - DOENÇA"
+									},
+									{
+										"0": "588",
+										"1": "MULTA 1% SOBRE O VALOR DA CUASA"
+									},
+									{
+										"0": "73",
+										"1": "COMISSÕES"
+									},
+									{
+										"0": "178",
+										"1": "GRATIFICAÇÃO POR DIRIGIR"
+									},
+									{
+										"0": "194",
+										"1": "HORAS DE INTERVALO TRABALHADAS"
+									},
+									{
+										"0": "602",
+										"1": "OBRIGACAO DE FAZER"
+									},
+									{
+										"0": "341",
+										"1": "VERBA DE DESMOBILIZAÇÃO/MUDANÇA"
+									},
+									{
+										"0": "756",
+										"1": "REDUÇÃO DE JORNADA DE TRABALHO"
+									},
+									{
+										"0": "448",
+										"1": "DEVOLUÇÃO DE DESCONTO DE IR"
+									},
+									{
+										"0": "683",
+										"1": "UNICIDADE CONTRATUAL"
+									},
+									{
+										"0": "2",
+										"1": "13° SALÁRIO INTEGRAL"
+									},
+									{
+										"0": "123",
+										"1": "DISCUSÃO SOBRE O VALOR DADO À CAUSA"
+									},
+									{
+										"0": "704",
+										"1": "DIVISOR 200 HORAS"
+									},
+									{
+										"0": "186",
+										"1": "HONORARIOS ADVOCATICIOS "
+									},
+									{
+										"0": "379",
+										"1": "ADICIONAL DE TRIÊNIO"
+									},
+									{
+										"0": "780",
+										"1": "LICENÇA NÃO REMUNERADA"
+									},
+									{
+										"0": "808",
+										"1": "REFLEXOS ¿ GVT"
+									},
+									{
+										"0": "580",
+										"1": "MEMBRO CIPA - ART.522 CLT"
+									},
+									{
+										"0": "411",
+										"1": "BAIXA DE CTPS"
+									},
+									{
+										"0": "23",
+										"1": "ADICIONAL DE INSALUBRIDADE - REFLEXOS"
+									},
+									{
+										"0": "915",
+										"1": "VINCULO EMPREGATICIO COM A TBRA"
+									},
+									{
+										"0": "849",
+										"1": "RETENCAO DA CTPS"
+									},
+									{
+										"0": "425",
+										"1": "CONSIGNAÇÃO EM PAGAMENTO"
+									},
+									{
+										"0": "221",
+										"1": "INSS/IRRF"
+									},
+									{
+										"0": "603",
+										"1": "OBRIGACAO DE FAZER"
+									},
+									{
+										"0": "764",
+										"1": "EXIBIÇÃO DE DOCUMENTOS"
+									},
+									{
+										"0": "555",
+										"1": "INDENIZAÇÃO P/ QUEBRA DE CONTRATO"
+									},
+									{
+										"0": "347",
+										"1": "VINCULO EMPREGATICIO"
+									},
+									{
+										"0": "433",
+										"1": "CRECHE"
+									},
+									{
+										"0": "522",
+										"1": "GRATIFICAÇÃO ESPECIAL"
+									},
+									{
+										"0": "664",
+										"1": "SALÁRIO-FAMÍLIA EMPRESA"
+									},
+									{
+										"0": "520",
+										"1": "GRATIFICAÇÃO DE FUNÇÃO"
+									},
+									{
+										"0": "346",
+										"1": "VERBAS RESCISÓRIAS - JUSTA CAUSA"
+									},
+									{
+										"0": "368",
+										"1": "ADICIONAL DE FÉRIAS - REFLEXOS"
+									},
+									{
+										"0": "733",
+										"1": "IPC - ABRIL/89"
+									},
+									{
+										"0": "251",
+										"1": "MULTA RESCISÓRIA (ART.477)"
+									},
+									{
+										"0": "700",
+										"1": "CUSTAS EM REVERSÃO"
+									},
+									{
+										"0": "299",
+										"1": "RESPONSABILIDADE SOLIDARIA "
+									},
+									{
+										"0": "729",
+										"1": "DIFERENÇA INDENIZATÓRIA"
+									},
+									{
+										"0": "149",
+										"1": "FÉRIAS EM DOBRO"
+									},
+									{
+										"0": "846",
+										"1": "NULIDADE DO BANCO DE HORAS"
+									},
+									{
+										"0": "339",
+										"1": "VALE - TRANSPORTE "
+									},
+									{
+										"0": "751",
+										"1": "DIREITOS ACORDOS COLETIVOS 94/99"
+									},
+									{
+										"0": "397",
+										"1": "ASSINATURA DE CTPS"
+									},
+									{
+										"0": "560",
+										"1": "INDENIZAÇÃO POR DORT/LER"
+									},
+									{
+										"0": "493",
+										"1": "FERIADOS LABORADOS"
+									},
+									{
+										"0": "813",
+										"1": "RETIFICAÇÃO DE REGISTRO CTPS"
+									},
+									{
+										"0": "836",
+										"1": "HORA EXTRA - FERIADO"
+									},
+									{
+										"0": "648",
+										"1": "RESTIT. DOS DÉBITOS DECOR. DA DEMISSÃO"
+									},
+									{
+										"0": "129",
+										"1": "DUPLA FUNÇÃO"
+									},
+									{
+										"0": "228",
+										"1": "JORNADA ADVOGADO"
+									},
+									{
+										"0": "508",
+										"1": "FGTS - MULTA 40%"
+									},
+									{
+										"0": "100",
+										"1": "DESVIO DE FUNCAO"
+									},
+									{
+										"0": "63",
+										"1": "AVISO PRÉVIO TRABALHADO"
+									},
+									{
+										"0": "621",
+										"1": "PERFIL PROFISSIOGRAFICO PREVIDENCIARIO"
+									},
+									{
+										"0": "48",
+										"1": "APURAÇÃO FALTA GRAVE"
+									},
+									{
+										"0": "287",
+										"1": "PRONTIDÃO"
+									},
+									{
+										"0": "252",
+										"1": "NULIDADE DE REGISTRO DE CTPS"
+									},
+									{
+										"0": "118",
+										"1": "DIFERENÇA SALARIAL - PLANO VERÃO"
+									},
+									{
+										"0": "804",
+										"1": "INCLUSÃO PLANO SAÚDE - PLAMTEL"
+									},
+									{
+										"0": "697",
+										"1": "CUSTAS"
+									},
+									{
+										"0": "218",
+										"1": "INSS - EMPREGADOR"
+									},
+									{
+										"0": "713",
+										"1": "VALE COMPRA"
+									},
+									{
+										"0": "357",
+										"1": "ABONO ÚNICO INDENIZATÓRIO (CCT)"
+									},
+									{
+										"0": "181",
+										"1": "GRATIFICAÇÃO QUEBRA DE CAIXA"
+									},
+									{
+										"0": "506",
+										"1": "FGTS - EXPURGOS"
+									},
+									{
+										"0": "793",
+										"1": "CONTROLE - CARTÃO DE PONTO"
+									},
+									{
+										"0": "240",
+										"1": "MPT - JUNTADA ATOS CONSTITUTIVOS"
+									},
+									{
+										"0": "646",
+										"1": "RESPONSABILIDADE SOLIDARIA "
+									},
+									{
+										"0": "777",
+										"1": "INTEGRAÇÃO PARTE VARIAVEL DO SALARIO NO 13º SALARIO"
+									},
+									{
+										"0": "219",
+										"1": "INSS EMPREGADO - ESTIMATIVA"
+									},
+									{
+										"0": "1",
+										"1": "1/3 DE FÉRIAS"
+									},
+									{
+										"0": "327",
+										"1": "SUCESSÃO TRABALHISTA"
+									},
+									{
+										"0": "740",
+										"1": "FUNTERP"
+									},
+									{
+										"0": "396",
+										"1": "ASSEDIO MORAL - INDENIZACAO"
+									},
+									{
+										"0": "905",
+										"1": "LGPD (LEI GERAL DE PROTECAO DE DADOS)"
+									},
+									{
+										"0": "256",
+										"1": "OBRIGACAO DE FAZER"
+									},
+									{
+										"0": "904",
+										"1": "LGPD (LEI GERAL DE PROTECAO DE DADOS)"
+									},
+									{
+										"0": "217",
+										"1": "INSS"
+									},
+									{
+										"0": "496",
+										"1": "FÉRIAS EM DOBRO"
+									},
+									{
+										"0": "711",
+										"1": "MULTA DO ART. 479 CLT"
+									},
+									{
+										"0": "122",
+										"1": "DIFERENÇAS DE SOBREAVISO"
+									},
+									{
+										"0": "318",
+										"1": "SALÁRIO-FAMÍLIA INSS"
+									},
+									{
+										"0": "279",
+										"1": "PIS - LIBERACAO DO ABONO ANUAL"
+									},
+									{
+										"0": "669",
+										"1": "SEGURO DE VIDA EM GRUPO"
+									},
+									{
+										"0": "550",
+										"1": "INDENIZAÇÃO"
+									},
+									{
+										"0": "903",
+										"1": "DESCUMPRIMENTO DA MP 936/927"
+									},
+									{
+										"0": "663",
+										"1": "SALÁRIO-FAMÍLIA"
+									},
+									{
+										"0": "185",
+										"1": "HON.ADV./HE/JORNADA ADVOGADO"
+									},
+									{
+										"0": "906",
+										"1": "LGPD (LEI GERAL DE PROTECAO DE DADOS)"
+									},
+									{
+										"0": "53",
+										"1": "AUTO DE INFRAÇÃO - ADMINISTRATIV"
+									},
+									{
+										"0": "443",
+										"1": "DESPESAS DE VIAGEM"
+									},
+									{
+										"0": "324",
+										"1": "SEGURO-DESEMPREGO - DIFERENÇAS"
+									},
+									{
+										"0": "532",
+										"1": "HON.ADV./HE/JORNADA ADVOGADO"
+									},
+									{
+										"0": "516",
+										"1": "FUNÇÃO GRATIFICADA"
+									},
+									{
+										"0": "803",
+										"1": "NATUREZA SALARIAL DO BONUS PLURIANUAL"
+									},
+									{
+										"0": "193",
+										"1": "HORA PASSE/VIAGEM"
+									},
+									{
+										"0": "671",
+										"1": "SEGURO-DESEMPREGO - DIFERENÇAS"
+									},
+									{
+										"0": "231",
+										"1": "LICENÇA PRÊMIO"
+									},
+									{
+										"0": "822",
+										"1": "MULTA DO ARTIGO 477 DA CLT"
+									},
+									{
+										"0": "437",
+										"1": "DANO MORAL COLETIVO"
+									},
+									{
+										"0": "779",
+										"1": "DISSÍDIO COLETIVO - REVISÃO"
+									},
+									{
+										"0": "540",
+										"1": "HORA PASSE/VIAGEM"
+									},
+									{
+										"0": "798",
+										"1": "DEIXAR DE EMITIR CAT"
+									},
+									{
+										"0": "165",
+										"1": "FGTS/JORNADA ADVOGADO"
+									},
+									{
+										"0": "66",
+										"1": "BLOQUEIO DE CRÉDITO"
+									},
+									{
+										"0": "521",
+										"1": "GRATIFICAÇÃO DE INVENÇÃO"
+									},
+									{
+										"0": "699",
+										"1": "CUSTAS EM REVERSÃO"
+									},
+									{
+										"0": "104",
+										"1": "DEVOLUÇÃO DESCONTOS"
+									},
+									{
+										"0": "527",
+										"1": "GRATIFICAÇÃO POR TREINAMENTO"
+									},
+									{
+										"0": "458",
+										"1": "DIFERENÇA SALARIAL - DIF. SUBSTITUIÇÃO"
+									},
+									{
+										"0": "75",
+										"1": "COMPENSAÇÃO PAGAMENTO"
+									},
+									{
+										"0": "55",
+										"1": "AUXILIO - CRECHE"
+									},
+									{
+										"0": "754",
+										"1": "DIFERENÇA DE ADICIONAL DE PERICULOSIDADE (INFLAMÁVEL)"
+									},
+									{
+										"0": "223",
+										"1": "INTEGRAÇÃO DO SALÁRIO PAGO POR FORA"
+									},
+									{
+										"0": "832",
+										"1": "GRUPO ECONOMICO"
+									},
+									{
+										"0": "230",
+										"1": "LEGALIDADE CALL CENTER"
+									},
+									{
+										"0": "398",
+										"1": "ASSISTÊNCIA MÉDICA - ODONTOLÓGICA"
+									},
+									{
+										"0": "742",
+										"1": "CUMPRIMENTO DE NORMAS DE SEGURANÇA (NR)"
+									},
+									{
+										"0": "541",
+										"1": "HORAS DE INTERVALO TRABALHADAS"
+									},
+									{
+										"0": "370",
+										"1": "ADICIONAL DE INSALUBRIDADE - REFLEXOS"
+									},
+									{
+										"0": "361",
+										"1": "ACIDENTE DE TRABALHO"
+									},
+									{
+										"0": "679",
+										"1": "TICKET ALIMENTAÇÃO"
+									},
+									{
+										"0": "229",
+										"1": "JORNADA ENGENHEIRO ARQUITETO"
+									},
+									{
+										"0": "789",
+										"1": "REFLEXO DE EQUIPARAÇÃO SALARIAL - SISTEL/VISÃO"
+									},
+									{
+										"0": "791",
+										"1": "COTA DE PORTADORES C/NECESSIDADES ESPECIAIS"
+									},
+									{
+										"0": "94",
+										"1": "DESCANSO SEMANAL REMUNERADO"
+									},
+									{
+										"0": "363",
+										"1": "ACIDENTE DE TRABALHO - MORTE"
+									},
+									{
+										"0": "180",
+										"1": "GRATIFICAÇÃO POR TREINAMENTO"
+									},
+									{
+										"0": "175",
+										"1": "GRATIFICAÇÃO ESPECIAL"
+									},
+									{
+										"0": "736",
+										"1": "REDUÇÃO DE JORNADA DE TRABALHO"
+									},
+									{
+										"0": "672",
+										"1": "SOBREAVISO"
+									},
+									{
+										"0": "662",
+										"1": "SALÁRIO VINCENDO"
+									},
+									{
+										"0": "558",
+										"1": "INDENIZACAO POR DANOS MATERIAIS "
+									},
+									{
+										"0": "209",
+										"1": "INDENIZAÇÃO POR ACIDENTE DE TRABALHO"
+									},
+									{
+										"0": "261",
+										"1": "PAGAMENTO DE ABONO COMPLEMENTAÇÃO/VALIA"
+									},
+									{
+										"0": "693",
+										"1": "VERBAS RESCISÓRIAS - JUSTA CAUSA"
+									},
+									{
+										"0": "108",
+										"1": "DIFERENÇA DECORRENTE DE NORMA COLETIVA"
+									},
+									{
+										"0": "33",
+										"1": "ADICIONAL DE TURNO"
+									},
+									{
+										"0": "429",
+										"1": "CONTRIBUIÇÃO PREVIDENCIÁRIA"
+									},
+									{
+										"0": "202",
+										"1": "INDEN. POR MORTE EM ACIDENTE DE TRABALHO"
+									},
+									{
+										"0": "340",
+										"1": "VEÍCULOS LOCADOS"
+									},
+									{
+										"0": "154",
+										"1": "FGTS"
+									},
+									{
+										"0": "424",
+										"1": "COMPLEMENTAÇÃO DE AUXÍLIO - DOENÇA"
+									},
+									{
+										"0": "278",
+										"1": "PIRC - DIFERENÇAS"
+									},
+									{
+										"0": "786",
+										"1": "ACIDENTE DE TRABALHO"
+									},
+									{
+										"0": "614",
+										"1": "PARTICIPACAO NOS LUCROS"
+									},
+									{
+										"0": "790",
+										"1": "REFLEXO DE HORAS EXTRAS - SISTEL/VISÃO"
+									},
+									{
+										"0": "463",
+										"1": "DIFERENÇA SALARIAL - PLANO BRESSER"
+									},
+									{
+										"0": "224",
+										"1": "INTERVALO ALIMENTAÇÃO"
+									},
+									{
+										"0": "757",
+										"1": "DIFERENÇA DE ADICIONAL DE PERICULOSIDADE (MISTA)"
+									},
+									{
+										"0": "91",
+										"1": "DATA-BASE"
+									},
+									{
+										"0": "163",
+										"1": "FGTS - RESCISÃO"
+									},
+									{
+										"0": "626",
+										"1": "PIS - LIBERACAO DO ABONO ANUAL"
+									},
+									{
+										"0": "546",
+										"1": "HORAS INTEGRAIS"
+									},
+									{
+										"0": "274",
+										"1": "PERFIL PROFISSIOGRAFICO PREVIDENCIARIO"
+									},
+									{
+										"0": "384",
+										"1": "ADICIONAL PRO TEMPORE"
+									},
+									{
+										"0": "719",
+										"1": "ACUMULO DE FUNCAO"
+									},
+									{
+										"0": "759",
+										"1": "PAGAMENTO INCENTIVO DESLIGAMENTO"
+									},
+									{
+										"0": "204",
+										"1": "INDENIZACAO DANOS ESTETICOS"
+									},
+									{
+										"0": "170",
+										"1": "GRATIFICACAO "
+									},
+									{
+										"0": "282",
+										"1": "PRÊMIO POR DESEMPENHO INDIVIDUAL"
+									},
+									{
+										"0": "349",
+										"1": "13° SALÁRIO INTEGRAL"
+									},
+									{
+										"0": "56",
+										"1": "AUXÍLIO - DOENÇA"
+									},
+									{
+										"0": "753",
+										"1": "INTEGRAÇÃO DE OUTROS PROVENTOS NAS VERBAS"
+									},
+									{
+										"0": "705",
+										"1": "HORA NOTURNA REDUZIDA"
+									},
+									{
+										"0": "351",
+										"1": "13º SALÁRIO PROPORCIONAL"
+									},
+									{
+										"0": "192",
+										"1": "HORA EXTRA/ JORNADA - ADVOGADO"
+									},
+									{
+										"0": "227",
+										"1": "IRRF"
+									},
+									{
+										"0": "741",
+										"1": "HORA EXTRA - REFLEXOS"
+									},
+									{
+										"0": "215",
+										"1": "INDENIZAÇÃO POR PERDAS E DANOS"
+									},
+									{
+										"0": "565",
+										"1": "INSS - EMPREGADOR"
+									},
+									{
+										"0": "388",
+										"1": "AJUDA DE CUSTO ADAPTAÇÃO"
+									},
+									{
+										"0": "441",
+										"1": "DESCANSO SEMANAL REMUNERADO"
+									},
+									{
+										"0": "137",
+										"1": "EQUIPARACAO SALARIAL "
+									},
+									{
+										"0": "721",
+										"1": "QUADRIMESTRAL ABRIL / 92"
+									},
+									{
+										"0": "778",
+										"1": "MULTA PELO ATRASO NO RECOLHIMENTO DO FGTS"
+									},
+									{
+										"0": "317",
+										"1": "SALÁRIO-FAMÍLIA EMPRESA"
+									},
+									{
+										"0": "534",
+										"1": "HONORÁRIOS ASSISTENCIAIS"
+									},
+									{
+										"0": "599",
+										"1": "NULIDADE DE REGISTRO DE CTPS"
+									},
+									{
+										"0": "406",
+										"1": "AUXÍLIO - REMOÇÃO"
+									},
+									{
+										"0": "166",
+										"1": "FORNECIMENTO DE RSC"
+									},
+									{
+										"0": "596",
+										"1": "MULTA FGTS - APOSENTADORIA"
+									},
+									{
+										"0": "93",
+										"1": "DEMISSÃO POR JUSTA CAUSA"
+									},
+									{
+										"0": "117",
+										"1": "DIFERENÇA SALARIAL - PLANO COLLOR"
+									},
+									{
+										"0": "582",
+										"1": "MPT - ASSÉDIO MORAL"
+									},
+									{
+										"0": "655",
+										"1": "SALARIO - SUBSTITUICAO"
+									},
+									{
+										"0": "658",
+										"1": "SALÁRIO IN NATURA/UTILIDADE"
+									},
+									{
+										"0": "9",
+										"1": "ABONO SALARIAL"
+									},
+									{
+										"0": "792",
+										"1": "DESCANSO SEMANAL DE  24 HORAS"
+									},
+									{
+										"0": "111",
+										"1": "DIFERENÇA SALARIAL - DIF. SUBSTITUIÇÃO"
+									},
+									{
+										"0": "469",
+										"1": "DIFERENÇAS DE SOBREAVISO"
+									},
+									{
+										"0": "688",
+										"1": "VERBA DE DESMOBILIZAÇÃO/MUDANÇA"
+									},
+									{
+										"0": "295",
+										"1": "REEMBOLSO SEGURO DE VIDA EM GRUPO"
+									},
+									{
+										"0": "618",
+										"1": "PENSÃO ALIMENTÍCIA"
+									},
+									{
+										"0": "833",
+										"1": "HORA EXTRA - ACIMA DA 8a"
+									},
+									{
+										"0": "272",
+										"1": "PENSÃO POR MORTE"
+									},
+									{
+										"0": "8",
+										"1": "ABONO PECUNIÁRIO/ISONOMIA (PDV)"
+									},
+									{
+										"0": "126",
+										"1": "DISSÍDIO COLETIVO/ENQUADR.SINDICAL"
+									},
+									{
+										"0": "531",
+										"1": "HOMOLOGAÇÃO RESCISÃO CONTRATUAL"
+									},
+									{
+										"0": "552",
+										"1": "INDENIZAÇÃO - DANOS MORAIS E ESTÉTICOS"
+									},
+									{
+										"0": "328",
+										"1": "SUSPENSÃO ANTECIPAÇÃO EFEITOS TUTELA"
+									},
+									{
+										"0": "785",
+										"1": "INDENIZAÇÃO POR DANOS MORAIS"
+									},
+									{
+										"0": "535",
+										"1": "HONORÁRIOS DE ÊXITO"
+									},
+									{
+										"0": "464",
+										"1": "DIFERENÇA SALARIAL - PLANO COLLOR"
+									},
+									{
+										"0": "567",
+										"1": "INSS EMPREGADO - RESCISÃO"
+									},
+									{
+										"0": "564",
+										"1": "INSS"
+									},
+									{
+										"0": "542",
+										"1": "HORAS EXTRAS"
+									},
+									{
+										"0": "840",
+										"1": "HORA EXTRA - TRABALHO EXTERNO (ART. 62, I)"
+									},
+									{
+										"0": "548",
+										"1": "ILEGALIDADE DEMISSÃO - ESTABILIDADE TEMP"
+									},
+									{
+										"0": "84",
+										"1": "CONTRIBUIÇÃO SINDICAL"
+									},
+									{
+										"0": "654",
+										"1": "SALÁRIO - FUNÇÃO DIVERSA"
+									},
+									{
+										"0": "19",
+										"1": "ADICIONAL DE CONDUTOR"
+									},
+									{
+										"0": "748",
+										"1": "SUPRESSÃO DE HORAS EXTRAS"
+									},
+									{
+										"0": "449",
+										"1": "DEVOLUCAO DE DESCONTOS INDEVIDOS"
+									},
+									{
+										"0": "95",
+										"1": "DESPESAS CREDENCIAMENTO FARMÁCIA"
+									},
+									{
+										"0": "590",
+										"1": "MULTA ART 467 (VERBAS INCONTROVERSAS)"
+									},
+									{
+										"0": "829",
+										"1": "DISPENSA/DEMISSAO DISCRIMINATORIA"
+									},
+									{
+										"0": "500",
+										"1": "FÉRIAS VENCIDAS INDENIZADAS"
+									},
+									{
+										"0": "517",
+										"1": "GRATIFICACAO "
+									},
+									{
+										"0": "841",
+										"1": "HORA NOTURNA - EXTRA E/OU REDUZIDA"
+									},
+									{
+										"0": "440",
+										"1": "DEMISSÃO POR JUSTA CAUSA"
+									},
+									{
+										"0": "300",
+										"1": "RESPONSABILIDADE SUBSIDIARIA"
+									},
+									{
+										"0": "504",
+										"1": "FGTS - DIF. EXPURGOS INFLACIONÁRIOS"
+									},
+									{
+										"0": "845",
+										"1": "LIMITACAO DE USO DO BANHEIRO"
+									},
+									{
+										"0": "222",
+										"1": "INSTITUIR PROGRAMAS MEDICINA DO TRABALHO"
+									},
+									{
+										"0": "519",
+										"1": "GRATIFICAÇÃO DE FÉRIAS"
+									},
+									{
+										"0": "587",
+										"1": "MPT - JUNTADA ATOS CONSTITUTIVOS"
+									},
+									{
+										"0": "182",
+										"1": "GRATIFICAÇÃO SEMESTRAL"
+									},
+									{
+										"0": "639",
+										"1": "REEMBOLSO DESPESAS COM TRANSPORTE"
+									},
+									{
+										"0": "593",
+										"1": "MULTA DESCUMPRIMENTO TAC"
+									},
+									{
+										"0": "183",
+										"1": "GRATIFICAÇÃO TCS"
+									},
+									{
+										"0": "237",
+										"1": "MPT - DESCUMPRIMENTO CLÁUSULA ACT OU CCT"
+									},
+									{
+										"0": "263",
+										"1": "PAGAMENTO DE AÇOES"
+									},
+									{
+										"0": "260",
+										"1": "PAGAMENTO DE ABONO ALUGUEL DE CASA"
+									},
+									{
+										"0": "645",
+										"1": "RESCISAO INDIRETA"
+									},
+									{
+										"0": "47",
+										"1": "ANULAÇÃO DE PUNIÇÃO-ADVERT/SUSPENSÃO"
+									},
+									{
+										"0": "473",
+										"1": "DISSÍDIO COLETIVO/ENQUADR.SINDICAL"
+									},
+									{
+										"0": "681",
+										"1": "TRABALHADOR SEM REGISTRO"
+									},
+									{
+										"0": "37",
+										"1": "ADICIONAL PRO TEMPORE"
+									},
+									{
+										"0": "612",
+										"1": "PAGAMENTO DE HONORÁRIOS PERICIAIS"
+									},
+									{
+										"0": "826",
+										"1": "MULTA ART 467 (VERBAS INCONTROVERSAS)"
+									},
+									{
+										"0": "495",
+										"1": "FERIAS + 1/3 CONSTITUICAO"
+									},
+									{
+										"0": "797",
+										"1": "APOSENTADORIA POR INVALIDEZ"
+									},
+									{
+										"0": "698",
+										"1": "CUSTAS"
+									},
+									{
+										"0": "323",
+										"1": "SEGURO DESEMPREGO"
+									},
+									{
+										"0": "438",
+										"1": "DATA-BASE"
+									},
+									{
+										"0": "761",
+										"1": "AUSÊNCIA DE REGISTRO EM LIVRO, FICHA OU SISTEMA ELETRONICO"
+									},
+									{
+										"0": "14",
+										"1": "ACIDENTE DE TRABALHO"
+									},
+									{
+										"0": "420",
+										"1": "COMISSÕES"
+									},
+									{
+										"0": "644",
+										"1": "REINTEGRAÇÃO/ESTABILIDADE"
+									},
+									{
+										"0": "60",
+										"1": "AUXÍLIO ALIMENTAÇÃO"
+									},
+									{
+										"0": "64",
+										"1": "BAIXA DE CTPS"
+									},
+									{
+										"0": "538",
+										"1": "HORA EXTRA - REFLEXOS"
+									},
+									{
+										"0": "21",
+										"1": "ADICIONAL DE FÉRIAS - REFLEXOS"
+									},
+									{
+										"0": "703",
+										"1": "DIVISOR 200 HORAS"
+									},
+									{
+										"0": "589",
+										"1": "MULTA ADMINISTRATIVA"
+									},
+									{
+										"0": "312",
+										"1": "SALÁRIO NORMATIVO"
+									},
+									{
+										"0": "578",
+										"1": "LICENÇA PRÊMIO"
+									},
+									{
+										"0": "657",
+										"1": "SALÁRIO IN NATURA"
+									},
+									{
+										"0": "35",
+										"1": "ADICIONAL POR DIRIGIR"
+									},
+									{
+										"0": "173",
+										"1": "GRATIFICAÇÃO DE FUNÇÃO"
+									},
+									{
+										"0": "901",
+										"1": "COVID19"
+									},
+									{
+										"0": "607",
+										"1": "PAGAMENTO DE ABONO ALUGUEL DE CASA"
+									},
+									{
+										"0": "28",
+										"1": "ADICIONAL DE QÜINQÜÊNIO"
+									},
+									{
+										"0": "125",
+										"1": "DISSÍDIO COLETIVO - REVISÃO"
+									},
+									{
+										"0": "107",
+										"1": "DIFERENÇA DE FÉRIAS PROPORCIONAIS"
+									},
+									{
+										"0": "675",
+										"1": "SUSPENSÃO ANTECIPAÇÃO EFEITOS TUTELA"
+									},
+									{
+										"0": "250",
+										"1": "MULTA POR DESCUMPRIMENTO"
+									},
+									{
+										"0": "42",
+										"1": "AJUDA DE CUSTO INSTALAÇÃO"
+									},
+									{
+										"0": "362",
+										"1": "ACIDENTE DE TRABALHO - INVALIDEZ"
+									},
+									{
+										"0": "682",
+										"1": "TRCT - ENTREGA"
+									},
+									{
+										"0": "692",
+										"1": "VERBAS RESCISÓRIAS - DIFERENÇA"
+									},
+									{
+										"0": "90",
+										"1": "DANO MORAL COLETIVO"
+									},
+									{
+										"0": "99",
+										"1": "DESPESAS ODONTOLÓGICAS"
+									},
+									{
+										"0": "59",
+										"1": "AUXÍLIO - REMOÇÃO"
+									},
+									{
+										"0": "6",
+										"1": "ABONO PECUNIÁRIO (PDV)"
+									},
+									{
+										"0": "462",
+										"1": "DIFERENCA SALARIAL - PAGAMENTO POR FORA"
+									},
+									{
+										"0": "128",
+										"1": "DOMINGOS E FERIADOS"
+									},
+									{
+										"0": "41",
+										"1": "AJUDA DE CUSTO ADAPTAÇÃO"
+									},
+									{
+										"0": "787",
+										"1": "VÍNCULO EMPREGATÍCIO"
+									},
+									{
+										"0": "471",
+										"1": "DISSÍDIO COLETIVO - GREVE"
+									},
+									{
+										"0": "615",
+										"1": "PARTICIPAÇÃO NOS RESULTADOS"
+									},
+									{
+										"0": "570",
+										"1": "INTEGRAÇÃO DO SALÁRIO PAGO POR FORA"
+									},
+									{
+										"0": "267",
+										"1": "PARTICIPACAO NOS LUCROS"
+									},
+									{
+										"0": "273",
+										"1": "PENSAO VITALICIA"
+									},
+									{
+										"0": "431",
+										"1": "CONTRIBUIÇÃO SINDICAL"
+									},
+									{
+										"0": "843",
+										"1": "INTERDITO PROIBITORIO"
+									},
+									{
+										"0": "326",
+										"1": "SOBREAVISO"
+									},
+									{
+										"0": "752",
+										"1": "PRÊMIO DE VENDAS"
+									},
+									{
+										"0": "831",
+										"1": "EXPEDICAO DE OFICIOS"
+									},
+									{
+										"0": "909",
+										"1": "CID 10/F"
+									},
+									{
+										"0": "784",
+										"1": "DOENÇA DO TRABALHO"
+									},
+									{
+										"0": "452",
+										"1": "DIÁRIAS"
+									},
+									{
+										"0": "34",
+										"1": "ADICIONAL NOTURNO"
+									},
+									{
+										"0": "413",
+										"1": "BLOQUEIO DE CRÉDITO"
+									},
+									{
+										"0": "837",
+										"1": "HORA EXTRA - OPERADOR DE TELEMARKETING"
+									},
+									{
+										"0": "684",
+										"1": "VALE - REFEICAO "
+									},
+									{
+										"0": "491",
+										"1": "EXTINÇÃO DO CONTRATO DE TRABALHO"
+									},
+									{
+										"0": "106",
+										"1": "DIÁRIAS DE VIAGEM"
+									},
+									{
+										"0": "435",
+										"1": "CTVA - ADVOGADO"
+									},
+									{
+										"0": "97",
+										"1": "DESPESAS MATERIAL ESCOLAR"
+									},
+									{
+										"0": "556",
+										"1": "INDENIZAÇÃO POR ACIDENTE DE TRABALHO"
+									},
+									{
+										"0": "196",
+										"1": "HORAS EXTRAS ALÉM DA 6ª"
+									},
+									{
+										"0": "749",
+										"1": "SALÁRIO HABITAÇÃO"
+									},
+									{
+										"0": "322",
+										"1": "SEGURO DE VIDA EM GRUPO"
+									},
+									{
+										"0": "98",
+										"1": "DESPESAS MÉDICAS"
+									},
+									{
+										"0": "13",
+										"1": "AÇÃO DE OBRIGAÇÃO DE NÃO FAZER"
+									},
+									{
+										"0": "769",
+										"1": "INTEGRAÇÃO DO SALÁRIO PAGO POR FORA"
+									},
+									{
+										"0": "686",
+										"1": "VALE - TRANSPORTE "
+									},
+									{
+										"0": "195",
+										"1": "HORAS EXTRAS"
+									},
+									{
+										"0": "426",
+										"1": "CONTRATAÇÃO APRENDIZ"
+									},
+									{
+										"0": "32",
+										"1": "ADICIONAL DE TRIÊNIO"
+									},
+									{
+										"0": "18",
+										"1": "ADICIONAL DE ASSIDUIDADE"
+									},
+									{
+										"0": "360",
+										"1": "AÇÃO DE OBRIGAÇÃO DE NÃO FAZER"
+									},
+									{
+										"0": "908",
+										"1": "CID 10/F"
+									},
+									{
+										"0": "146",
+										"1": "FERIADOS LABORADOS"
+									},
+									{
+										"0": "817",
+										"1": "INTERVALO INTER-JORNADA"
+									},
+									{
+										"0": "676",
+										"1": "SUSPENSÃO DA EXECUÇÃO"
+									},
+									{
+										"0": "319",
+										"1": "SALDO DE SALARIO"
+									},
+									{
+										"0": "839",
+										"1": "HORA EXTRA - TELETRABALHO (ART. 62, III)"
+									},
+									{
+										"0": "394",
+										"1": "ANULAÇÃO DE PUNIÇÃO-ADVERT/SUSPENSÃO"
+									},
+									{
+										"0": "610",
+										"1": "PAGAMENTO DE AÇOES"
+									},
+									{
+										"0": "912",
+										"1": "MULTA"
+									},
+									{
+										"0": "249",
+										"1": "MULTA FGTS - APOSENTADORIA"
+									},
+									{
+										"0": "259",
+										"1": "PAGAMENTO COMBUSTÍVEL"
+									},
+									{
+										"0": "39",
+										"1": "AFASTAMENTO (DIREITO DO TRABALHO)"
+									},
+									{
+										"0": "608",
+										"1": "PAGAMENTO DE ABONO COMPLEMENTAÇÃO/VALIA"
+									},
+									{
+										"0": "206",
+										"1": "INDENIZACAO ESTABILIDADE GESTANTE "
+									},
+									{
+										"0": "543",
+										"1": "HORAS EXTRAS ALÉM DA 6ª"
+									},
+									{
+										"0": "310",
+										"1": "SALÁRIO IN NATURA"
+									},
+									{
+										"0": "653",
+										"1": "REVISÃO DISSÍDIO COLETIVO"
+									},
+									{
+										"0": "400",
+										"1": "AUTO DE INFRAÇÃO - ADMINISTRATIV"
+									},
+									{
+										"0": "157",
+										"1": "FGTS - DIF. EXPURGOS INFLACIONÁRIOS"
+									},
+									{
+										"0": "375",
+										"1": "ADICIONAL DE QÜINQÜÊNIO"
+									},
+									{
+										"0": "383",
+										"1": "ADICIONAL POR TEMPO DE SERVIÇO"
+									},
+									{
+										"0": "234",
+										"1": "MEMBRO CIPA - ESTABILIDADE"
+									},
+									{
+										"0": "268",
+										"1": "PARTICIPAÇÃO NOS RESULTADOS"
+									},
+									{
+										"0": "638",
+										"1": "RECONVENÇÃO CLIENTE"
+									},
+									{
+										"0": "399",
+										"1": "AUMENTO SALARIAL"
+									},
+									{
+										"0": "103",
+										"1": "DEVOLUÇÃO DE VALORES"
+									},
+									{
+										"0": "642",
+										"1": "REEMBOLSO SEGURO DE VIDA EM GRUPO"
+									},
+									{
+										"0": "788",
+										"1": "UNICIDADE CONTRATUAL"
+									},
+									{
+										"0": "848",
+										"1": "PREMIO"
+									},
+									{
+										"0": "26",
+										"1": "ADICIONAL DE PERICULOSIDADE - REFLEXOS"
+									},
+									{
+										"0": "523",
+										"1": "GRATIFICAÇÃO NATALINA"
+									},
+									{
+										"0": "525",
+										"1": "GRATIFICAÇÃO POR DIRIGIR"
+									},
+									{
+										"0": "220",
+										"1": "INSS EMPREGADO - RESCISÃO"
+									},
+									{
+										"0": "5",
+										"1": "ABONO DE FÉRIAS"
+									},
+									{
+										"0": "325",
+										"1": "SOBREAVISO"
+									},
+									{
+										"0": "513",
+										"1": "FORNECIMENTO DE RSC"
+									},
+									{
+										"0": "613",
+										"1": "PARTICIPACAO NOS LUCROS"
+									},
+									{
+										"0": "821",
+										"1": "HONORÁRIOS ADVOCATÍCIOS"
+									},
+									{
+										"0": "132",
+										"1": "ENQUADRAMENTO FUNCIONAL"
+									},
+									{
+										"0": "121",
+										"1": "DIFERENÇA SALARIAL - SALDO DE SALÁRIO"
+									},
+									{
+										"0": "484",
+										"1": "EQUIPARACAO SALARIAL "
+									},
+									{
+										"0": "673",
+										"1": "SOBREAVISO"
+									},
+									{
+										"0": "584",
+										"1": "MPT - DESCUMPRIMENTO CLÁUSULA ACT OU CCT"
+									},
+									{
+										"0": "408",
+										"1": "AVISO PREVIO"
+									},
+									{
+										"0": "257",
+										"1": "OUTROS"
+									},
+									{
+										"0": "480",
+										"1": "ENQUADRAMENTO PCS "
+									},
+									{
+										"0": "176",
+										"1": "GRATIFICAÇÃO NATALINA"
+									},
+									{
+										"0": "190",
+										"1": "HORA EXTRA - INTERVALO REFEIÇÃO/DESCANSO"
+									},
+									{
+										"0": "298",
+										"1": "RESCISAO INDIRETA"
+									},
+									{
+										"0": "537",
+										"1": "HORA EXTRA - INTERVALO REFEIÇÃO/DESCANSO"
+									},
+									{
+										"0": "355",
+										"1": "ABONO PECUNIÁRIO/ISONOMIA (PDV)"
+									},
+									{
+										"0": "321",
+										"1": "SEGURO DE VIDA"
+									},
+									{
+										"0": "52",
+										"1": "AUMENTO SALARIAL"
+									},
+									{
+										"0": "465",
+										"1": "DIFERENÇA SALARIAL - PLANO VERÃO"
+									},
+									{
+										"0": "110",
+										"1": "DIFERENCA SALARIAL "
+									},
+									{
+										"0": "818",
+										"1": "DESCANSO SEMANAL REMUNERADO"
+									},
+									{
+										"0": "46",
+										"1": "ANUÊNIO"
+									},
+									{
+										"0": "776",
+										"1": "DEIXAR DE EMITIR CAT"
+									},
+									{
+										"0": "130",
+										"1": "ELEIÇÃO DA CIPA"
+									},
+									{
+										"0": "405",
+										"1": "AUXILIO - MATERNIDADE"
+									},
+									{
+										"0": "17",
+										"1": "ACÚMULO DE FUNÇÕES"
+									},
+									{
+										"0": "447",
+										"1": "DESVIO DE FUNCAO"
+									},
+									{
+										"0": "306",
+										"1": "REVISÃO DISSÍDIO COLETIVO"
+									},
+									{
+										"0": "478",
+										"1": "EMPREGADO-ATIVA/JORNADA-ENGENHEIRO"
+									},
+									{
+										"0": "714",
+										"1": "VALE COMPRA"
+									},
+									{
+										"0": "605",
+										"1": "PAGAMENTO BÔNUS - DESEMPENHO"
+									},
+									{
+										"0": "344",
+										"1": "VERBAS RESCISORIAS"
+									},
+									{
+										"0": "544",
+										"1": "HORAS EXTRAS, SUBSTITUIÇÃO DE FUNÇÃO"
+									},
+									{
+										"0": "184",
+										"1": "HOMOLOGAÇÃO RESCISÃO CONTRATUAL"
+									},
+									{
+										"0": "131",
+										"1": "EMPREGADO-ATIVA/JORNADA-ENGENHEIRO"
+									},
+									{
+										"0": "674",
+										"1": "SUCESSÃO TRABALHISTA"
+									},
+									{
+										"0": "670",
+										"1": "SEGURO DESEMPREGO"
+									},
+									{
+										"0": "304",
+										"1": "RETIFICAÇÃO DE REGISTRO CTPS"
+									},
+									{
+										"0": "847",
+										"1": "NULIDADE PDI/PDV"
+									},
+									{
+										"0": "758",
+										"1": "CONTRIBUIÇÃO SINDICAL"
+									},
+									{
+										"0": "486",
+										"1": "ESTABILIDADE SINDICAL"
+									},
+									{
+										"0": "378",
+										"1": "ADICIONAL DE TRANSFERENCIA"
+									},
+									{
+										"0": "404",
+										"1": "AUXÍLIO - FUNERAL"
+									},
+									{
+										"0": "715",
+										"1": "VERBAS PERÍODO DE TREINAMENTO"
+									},
+									{
+										"0": "330",
+										"1": "TERCEIRIZAÇÃO ATIVIDADE-FIM"
+									},
+									{
+										"0": "561",
+										"1": "INDENIZAÇÃO POR KM RODADO"
+									},
+									{
+										"0": "387",
+										"1": "AJUDA DE CUSTO"
+									},
+									{
+										"0": "812",
+										"1": "COMPLEMENTAÇÃO DE AUXÍLIO - DOENÇA"
+									},
+									{
+										"0": "114",
+										"1": "DIFERENÇA SALARIAL - KM RODADO"
+									},
+									{
+										"0": "454",
+										"1": "DIFERENÇA DE FÉRIAS PROPORCIONAIS"
+									},
+									{
+										"0": "294",
+										"1": "REEMBOLSO ESCOLAR"
+									},
+									{
+										"0": "390",
+										"1": "ALUGUEL DE VEICULO/MOTO"
+									},
+									{
+										"0": "809",
+										"1": "DANO MORAL"
+									},
+									{
+										"0": "124",
+										"1": "DISSÍDIO COLETIVO - GREVE"
+									},
+									{
+										"0": "720",
+										"1": "DIVISOR 220 HORAS E REFLEXOS"
+									},
+									{
+										"0": "524",
+										"1": "GRATIFICAÇÃO PESSOAL"
+									},
+									{
+										"0": "712",
+										"1": "MULTA DO ART. 479 CLT"
+									},
+									{
+										"0": "762",
+										"1": "HORAS EXTRAS"
+									},
+									{
+										"0": "581",
+										"1": "MEMBRO CIPA - ESTABILIDADE"
+									},
+									{
+										"0": "774",
+										"1": "DESCANSO SEMANAL DE  24 HORAS"
+									},
+									{
+										"0": "208",
+										"1": "INDENIZAÇÃO P/ QUEBRA DE CONTRATO"
+									},
+									{
+										"0": "417",
+										"1": "CESTA BASICA"
+									},
+									{
+										"0": "574",
+										"1": "IRRF"
+									},
+									{
+										"0": "264",
+										"1": "PAGAMENTO DE HONORÁRIOS ADVOCATÍCIOS"
+									},
+									{
+										"0": "530",
+										"1": "GRATIFICAÇÃO TCS"
+									},
+									{
+										"0": "619",
+										"1": "PENSÃO POR MORTE"
+									},
+									{
+										"0": "528",
+										"1": "GRATIFICAÇÃO QUEBRA DE CAIXA"
+									},
+									{
+										"0": "722",
+										"1": "SALÁRIO EDUCAÇÃO DE COMPLEMENTADO"
+									},
+									{
+										"0": "147",
+										"1": "FÉRIAS"
+									},
+									{
+										"0": "7",
+										"1": "ABONO PECUNIÁRIO APOSENTADO (PDV)"
+									},
+									{
+										"0": "367",
+										"1": "ADICIONAL DE FÉRIAS"
+									},
+									{
+										"0": "247",
+										"1": "MULTA DISPENSA ANTES DATA-BASE"
+									},
+									{
+										"0": "802",
+										"1": "NATUREZA SALARIAL DO SRD"
+									},
+									{
+										"0": "660",
+										"1": "SALÁRIO RETIDO"
+									},
+									{
+										"0": "476",
+										"1": "DUPLA FUNÇÃO"
+									},
+									{
+										"0": "216",
+										"1": "INDENIZAÇÕES - OUTRAS"
+									},
+									{
+										"0": "364",
+										"1": "ACÚMULO DE FUNÇÕES"
+									},
+									{
+										"0": "393",
+										"1": "ANUÊNIO"
+									},
+									{
+										"0": "127",
+										"1": "DOENCA DO TRABALHO"
+									},
+									{
+										"0": "65",
+										"1": "BENEFÍCIOS"
+									},
+									{
+										"0": "498",
+										"1": "FÉRIAS INTEGRAL"
+									},
+									{
+										"0": "265",
+										"1": "PAGAMENTO DE HONORÁRIOS PERICIAIS"
+									},
+									{
+										"0": "352",
+										"1": "ABONO DE FÉRIAS"
+									},
+									{
+										"0": "70",
+										"1": "CESTA BASICA"
+									},
+									{
+										"0": "415",
+										"1": "BÔNUS"
+									},
+									{
+										"0": "724",
+										"1": "DESCONTO DE TAXA ASSISTENCIAL"
+									},
+									{
+										"0": "768",
+										"1": "HORA EXTRA - INTERVALO REFEIÇÃO/DESCANSO"
+									},
+									{
+										"0": "152",
+										"1": "FÉRIAS PROPORCIONAIS"
+									},
+									{
+										"0": "796",
+										"1": "INTEGRAÇÃO REMUNERAÇÃO NO FGTS"
+									},
+									{
+										"0": "730",
+										"1": "INTEGRAÇÃO TICKET EM RESCISÃO"
+									},
+									{
+										"0": "197",
+										"1": "HORAS EXTRAS, SUBSTITUIÇÃO DE FUNÇÃO"
+									},
+									{
+										"0": "332",
+										"1": "TICKET ALIMENTAÇÃO"
+									},
+									{
+										"0": "583",
+										"1": "MPT - COAÇÃO DE EMPREGADOS"
+									},
+									{
+										"0": "651",
+										"1": "RETIFICAÇÃO DE REGISTRO CTPS"
+									},
+									{
+										"0": "628",
+										"1": "PLANO DE SAÚDE - PARCELAS"
+									},
+									{
+										"0": "416",
+										"1": "BONUS ANUAL"
+									},
+									{
+										"0": "597",
+										"1": "MULTA POR DESCUMPRIMENTO"
+									},
+									{
+										"0": "835",
+										"1": "HORA EXTRA - DIVISOR"
+									},
+									{
+										"0": "410",
+										"1": "AVISO PRÉVIO TRABALHADO"
+									},
+									{
+										"0": "10",
+										"1": "ABONO ÚNICO INDENIZATÓRIO (CCT)"
+									},
+									{
+										"0": "622",
+										"1": "PERNOITES"
+									},
+									{
+										"0": "243",
+										"1": "MULTA ART 467 (VERBAS INCONTROVERSAS)"
+									},
+									{
+										"0": "568",
+										"1": "INSS/IRRF"
+									},
+									{
+										"0": "238",
+										"1": "MPT - DISCRIMINAÇÃO"
+									},
+									{
+										"0": "199",
+										"1": "HORAS INTEGRAIS"
+									},
+									{
+										"0": "432",
+										"1": "CONTROLE - CARTÃO DE PONTO"
+									},
+									{
+										"0": "313",
+										"1": "SALÁRIO RETIDO"
+									},
+									{
+										"0": "518",
+										"1": "GRATIFICAÇÃO DE APOSENTADORIA"
+									},
+									{
+										"0": "213",
+										"1": "INDENIZAÇÃO POR DORT/LER"
+									},
+									{
+										"0": "25",
+										"1": "ADICIONAL DE PERICULOSIDADE"
+									},
+									{
+										"0": "244",
+										"1": "MULTA ARTIGO 53 DA CLT"
+									},
+									{
+										"0": "744",
+										"1": "QUANTITATIVO DE ALIMENTAÇÃO"
+									},
+									{
+										"0": "659",
+										"1": "SALÁRIO NORMATIVO"
+									},
+									{
+										"0": "374",
+										"1": "ADICIONAL DE PRODUTIVIDADE"
+									},
+									{
+										"0": "492",
+										"1": "FÉRIA INTEGRAIS"
+									},
+									{
+										"0": "373",
+										"1": "ADICIONAL DE PERICULOSIDADE - REFLEXOS"
+									},
+									{
+										"0": "140",
+										"1": "ESTABILIDADE/INDENIZAÇÃO"
+									},
+									{
+										"0": "444",
+										"1": "DESPESAS MATERIAL ESCOLAR"
+									},
+									{
+										"0": "369",
+										"1": "ADICIONAL DE INSALUBRIDADE"
+									},
+									{
+										"0": "45",
+										"1": "ANOTACOES CTPS"
+									},
+									{
+										"0": "695",
+										"1": "CAPITAL A SER CONSTITUIDO"
+									},
+									{
+										"0": "747",
+										"1": "SUSPENSÃO DA APOSENTADORIA"
+									},
+									{
+										"0": "343",
+										"1": "VERBA DE REPRESENTAÇÃO - DIRETOR"
+									},
+									{
+										"0": "728",
+										"1": "INTEGRAÇÃO VALE REFEIÇÃO NA RE"
+									},
+									{
+										"0": "456",
+										"1": "DIFERENÇA RESERVA POUPANÇA SISTEL"
+									},
+									{
+										"0": "799",
+										"1": "INTERVALO INTRA-JORNADA"
+									},
+									{
+										"0": "918",
+										"1": "ATUALIZACAO MONETARIA"
+									},
+									{
+										"0": "773",
+										"1": "FÉRIAS + 1/3 CONSTITUIÇÃO"
+									},
+									{
+										"0": "510",
+										"1": "FGTS - RESCISÃO"
+									},
+									{
+										"0": "314",
+										"1": "SALÁRIO VENCIDO E REFLEXOS"
+									},
+									{
+										"0": "297",
+										"1": "REINTEGRAÇÃO/ESTABILIDADE"
+									},
+									{
+										"0": "800",
+										"1": "INTEGRAÇÃO PARTE VARIAVEL DO SALARIO NO 13º SALARIO"
+									},
+									{
+										"0": "725",
+										"1": "DIFERENÇA DE ADICIONAL DE PERICULOSIDADE (ELÉTRICA)"
+									},
+									{
+										"0": "248",
+										"1": "MULTA DO ARTIGO 477 DA CLT"
+									},
+									{
+										"0": "50",
+										"1": "ASSINATURA DE CTPS"
+									},
+									{
+										"0": "635",
+										"1": "QUITAÇÃO DÉBITO - CONTA SALÁRIO"
+									},
+									{
+										"0": "601",
+										"1": "NULIDADE RESCISAO JUSTA CAUSA"
+									},
+									{
+										"0": "732",
+										"1": "PAGAMENTO DE URP - 04 E 05/88"
+									},
+									{
+										"0": "795",
+										"1": "DESCANSO SEMANAL DE  24 HORAS"
+									},
+									{
+										"0": "750",
+										"1": "VÍNCULO EMPREGATÍCIO - MENOR BOLSISTA"
+									},
+									{
+										"0": "647",
+										"1": "RESPONSABILIDADE SUBSIDIARIA"
+									},
+									{
+										"0": "760",
+										"1": "INTEGRAÇÃO REMUNERAÇÃO NO FGTS"
+									},
+									{
+										"0": "201",
+										"1": "ILEGALIDADE DEMISSÃO - ESTABILIDADE TEMP"
+									},
+									{
+										"0": "167",
+										"1": "FORNECIMENTO RESP"
+									},
+									{
+										"0": "591",
+										"1": "MULTA ARTIGO 53 DA CLT"
+									},
+									{
+										"0": "794",
+										"1": "INTERVALO INTRA-JORNADA"
+									},
+									{
+										"0": "141",
+										"1": "ESTABILIDADE/REINTEGRAÇÃO"
+									},
+									{
+										"0": "372",
+										"1": "ADICIONAL DE PERICULOSIDADE"
+									},
+									{
+										"0": "501",
+										"1": "FGTS"
+									},
+									{
+										"0": "315",
+										"1": "SALÁRIO VINCENDO"
+									},
+									{
+										"0": "563",
+										"1": "INDENIZAÇÕES - OUTRAS"
+									},
+									{
+										"0": "305",
+										"1": "RETORNO AO PCS ANTERIOR"
+									},
+									{
+										"0": "188",
+										"1": "HONORÁRIOS DE ÊXITO"
+									},
+									{
+										"0": "386",
+										"1": "AFASTAMENTO (DIREITO DO TRABALHO)"
+									},
+									{
+										"0": "716",
+										"1": "VERBAS PERÍODO DE TREINAMENTO"
+									},
+									{
+										"0": "162",
+										"1": "FGTS - OPÇÃO RETROATIVA"
+									},
+									{
+										"0": "801",
+										"1": "REVISÃO DE APOSENTADORIA"
+									},
+									{
+										"0": "446",
+										"1": "DESPESAS ODONTOLÓGICAS"
+									},
+									{
+										"0": "455",
+										"1": "DIFERENÇA DECORRENTE DE NORMA COLETIVA"
+									},
+									{
+										"0": "158",
+										"1": "FGTS - ESTIMATIVA"
+									},
+									{
+										"0": "620",
+										"1": "PENSAO VITALICIA"
+									},
+									{
+										"0": "781",
+										"1": "AUXÍLIO MORADIA"
+									},
+									{
+										"0": "609",
+										"1": "PAGAMENTO DE ABONO EXONERAÇÃO"
+									},
+									{
+										"0": "15",
+										"1": "ACIDENTE DE TRABALHO - INVALIDEZ"
+									},
+									{
+										"0": "585",
+										"1": "MPT - DISCRIMINAÇÃO"
+									},
+									{
+										"0": "86",
+										"1": "CRECHE"
+									},
+									{
+										"0": "470",
+										"1": "DISCUSÃO SOBRE O VALOR DADO À CAUSA"
+									},
+									{
+										"0": "203",
+										"1": "INDENIZAÇÃO"
+									},
+									{
+										"0": "245",
+										"1": "MULTA DESCUMPRIMENTO ACT"
+									},
+									{
+										"0": "731",
+										"1": "ESTABILIDADE SETEMBRO 2002 - CETERP"
+									},
+									{
+										"0": "210",
+										"1": "INDENIZAÇÃO POR ASSÉDIO MORAL"
+									},
+									{
+										"0": "270",
+										"1": "PDV"
+									},
+									{
+										"0": "331",
+										"1": "TERCEIRIZACAO DE SERVICOS"
+									},
+									{
+										"0": "348",
+										"1": "1/3 DE FÉRIAS"
+									},
+									{
+										"0": "461",
+										"1": "DIFERENÇA SALARIAL - KM RODADO"
+									},
+									{
+										"0": "624",
+										"1": "PIRC"
+									},
+									{
+										"0": "198",
+										"1": "HORAS IN ITINERE"
+									},
+									{
+										"0": "353",
+										"1": "ABONO PECUNIÁRIO (PDV)"
+									},
+									{
+										"0": "74",
+										"1": "COMISSÕES SOBRE VENDAS"
+									},
+									{
+										"0": "687",
+										"1": "VEÍCULOS LOCADOS"
+									},
+									{
+										"0": "545",
+										"1": "HORAS IN ITINERE"
+									},
+									{
+										"0": "189",
+										"1": "HONORÁRIOS PERICIAIS"
+									},
+									{
+										"0": "133",
+										"1": "ENQUADRAMENTO PCS"
+									},
+									{
+										"0": "292",
+										"1": "REEMBOLSO DESPESAS COM TRANSPORTE"
+									},
+									{
+										"0": "258",
+										"1": "PAGAMENTO BÔNUS - DESEMPENHO"
+									},
+									{
+										"0": "414",
+										"1": "BOLSA DE ESTUDO"
+									},
+									{
+										"0": "554",
+										"1": "INDENIZAÇÃO P/ INCAPACIDADE LABORAL"
+									},
+									{
+										"0": "445",
+										"1": "DESPESAS MÉDICAS"
+									},
+									{
+										"0": "20",
+										"1": "ADICIONAL DE FÉRIAS"
+									},
+									{
+										"0": "68",
+										"1": "BÔNUS"
+									},
+									{
+										"0": "850",
+										"1": "ASSISTENCIA JUDICIARIA GRATUITA"
+									},
+									{
+										"0": "36",
+										"1": "ADICIONAL POR TEMPO DE SERVIÇO"
+									},
+									{
+										"0": "727",
+										"1": "TAXA CONFEDERATIVA"
+									},
+									{
+										"0": "706",
+										"1": "HORA NOTURNA REDUZIDA"
+									},
+									{
+										"0": "61",
+										"1": "AVISO PREVIO"
+									},
+									{
+										"0": "594",
+										"1": "MULTA DISPENSA ANTES DATA-BASE"
+									},
+									{
+										"0": "726",
+										"1": "PAGAMENTO DE PDR - PLANO DE REESTRUTURAÇÃO DIRECIONADO"
+									},
+									{
+										"0": "834",
+										"1": "HORA EXTRA - CARGO DE CONFIANCA (ART. 62, II)"
+									},
+									{
+										"0": "595",
+										"1": "MULTA DO ARTIGO 477 DA CLT"
+									},
+									{
+										"0": "824",
+										"1": "DANO MORAL"
+									},
+									{
+										"0": "101",
+										"1": "DEVOLUÇÃO DE DESCONTO DE IR"
+									},
+									{
+										"0": "31",
+										"1": "ADICIONAL DE TRANSFERENCIA"
+									},
+									{
+										"0": "576",
+										"1": "JORNADA ENGENHEIRO ARQUITETO"
+									},
+									{
+										"0": "739",
+										"1": "GRATIFICAÇÃO CONSERVAÇÃO LEI MUNICIPAL 5552"
+									},
+									{
+										"0": "78",
+										"1": "CONSIGNAÇÃO EM PAGAMENTO"
+									},
+									{
+										"0": "483",
+										"1": "ENQUADRAMENTO SALARIAL - CARGO E SALÁRIO"
+									},
+									{
+										"0": "407",
+										"1": "AUXÍLIO ALIMENTAÇÃO"
+									},
+									{
+										"0": "511",
+										"1": "FGTS NÃO DEPOSITADO"
+									},
+									{
+										"0": "466",
+										"1": "DIFERENÇA SALARIAL - REFLEXOS"
+									},
+									{
+										"0": "334",
+										"1": "TRABALHADOR SEM REGISTRO"
+									},
+									{
+										"0": "212",
+										"1": "INDENIZACAO POR DANOS MORAIS"
+									},
+									{
+										"0": "120",
+										"1": "DIFERENÇA SALARIAL - SALÁRIO IN NATURA"
+									},
+									{
+										"0": "436",
+										"1": "DANO MORAL"
+									},
+									{
+										"0": "275",
+										"1": "PERNOITES"
+									},
+									{
+										"0": "562",
+										"1": "INDENIZAÇÃO POR PERDAS E DANOS"
+									},
+									{
+										"0": "782",
+										"1": "ADICIONAL DE RISCO DE VIDA"
+									},
+									{
+										"0": "529",
+										"1": "GRATIFICAÇÃO SEMESTRAL"
+									},
+									{
+										"0": "112",
+										"1": "DIFERENÇA SALARIAL - EQUIP/REENQUAD"
+									},
+									{
+										"0": "611",
+										"1": "PAGAMENTO DE HONORÁRIOS ADVOCATÍCIOS"
+									},
+									{
+										"0": "819",
+										"1": "DESVIO DE FUNÇÃO"
+									},
+									{
+										"0": "604",
+										"1": "OUTROS"
+									},
+									{
+										"0": "451",
+										"1": "DEVOLUÇÃO DESCONTOS"
+									},
+									{
+										"0": "144",
+										"1": "EXTINÇÃO DO CONTRATO DE TRABALHO"
+									},
+									{
+										"0": "577",
+										"1": "LEGALIDADE CALL CENTER"
+									},
+									{
+										"0": "485",
+										"1": "ESTABILIDADE"
+									},
+									{
+										"0": "820",
+										"1": "VERBAS RESCISÓRIAS"
+									},
+									{
+										"0": "838",
+										"1": "HORA EXTRA - REGIME 12 X 36"
+									},
+									{
+										"0": "738",
+										"1": "GRATIFICAÇÃO LEI COMPLEMENTAR 277E 433"
+									},
+									{
+										"0": "211",
+										"1": "INDENIZACAO POR DANOS MATERIAIS "
+									},
+									{
+										"0": "551",
+										"1": "INDENIZACAO DANOS ESTETICOS"
+									},
+									{
+										"0": "566",
+										"1": "INSS EMPREGADO - ESTIMATIVA"
+									},
+									{
+										"0": "57",
+										"1": "AUXÍLIO - FUNERAL"
+									},
+									{
+										"0": "494",
+										"1": "FÉRIAS"
+									},
+									{
+										"0": "113",
+										"1": "DIFERENÇA SALARIAL - GRATIF/ACÚMULO"
+									},
+									{
+										"0": "640",
+										"1": "REEMBOLSO EDUCACIONAL"
+									},
+									{
+										"0": "82",
+										"1": "CONTRIBUIÇÃO PREVIDENCIÁRIA"
+									},
+									{
+										"0": "775",
+										"1": "IRREGULARIDADE DA CIPA"
+									},
+									{
+										"0": "652",
+										"1": "RETORNO AO PCS ANTERIOR"
+									},
+									{
+										"0": "490",
+										"1": "EXIBIÇÃO DE PCS"
+									},
+									{
+										"0": "919",
+										"1": "ATUALIZACAO MONETARIA"
+									},
+									{
+										"0": "24",
+										"1": "ADICIONAL DE PENOSIDADE"
+									},
+									{
+										"0": "745",
+										"1": "CORREÇÃO DE CURVA SALARIAL / 87"
+									},
+									{
+										"0": "329",
+										"1": "SUSPENSÃO DA EXECUÇÃO"
+									},
+									{
+										"0": "51",
+										"1": "ASSISTÊNCIA MÉDICA - ODONTOLÓGICA"
+									},
+									{
+										"0": "477",
+										"1": "ELEIÇÃO DA CIPA"
+									},
+									{
+										"0": "696",
+										"1": "CAPITAL A SER CONSTITUIDO"
+									},
+									{
+										"0": "138",
+										"1": "ESTABILIDADE"
+									},
+									{
+										"0": "67",
+										"1": "BOLSA DE ESTUDO"
+									},
+									{
+										"0": "232",
+										"1": "LICENÇA PRÊMIO"
+									},
+									{
+										"0": "811",
+										"1": "RESPONSABILIDADE SUBSIDIÁRIA"
+									},
+									{
+										"0": "401",
+										"1": "AUXÍLIO - ACIDENTE"
+									},
+									{
+										"0": "625",
+										"1": "PIRC - DIFERENÇAS"
+									},
+									{
+										"0": "844",
+										"1": "INTERVALO 15 MINUTOS MULHER (ART. 384)"
+									},
+									{
+										"0": "743",
+										"1": "FORMULÁRIO PARA APOSENTADORIA"
+									},
+									{
+										"0": "442",
+										"1": "DESPESAS CREDENCIAMENTO FARMÁCIA"
+									},
+									{
+										"0": "80",
+										"1": "CONTRATAÇÃO DEFICIENTES FÍSICOS"
+									},
+									{
+										"0": "710",
+										"1": "LITIGANCIA DE MÁ FÉ"
+									},
+									{
+										"0": "842",
+										"1": "INDENIZACAO DE DESPESA VESTUARIO"
+									},
+									{
+										"0": "236",
+										"1": "MPT - COAÇÃO DE EMPREGADOS"
+									},
+									{
+										"0": "179",
+										"1": "GRATIFICAÇÃO POR SUBSTITUIÇÃO"
+									},
+									{
+										"0": "766",
+										"1": "NÃO CUMPRIMENTO DO ARTIGO 444, DA CLT"
+									},
+									{
+										"0": "403",
+										"1": "AUXÍLIO - DOENÇA"
+									},
+									{
+										"0": "632",
+										"1": "PROMOÇÕES"
+									},
+									{
+										"0": "366",
+										"1": "ADICIONAL DE CONDUTOR"
+									},
+									{
+										"0": "164",
+										"1": "FGTS NÃO DEPOSITADO"
+									},
+									{
+										"0": "381",
+										"1": "ADICIONAL NOTURNO"
+									},
+									{
+										"0": "920",
+										"1": "ATUALIZACAO MONETARIA"
+									},
+									{
+										"0": "479",
+										"1": "ENQUADRAMENTO FUNCIONAL"
+									},
+									{
+										"0": "109",
+										"1": "DIFERENÇA RESERVA POUPANÇA SISTEL"
+									},
+									{
+										"0": "509",
+										"1": "FGTS - OPÇÃO RETROATIVA"
+									},
+									{
+										"0": "254",
+										"1": "NULIDADE RESCISAO JUSTA CAUSA"
+									},
+									{
+										"0": "474",
+										"1": "DOENCA DO TRABALHO"
+									},
+									{
+										"0": "214",
+										"1": "INDENIZAÇÃO POR KM RODADO"
+									},
+									{
+										"0": "160",
+										"1": "FGTS - LIBERAÇÃO GUIA"
+									},
+									{
+										"0": "737",
+										"1": "SALÁRIO POR DUPLA FUNÇÃO"
+									},
+									{
+										"0": "88",
+										"1": "CTVA - ADVOGADO"
+									},
+									{
+										"0": "290",
+										"1": "REAJUSTE SALARIAL"
+									},
+									{
+										"0": "734",
+										"1": "AUXÍLIO LANCHE"
+									},
+									{
+										"0": "392",
+										"1": "ANOTACOES CTPS"
+									},
+									{
+										"0": "533",
+										"1": "HONORARIOS ADVOCATICIOS "
+									},
+									{
+										"0": "685",
+										"1": "VALE - TRANSPORTE "
+									},
+									{
+										"0": "925",
+										"1": "ATUALIZACAO MONETARIA 3"
+									},
+									{
+										"0": "924",
+										"1": "ATUALIZACAO MONETARIA 2"
+									},
+									{
+										"0": "923",
+										"1": "PDI VIKSTAR"
+									},
+									{
+										"0": "922",
+										"1": "PDI VIKSTAR"
+									},
+									{
+										"0": "921",
+										"1": "PDI VIKSTAR"
+									}
+								],
+								"schema": [
+									{
+										"key": "0",
+										"name": "id",
+										"type": "string"
+									},
+									{
+										"key": "1",
+										"name": "name",
+										"type": "string"
+									}
+								],
+								"truncated": false
+							},
+							"isSummary": false,
+							"language": "scala"
+						},
+						"persist_state": {
+							"view": {
+								"type": "details",
+								"chartOptions": {
+									"chartType": "bar",
+									"aggregationType": "count",
+									"categoryFieldKeys": [
+										"0"
+									],
+									"seriesFieldKeys": [
+										"0"
+									],
+									"isStacked": false
+								}
+							}
+						}
+					}
+				}
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import com.microsoft.spark.sqlanalytics\r\n",
+					"from com.microsoft.spark.sqlanalytics.Constants import Constants\r\n",
+					"from pyspark.sql.functions import col\r\n",
+					"\r\n",
+					"##pipe_id = 'c3408445-eb4e-4a7c-91a8-ea80ea0cf3ed'\r\n",
+					"\r\n",
+					"env = mssparkutils.env.getWorkspaceName()\r\n",
+					"if(env == 'syn-tlf-jarvis-prod'):\r\n",
+					"    sqlWorkspaceName = \"syndpjarvisprod\"\r\n",
+					"elif(env == 'syn-tlf-jarvis-test'):\r\n",
+					"    sqlWorkspaceName = 'syndpjarvistest'\r\n",
+					"else:\r\n",
+					"    sqlWorkspaceName = 'syndpjarvisdev'\r\n",
+					"\r\n",
+					"\r\n",
+					"# // Cosmos Variables\r\n",
+					"linkedService = 'CosmosDb'\r\n",
+					"containerTarget = 'tipo_pedido'\r\n",
+					""
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"CREATE OR REPLACE TEMP VIEW carga_tipo_pedido as\r\n",
+					"SELECT cast(cod_pedido_processo as string) as id, nom_pedido_processo as name\r\n",
+					"FROM silver.pedido_processo"
+				],
+				"execution_count": 24
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"df_query = spark.read.table('carga_tipo_pedido')\r\n",
+					"display(df_query)"
+				],
+				"execution_count": 26
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Write to Cosmos Container\r\n",
+					"(df_query\r\n",
+					"    .write\r\n",
+					"    .format(\"cosmos.oltp\")\r\n",
+					"    .option(\"spark.synapse.linkedService\", linkedService)\r\n",
+					"    .option(\"spark.cosmos.container\", containerTarget)\r\n",
+					"    .option(\"spark.cosmos.write.strategy\", \"ItemOverwrite\")\r\n",
+					"    .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"    .mode(\"append\")\r\n",
+					"    .save()\r\n",
+					")"
+				],
+				"execution_count": 27
+			}
+		]
+	}
+}

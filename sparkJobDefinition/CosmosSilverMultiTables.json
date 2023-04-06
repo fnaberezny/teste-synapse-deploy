@@ -1,0 +1,51 @@
+{
+	"name": "CosmosSilverMultiTables",
+	"properties": {
+		"folder": {
+			"name": "StreamMultiTables"
+		},
+		"targetBigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"targetSparkConfiguration": {
+			"referenceName": "optimizedTransactions",
+			"type": "SparkConfigurationReference"
+		},
+		"requiredSparkVersion": "3.2",
+		"language": "scala",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "CosmosSilverMultiTables",
+			"file": "abfss://src@dlstlfjarvisprod.dfs.core.windows.net/scala/spark3.2/jarvisstreaming_2.12-Spark3.2.1.jar",
+			"className": "br.com.telefonica.MainHandler",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "9fc47e51-69e7-4469-b28f-17279cbcd8a1",
+				"spark.__artifact__.spark.sql.parquet.int96RebaseModeInWrite": "CORRECTED",
+				"spark.__artifact__.spark.python.worker.memory": "4g",
+				"spark.__artifact__.spark.kryoserializer.buffer.max": "512m"
+			},
+			"args": [
+				"--job",
+				"cosmos-silver",
+				"--env",
+				"prod",
+				"--akv",
+				"kv-tlf-jarvis-prod"
+			],
+			"jars": [],
+			"pyFiles": [
+				""
+			],
+			"files": [],
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 1
+		}
+	}
+}

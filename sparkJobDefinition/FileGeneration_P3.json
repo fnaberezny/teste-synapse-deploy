@@ -1,0 +1,42 @@
+{
+	"name": "FileGeneration_P3",
+	"properties": {
+		"folder": {
+			"name": "FileGen_OLD"
+		},
+		"targetBigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "3.2",
+		"language": "python",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "FileGeneration_P3",
+			"file": "abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/v2/file_gen_p3_shoot.py",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "11b7d228-331d-4a19-97a7-df9ad282f36d"
+			},
+			"args": [
+				"-env",
+				"prod",
+				"--akv",
+				"kv-tlf-jarvis-prod"
+			],
+			"jars": [],
+			"pyFiles": [
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/v2/shared.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/v2/config_jobs.py"
+			],
+			"files": [],
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2
+		}
+	}
+}

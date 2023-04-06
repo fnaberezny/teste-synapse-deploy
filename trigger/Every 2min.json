@@ -1,0 +1,24 @@
+{
+	"name": "Every 2min",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "P3_GERA_FOTOS_POSSIVEIS_FULL",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 2,
+				"startTime": "2023-03-31T00:00:00",
+				"timeZone": "E. South America Standard Time"
+			}
+		}
+	}
+}

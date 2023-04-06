@@ -1,0 +1,24 @@
+{
+	"name": "Every 10min",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "delete_from_cosmos",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 10,
+				"startTime": "2023-04-05T20:01:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"name": "photo_load",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "P3_ PHOTOGRAPHS_LOAD",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 10,
+				"startTime": "2023-04-03T13:30:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

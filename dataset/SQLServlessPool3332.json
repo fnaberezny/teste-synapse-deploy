@@ -1,0 +1,16 @@
+{
+	"name": "SQLServlessPool3332",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SelfHosted Lakes",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"table": ""
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

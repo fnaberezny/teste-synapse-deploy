@@ -1,0 +1,176 @@
+{
+	"name": "Notebook_testa_data",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "f75e0230-c876-4ab3-8125-c815503fe448"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import com.microsoft.spark.sqlanalytics\r\n",
+					"from com.microsoft.spark.sqlanalytics.Constants import Constants\r\n",
+					"from pyspark.sql.functions import col\r\n",
+					"\r\n",
+					"\r\n",
+					"df = (spark.read.synapsesql('syndpjarvisprod.dbo.ft_fotografia').filter('cod_calendario_monetario = 162')\r\n",
+					"# .selectExpr('*',''' case when num_processo = \"50/2003--8\" THEN CAST(\"2005-10-31 00:00:00\" as TIMESTAMP) \r\n",
+					"#     ELSE DATA_ENCERRAMENTO\r\n",
+					"#     END AS DATA_ENCERRAMENTO2'''\r\n",
+					"#  )\r\n",
+					"# ).drop('DATA_ENCERRAMENTO')\r\n",
+					")\r\n",
+					"df.printSchema()\r\n",
+					""
+				],
+				"execution_count": 48
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dfp = df.toPandas()"
+				],
+				"execution_count": 49
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dfp"
+				],
+				"execution_count": 44
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import pyspark.sql.functions as f\r\n",
+					"\r\n",
+					"df = (spark.read.synapsesql('syndpjarvisprod.dbo.ft_fotografia').filter('cod_calendario_monetario = 162').filter('num_processo = \"50/2003--8\"')\r\n",
+					".withColumn('DATA_ENCERRAMENTO', f.lit('2005-10-31 00:00:00').cast('timestamp'))\r\n",
+					")\r\n",
+					"\r\n",
+					"df.show()"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dfp = df.toPandas()\r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dfp"
+				],
+				"execution_count": 33
+			}
+		]
+	}
+}

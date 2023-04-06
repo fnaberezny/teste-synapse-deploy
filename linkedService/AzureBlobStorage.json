@@ -1,0 +1,16 @@
+{
+	"name": "AzureBlobStorage",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"serviceEndpoint": "https://dlstlfjarvisprod.blob.core.windows.net/",
+			"accountKind": "StorageV2"
+		},
+		"connectVia": {
+			"referenceName": "SelfHost",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

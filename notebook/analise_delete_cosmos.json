@@ -1,0 +1,412 @@
+{
+	"name": "analise_delete_cosmos",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 1,
+			"runAsWorkspaceSystemIdentity": true,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "86875e17-eb38-4ff9-a431-926f8539f85a"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql.functions import regexp_replace, to_date, lit\r\n",
+					"from collections import OrderedDict\r\n",
+					"\r\n",
+					"env = mssparkutils.env.getWorkspaceName()\r\n",
+					"if(env == 'syn-tlf-jarvis-prod'):\r\n",
+					"    sql_database = \"syndpjarvisprod\"\r\n",
+					"    akv_name ='kv-tlf-jarvis-prod'\r\n",
+					"\r\n",
+					"elif(env == 'syn-tlf-jarvis-test'):\r\n",
+					"    sql_database = 'syndpjarvistest'\r\n",
+					"    akv_name = 'kv-tlf-jarvis-test'\r\n",
+					"\r\n",
+					"else:\r\n",
+					"    sql_database = 'syndpjarvisdev'\r\n",
+					"    akv_name = 'kv-tlv-devops-dev'\r\n",
+					"\r\n",
+					"\r\n",
+					"# cosmos_tables = TokenLibrary.getSecret(akv_name, 'tablesCosmos').split(',')\r\n",
+					"# string_pk = TokenLibrary.getSecret(akv_name, \"primaryKeyColumnNameTable\")\r\n",
+					""
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"string_pk = '{advogado=sig_advogado, bkp_fotografia_item=current_ts, fotografia_item_reu=current_ts, parametro=current_ts, comarca=cod_comarca, divisao_processo=cod_divisao_processo, empresa=cod_empresa, escritorio_contratado=sig_escritorio_contratado, escritorio_contratado_sap=cod_escritorio_contratado_sap, estado=sig_estado, fase_processual=cod_fase_processual, fotografia=cod_fotografia, juiz=cod_juiz, modulo=cod_modulo, modulo_pagamento=cod_modulo_pagamento, natureza=cod_natureza, parte_processo=cod_parte_processo, pedido_processo=cod_pedido_processo, perfil_usuario=cod_perfil_usuario, prestacao_contas=cod_prestacao_contas, processo=num_processo, prog_rel_andament_penhor_on=id_prog_rel_andament_penhor_on, prog_rel_prestacao_conta=id_prog_rel_prestacao_conta, prog_rel_reclassi_penhor_on=id_prog_rel_reclassi_penhor_on, prog_relatorio_acomp_prazo=id_prog_relatorio_acomp_prazo, reavaliacao=cod_reavaliacao, tipo_acao_processo=cod_tipo_acao_processo, tipo_contingencia=cod_tipo_contingencia, tipo_indice_atualizacao=cod_tipo_indice_atualizacao, tipo_ocorrencia=cod_tipo_ocorrencia, tipo_pagamento=cod_tipo_pagamento, tipo_pagamento_ocorrencia=cod_tipo_pagamento_ocorrencia, usuario=nom_usuario, juizo=cod_juizo; cod_comarca, tipo_acao=cod_tipo_acao; cod_pre_objeto_empresa, especific_tipo_ocorrencia=cod_especific_tipo_ocorrencia; cod_tipo_ocorrencia, especific_tipo_pagamento=cod_tipo_pagamento; cod_especific_tipo_pagamento, especificacao_natureza=cod_especificacao_natureza; cod_natureza, fotografia_divisao=cod_fotografia_divisao; cod_fotografia, fotografia_modulo=cod_fotografia; cod_fotografia_modulo, municipio=sig_municipio; sig_estado, funcionario=cod_empresa; cod_funcionario, detalhe_especific_natureza=cod_natureza; cod_especificacao_natureza; cod_detalhe_especific_natureza, especific_tipo_acao=cod_pre_objeto_empresa; cod_tipo_acao; cod_especific_tipo_acao, ocorrencia=cod_ocorrencia; cod_empresa; num_processo, processo_pedido_processo=num_processo; cod_empresa; cod_pedido_processo, valor_data_processo=cod_empresa; num_processo; cod_valor_data_processo, reu=cod_empresa; num_processo; cod_parte_processo, fotografia_item=cod_fotografia_item; cod_fotografia; dtc_cadastro, autor=cod_empresa; num_processo; cod_parte_processo, det_especific_tipo_acao=cod_tipo_acao; cod_especific_tipo_acao; cod_det_especific_tipo_acao; cod_pre_objeto_empresa, modulo_natureza=cod_modulo; cod_natureza; cod_especificacao_natureza; cod_detalhe_especific_natureza, pre_objeto_empresa=cod_pre_objeto_empresa, especif_tipo_contingencia=cod_especif_tipo_contingencia, canal_habilitador=cod_canal_habilitador, produto=cod_produto, processo_produto=cod_processo_produto, terceiro_interessado=cod_empresa; num_processo; cod_parte_processo, vitima=cod_empresa; num_processo; cod_parte_processo, feriado=dtc_feriado, assoc_tipo_oco_mov=cod_assoc_tipo_oco_mov, status_ocorrencia_processo=cod_empresa; num_processo; cod_ocorrencia; cod_status_ocorrencia_processo, prestacao_contas_form=cod_prestacao_contas_form, param_processo_excel_p3=id}'"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"cosmos_tables = ['advogado',\r\n",
+					" 'autor',\r\n",
+					" 'bkp_fotografia_item',\r\n",
+					" 'comarca',\r\n",
+					" 'det_especific_tipo_acao',\r\n",
+					" 'detalhe_especific_natureza',\r\n",
+					" 'divisao_processo',\r\n",
+					" 'empresa',\r\n",
+					" 'escritorio_contratado',\r\n",
+					" 'escritorio_contratado_sap',\r\n",
+					" 'especific_tipo_acao',\r\n",
+					" 'especific_tipo_ocorrencia',\r\n",
+					" 'especific_tipo_pagamento',\r\n",
+					" 'especificacao_natureza',\r\n",
+					" 'estado',\r\n",
+					" 'fase_processual',\r\n",
+					" 'fotografia',\r\n",
+					" 'fotografia_divisao',\r\n",
+					" 'fotografia_item',\r\n",
+					" 'fotografia_item_reu',\r\n",
+					" 'fotografia_modulo',\r\n",
+					" 'funcionario',\r\n",
+					" 'juiz',\r\n",
+					" 'juizo',\r\n",
+					" 'modulo',\r\n",
+					" 'modulo_natureza',\r\n",
+					" 'modulo_pagamento',\r\n",
+					" 'municipio',\r\n",
+					" 'natureza',\r\n",
+					" 'ocorrencia',\r\n",
+					" 'parametro',\r\n",
+					" 'parte_processo',\r\n",
+					" 'pedido_processo',\r\n",
+					" 'perfil_usuario',\r\n",
+					" 'prestacao_contas',\r\n",
+					" 'processo',\r\n",
+					" 'processo_pedido_processo',\r\n",
+					" 'prog_rel_andament_penhor_on',\r\n",
+					" 'prog_rel_prestacao_conta',\r\n",
+					" 'prog_rel_reclassi_penhor_on',\r\n",
+					" 'prog_relatorio_acomp_prazo',\r\n",
+					" 'reavaliacao',\r\n",
+					" 'reu',\r\n",
+					" 'tipo_acao',\r\n",
+					" 'tipo_acao_processo',\r\n",
+					" 'tipo_contingencia',\r\n",
+					" 'tipo_indice_atualizacao',\r\n",
+					" 'tipo_ocorrencia',\r\n",
+					" 'tipo_pagamento',\r\n",
+					" 'tipo_pagamento_ocorrencia',\r\n",
+					" 'usuario',\r\n",
+					" 'valor_data_processo',\r\n",
+					" 'pre_objeto_empresa',\r\n",
+					" 'especif_tipo_contingencia',\r\n",
+					" 'canal_habilitador',\r\n",
+					" 'produto',\r\n",
+					" 'processo_produto',\r\n",
+					" 'terceiro_interessado',\r\n",
+					" 'vitima',\r\n",
+					" 'feriado',\r\n",
+					" 'assoc_tipo_oco_mov',\r\n",
+					" 'status_ocorrencia_processo',\r\n",
+					" 'prestacao_contas_form',\r\n",
+					" 'param_fotografia_evh']"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"###Criar dicionário com pks: {tabela : [pk]}\r\n",
+					"pk_list = string_pk.translate(str.maketrans('','',r' {}')).split(',')\r\n",
+					"pk_dict = OrderedDict()\r\n",
+					"\r\n",
+					"for item in sorted(pk_list):\r\n",
+					"    item_list = item.split('=')\r\n",
+					"    pk_dict[item_list[0]] = item_list[1].split(';')\r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"###Loop para realizar o DELETE\r\n",
+					"\r\n",
+					"for table in pk_dict.keys():\r\n",
+					"    try:\r\n",
+					"        columns_pk = pk_dict[table]\r\n",
+					"        newpk = \"concat(\"+ \",'-',\".join(columns_pk) + ') as newpk'\r\n",
+					"\r\n",
+					"        ### Get deletes\r\n",
+					"        df_deletes = spark.read.table(f'bronze.{table}').filter('upper(op_type) = \"D\"').select(['current_ts'] + columns_pk)\r\n",
+					"\r\n",
+					"        ### Create Ids\r\n",
+					"        df_pks = (df_deletes.selectExpr('*', newpk)\r\n",
+					"                .withColumn('id', regexp_replace('newpk', '^[0]|[/_-]', ''))\r\n",
+					"                .drop_duplicates(['newpk'])\r\n",
+					"                )\r\n",
+					"\r\n",
+					"        total = df_pks.count()\r\n",
+					"        print(table, total)\r\n",
+					"        \r\n",
+					"    \r\n",
+					"    except Exception as e:\r\n",
+					"        print(\"Error table:\", table)\r\n",
+					"        print(e)\r\n",
+					""
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"###Loop to check qtdes\r\n",
+					"df_total = None\r\n",
+					"\r\n",
+					"for table in pk_dict.keys():\r\n",
+					"    \r\n",
+					"    try:\r\n",
+					"        columns_pk = pk_dict[table]\r\n",
+					"        newpk = \"concat(\"+ \",'-',\".join(columns_pk) + ') as newpk'\r\n",
+					"\r\n",
+					"        ### Get deletes\r\n",
+					"        df_deletes = (spark.read.table(f'bronze.{table}').filter('upper(op_type) = \"D\"')\r\n",
+					"                        .select( list(set(['current_ts'] + columns_pk)) ) ##Deduplicate selected coluns when current_ts is part of PK;\r\n",
+					"                        )\r\n",
+					"\r\n",
+					"\r\n",
+					"        ### Create Ids\r\n",
+					"        df_pks = (df_deletes.selectExpr('*', newpk)\r\n",
+					"                .withColumn('id', regexp_replace('newpk', '^[0]|[/_-]', ''))\r\n",
+					"                .drop_duplicates(['newpk'])\r\n",
+					"                # .withColumn('dt_delete', to_date('current_ts'))\r\n",
+					"                .withColumn('table_name', lit(table))\r\n",
+					"                .select(['table_name', 'newpk', 'current_ts'])\r\n",
+					"                )\r\n",
+					"\r\n",
+					"        # df_grouped = df_pks.groupBy(['table_name','dt_delete']).count()\r\n",
+					"\r\n",
+					"\r\n",
+					"        try:\r\n",
+					"            df_total = df_total.union(df_pks)\r\n",
+					"        except Exception as e:\r\n",
+					"            print(e)\r\n",
+					"            df_total = df_pks\r\n",
+					"        \r\n",
+					"    \r\n",
+					"    except Exception as e:\r\n",
+					"        print(\"Error table:\", table)\r\n",
+					"        print(e)\r\n",
+					"\r\n",
+					"df_total.cache().count()\r\n",
+					"df_total.createOrReplaceTempView('total_delete')"
+				],
+				"execution_count": 136
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql ---Total delete\r\n",
+					"\r\n",
+					"SELECT table_name, count(*) FROM total_delete \r\n",
+					"group by 1 \r\n",
+					"order by 1"
+				],
+				"execution_count": 137
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql ---Total delete por dia\r\n",
+					"\r\n",
+					"SELECT table_name, to_date(current_ts) as dt_delete, count(*) FROM total_delete group by 1,2 order by 1,2"
+				],
+				"execution_count": 117
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql --max delete por day\r\n",
+					"\r\n",
+					"SELECT table_name, max(total) maior_num_delete from (\r\n",
+					"    SELECT table_name, to_date(current_ts) as dt_delete, count(*) total FROM total_delete group by 1,2 \r\n",
+					")\r\n",
+					"group by 1\r\n",
+					"order by 2 desc"
+				],
+				"execution_count": 119
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql --max delete por hora\r\n",
+					"\r\n",
+					"SELECT table_name, date_format(current_ts, 'yyyyMMdd-hh') as dt_hora_delete, count(*) total \r\n",
+					"FROM total_delete \r\n",
+					"group by 1,2 \r\n",
+					"order by 3 desc"
+				],
+				"execution_count": 135
+			}
+		]
+	}
+}

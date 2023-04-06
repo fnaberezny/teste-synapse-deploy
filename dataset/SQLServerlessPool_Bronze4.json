@@ -1,0 +1,16 @@
+{
+	"name": "SQLServerlessPool_Bronze4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SelfHosted Lakes",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"Database": "bronze"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

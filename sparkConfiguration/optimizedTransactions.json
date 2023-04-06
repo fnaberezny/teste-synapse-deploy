@@ -1,0 +1,18 @@
+{
+	"name": "optimizedTransactions",
+	"properties": {
+		"configs": {
+			"spark.sql.parquet.int96RebaseModeInWrite": "CORRECTED",
+			"spark.python.worker.memory": "4g",
+			"spark.kryoserializer.buffer.max": "512m"
+		},
+		"created": "2023-03-31T14:33:50.267Z",
+		"createdBy": "rafael.m.andrade@telefonicati.onmicrosoft.com",
+		"annotations": [],
+		"configMergeRule": {
+			"artifact.currentOperation.spark.sql.parquet.int96RebaseModeInWrite": "replace",
+			"artifact.currentOperation.spark.python.worker.memory": "replace",
+			"artifact.currentOperation.spark.kryoserializer.buffer.max": "replace"
+		}
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"name": "AzureBlobStorage890",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Storage/storageAccounts/sttlfjarvisprod",
+		"groupId": "blob",
+		"fqdns": [
+			"sttlfjarvisprod.blob.core.windows.net"
+		]
+	}
+}

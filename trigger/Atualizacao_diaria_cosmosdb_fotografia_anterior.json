@@ -1,0 +1,24 @@
+{
+	"name": "Atualizacao_diaria_cosmosdb_fotografia_anterior",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "P3_FOTOGRAFIA_ANTERIOR",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2023-03-16T23:59:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

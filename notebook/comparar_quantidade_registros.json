@@ -1,0 +1,362 @@
+{
+	"name": "comparar_quantidade_registros",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 1,
+			"runAsWorkspaceSystemIdentity": true,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "7cc5d84f-7a03-49b3-a6be-2a17e9594c56"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import com.microsoft.spark.sqlanalytics\r\n",
+					"from com.microsoft.spark.sqlanalytics.Constants import Constants\r\n",
+					"import pyspark.sql.functions as f\r\n",
+					"\r\n",
+					"\r\n",
+					"###Defining vars\r\n",
+					"\r\n",
+					"env = mssparkutils.env.getWorkspaceName()\r\n",
+					"if(env == 'syn-tlf-jarvis-prod'):\r\n",
+					"    sql_database = \"syndpjarvisprod\"\r\n",
+					"    akv_name ='kv-tlf-jarvis-prod'\r\n",
+					"    lake_name = 'dlstlfjarvisprod'\r\n",
+					"\r\n",
+					"elif(env == 'syn-tlf-jarvis-test'):\r\n",
+					"    sql_database = 'syndpjarvistest'\r\n",
+					"    akv_name = 'kv-tlf-jarvis-test'\r\n",
+					"    lake_name = 'dlstlfjarvistest'\r\n",
+					"\r\n",
+					"else:\r\n",
+					"    sql_database = 'syndpjarvisdev'\r\n",
+					"    akv_name = 'kv-tlv-devops-dev'\r\n",
+					"    lake_name = 'dlstlfjarvisdev'\r\n",
+					"\r\n",
+					"\r\n",
+					"\r\n",
+					"\r\n",
+					"###Lisf of tables to read from Dedicated SQL\r\n",
+					"sql_pool_tables = [ \r\n",
+					"'assoc_tipo_oco_mov','autor','calendario_monetario','calendario_monetario_p3','canal_habilitador','comarca','det_especific_tipo_acao','detalhe_especific_natureza',\r\n",
+					"'empresa','escritorio_contratado','escritorio_contratado_sap','especif_tipo_contingencia','especific_tipo_acao','especific_tipo_ocorrencia','especificacao_natureza',\r\n",
+					"'estado','feriado','fotografia_divisao','fotografia_item_reu','fotografia_item_stg','fotografia_projecao_p3','fotografia_stg','index_module_p3','juizo','modulo','modulo_natureza',\r\n",
+					"'municipio','ocorrencia','parte_processo', 'pedidos_trabalhistas_p3','pre_objeto_empresa','prestacao_contas','prestacao_contas_form','processo',\r\n",
+					"'processo_p3','processo_pedido_processo','processo_produto','produto', 'reavaliacao','reu','status_ocorrencia_processo','terceiro_interessado', 'tipo_acao','tipo_acao_processo',\r\n",
+					"'tipo_indice_atualizacao','tipo_ocorrencia','valor_data_processo','vitima'\r\n",
+					"]\r\n",
+					"\r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"**Antes de executar a celula abaixo, adicionar o arquivo com nome \"oracle_count\" no diretório do datalake abaixo:\r\n",
+					"load_files/oracle_extract/oracle_count.csv**"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"## Read from Oracle\r\n",
+					"schema = 'table_name string, total_rows_oracle int, dtc_extract_oracle timestamp'\r\n",
+					"\r\n",
+					"df_oracle = (spark.read.schema(schema)\r\n",
+					"            .csv(f'abfss://datalake@{lake_name}.dfs.core.windows.net/load_files/oracle_extract/oracle_count.csv', header = 'true')\r\n",
+					"                ).withColumn('table_name', f.lower(f.col('table_name')))"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"## Read tables from LAKE\r\n",
+					"silver_tables = TokenLibrary.getSecret(akv_name, 'tables', 'AzureKeyVault').split(',')\r\n",
+					"\r\n",
+					"df_silver = None\r\n",
+					"\r\n",
+					"#### List of table to not verify\r\n",
+					"tables_to_remove = ['param_processo_excel_p3']\r\n",
+					"\r\n",
+					"table_list = list(set(silver_tables) - set(tables_to_remove))\r\n",
+					"\r\n",
+					"for table in silver_tables:\r\n",
+					"\r\n",
+					"\r\n",
+					"    ### Read from DELTA\r\n",
+					"    try:\r\n",
+					"        df = spark.read.table(f'silver.{table}')\r\n",
+					"        df = df.withColumn('table_name', f.lit(f'{table.lower()}'))\r\n",
+					"        df = df.groupBy('table_name').agg(f.expr('max(created_at) as last_modified_lake'), f.expr('count(1) as total_rows_lake'))\r\n",
+					"\r\n",
+					"        \r\n",
+					"        try:\r\n",
+					"            df_silver = df_silver.union(df)\r\n",
+					"        except:\r\n",
+					"            df_silver = df            \r\n",
+					"\r\n",
+					"    except Exception as e:\r\n",
+					"        print(\"Error trying to sumarrize values for table\", table)   \r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"df_final_dedicado = None\r\n",
+					"\r\n",
+					"## Read from SQL dedicated pool\r\n",
+					"for table in sql_pool_tables:\r\n",
+					"\r\n",
+					"    if(table.upper().endswith('_P3')):\r\n",
+					"        col_data = 'current_ts_p3'\r\n",
+					"    else:\r\n",
+					"        col_data = 'current_ts'\r\n",
+					"\r\n",
+					"    ### Read from query to pushdown aggregation to synapse\r\n",
+					"    try:\r\n",
+					"        df_dedicado = (spark.read\r\n",
+					"                            .option(Constants.DATABASE, sql_database)\r\n",
+					"                            .synapsesql(f\"\"\"SELECT '{table.lower()}' as table_name,\r\n",
+					"                                                    max({col_data}) as last_modified_dedicado,\r\n",
+					"                                                    COUNT(1) as total_rows_dedicado\r\n",
+					"                                        FROM silver.{table}\"\"\")\r\n",
+					"                        )\r\n",
+					"\r\n",
+					"        try:\r\n",
+					"            df_final_dedicado = df_final_dedicado.union(df_dedicado)\r\n",
+					"        except:\r\n",
+					"            df_final_dedicado = df_dedicado\r\n",
+					"\r\n",
+					"    except Exception as e:\r\n",
+					"        print(\"Error trying to sumarrize values for table\", table)"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"## Read tables from COSMOS\r\n",
+					"\r\n",
+					"df_final_cosmos = None\r\n",
+					"\r\n",
+					"cosmos_tables = TokenLibrary.getSecret(akv_name, 'tablesCosmos', 'AzureKeyVault').split(',')\r\n",
+					"\r\n",
+					"for table in cosmos_tables:\r\n",
+					"    try:\r\n",
+					"        df_cosmos = (spark.read\r\n",
+					"                    .format(\"cosmos.oltp\")\r\n",
+					"                    .option(\"spark.synapse.linkedService\", \"CosmosDb\")\r\n",
+					"                    .option(\"spark.cosmos.container\", table)\r\n",
+					"                    .option(\"spark.cosmos.read.customQuery\", f\"Select '{table.lower()}' as table_name, count(1) as total_rows_cosmos, max(c.current_ts) as last_modified_cosmos FROM c\")\r\n",
+					"                    .option(\"spark.cosmos.read.partitioning.strategy\", \"Restrictive\")\r\n",
+					"                    .option(\"spark.cosmos.read.inferSchema.enabled\", \"true\")\r\n",
+					"                    .load()\r\n",
+					"        )\r\n",
+					"\r\n",
+					"        ### Sumarize df due cosmos count partition style\r\n",
+					"        df_cosmos = df_cosmos.groupBy('table_name').agg(f.expr('max(last_modified_cosmos) as last_modified_cosmos'), f.expr('sum(total_rows_cosmos) as total_rows_cosmos'))\r\n",
+					"\r\n",
+					"\r\n",
+					"        try:\r\n",
+					"            df_final_cosmos = df_final_cosmos.union(df_cosmos)\r\n",
+					"        except:\r\n",
+					"            df_final_cosmos = df_cosmos\r\n",
+					"        \r\n",
+					"\r\n",
+					"    except Exception as e:\r\n",
+					"        print(\"Error trying to sumarrize values for table\", table)\r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_final = (df_oracle.join(df_silver, 'table_name', 'full')\r\n",
+					"            .join(df_final_dedicado, 'table_name', 'full')\r\n",
+					"            .join(df_final_cosmos, 'table_name', 'full')\r\n",
+					"            .withColumn('created_at', f.current_timestamp())\r\n",
+					"            .select('table_name', 'created_at',\r\n",
+					"                        'total_rows_oracle','total_rows_lake', 'total_rows_cosmos', 'total_rows_dedicado',\r\n",
+					"                        'dtc_extract_oracle',  'last_modified_lake', 'last_modified_cosmos', 'last_modified_dedicado')\r\n",
+					")"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"(df_final.write.format('delta')\r\n",
+					".mode('overwrite')\r\n",
+					".option('overwriteSchema', 'True')\r\n",
+					".saveAsTable('silver.rows_compare', path = f'abfss://datalake@{lake_name}.dfs.core.windows.net/data/silver/tables/rows_compare')\r\n",
+					")"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": true
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# -- %%sql\r\n",
+					"\r\n",
+					"# -- SELECT * FROM silver.rows_compare\r\n",
+					"# -- WHERE total_rows_oracle <> total_rows_cosmos"
+				],
+				"execution_count": 9
+			}
+		]
+	}
+}

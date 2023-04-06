@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "\nCREATE TABLE [Silver].[empresa_possiveis]\n(\n\t[COD_EMPRESA] [int] NULL,\n\t[COD_CALENDARIO_MONETARIO] [int] NULL,\n\t[OPERACAO] [varchar](8000) NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nGO\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "syndpjarvisprod",
+				"poolName": "syndpjarvisprod"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

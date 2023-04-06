@@ -1,0 +1,56 @@
+{
+	"name": "FileFilterGen_RefactAutomatico",
+	"properties": {
+		"folder": {
+			"name": "FileGen_OLD"
+		},
+		"targetBigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "3.2",
+		"language": "python",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "FileFilterGen_RefactAutomatico",
+			"file": "abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/main.py",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "1",
+				"spark.autotune.trackingId": "cddc76e2-5a50-4c8a-816f-ded87f041ff6"
+			},
+			"args": [
+				"--env",
+				"prod",
+				"--akv",
+				"kv-tlf-jarvis-prod",
+				"--job",
+				"consolidatedp3"
+			],
+			"jars": [],
+			"pyFiles": [
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/config_jobs.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/filter_file.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/shoot_p3.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/automatic_p3.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/consolidate_p1.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/filter_file_p3.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/job_trait.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/AKVConfig.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/EHSMessageResponse.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/ExcelFileGen.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/FormatSelect.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/SetupSession.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/LoggerProvider.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/shoot_p3_alternative.py"
+			],
+			"files": [],
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 1
+		}
+	}
+}

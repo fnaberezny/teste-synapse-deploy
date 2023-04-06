@@ -1,0 +1,44 @@
+{
+	"name": "ParamsStream",
+	"properties": {
+		"folder": {
+			"name": "FileGeneration_P3/Gerar Relatório Fotografia"
+		},
+		"targetBigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "3.2",
+		"language": "scala",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "ParamsStream",
+			"file": "abfss://src@dlstlfjarvisprod.dfs.core.windows.net/scala/spark3.2/jarvisstreaming_2.12-Spark3.2.1.jar",
+			"className": "br.com.telefonica.MainHandler",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "1",
+				"spark.autotune.trackingId": "7fb8a364-63d6-419c-b49e-074437a260ec"
+			},
+			"args": [
+				"--job",
+				"params",
+				"--env",
+				"prod",
+				"--akv",
+				"kv-tlf-jarvis-prod"
+			],
+			"jars": [],
+			"pyFiles": [
+				""
+			],
+			"files": [],
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 1
+		}
+	}
+}

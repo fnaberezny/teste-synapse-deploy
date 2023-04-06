@@ -1,0 +1,3919 @@
+{
+	"name": "all_tables_bronze_deploy",
+	"properties": {
+		"folder": {
+			"name": "CreateBronzeTables"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "20a21944-1c2f-4fe6-b560-3019c9f6b7c1"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "sql"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela ADVOGADO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.advogado (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\t\r\n",
+					"    sig_advogado string,\r\n",
+					"    nom_advogado string,\r\n",
+					"    sig_escritorio_contratado string,\r\n",
+					"    nom_apelido string,\r\n",
+					"    num_cpf string,\r\n",
+					"    num_rg string,\r\n",
+					"    des_endereco string,\r\n",
+					"    des_comp_endereco string,\r\n",
+					"    sig_estado string,\r\n",
+					"    sig_municipio string,\r\n",
+					"    nom_bairro string,\r\n",
+					"    num_tel_fixo string,\r\n",
+					"    num_tel_fax string,\r\n",
+					"    num_cep string,\r\n",
+					"    num_tel_celular string,\r\n",
+					"    cod_estado_civil string,\r\n",
+					"    des_email string,\r\n",
+					"    sts_advogado_interno string,\r\n",
+					"    sts_advogado_ativo string,\r\n",
+					"    num_prioridade string,\r\n",
+					"    num_quant_contratos string,\r\n",
+					"    num_quant_pareceres string,\r\n",
+					"    sts_resp_consultivo string,\r\n",
+					"    sts_responsavel_seguranca string,\r\n",
+					"    sts_coresponsavel_seguranca string,\r\n",
+					"    sts_migracao_benner string,\r\n",
+					"    num_oab string,\r\n",
+					"    sts_migracao_cpj string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/advogado'"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"-- Tabela AUTOR\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.autor (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_empresa string,\r\n",
+					"    num_processo string,\r\n",
+					"    cod_parte_processo string,\r\n",
+					"    dtc_inicio string,\r\n",
+					"    dtc_fim string,\r\n",
+					"    sts_migracao_benner string,\r\n",
+					"    sts_migracao_cpj string,\r\n",
+					"    sts_migracao_turquesa string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/autor'"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela BKP_FOTOGRAFIA_ITEM\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.bkp_fotografia_item (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    num_processo string,\r\n",
+					"    cod_empresa string,\r\n",
+					"    cod_fotografia_item string,\r\n",
+					"    cod_fotografia string,\r\n",
+					"    vlr_longo_prazo string,\r\n",
+					"    vlr_curto_prazo string,\r\n",
+					"    vlr_possivel string,\r\n",
+					"    vlr_remoto string,\r\n",
+					"    vlr_pedido string,\r\n",
+					"    vlr_deposito_judicial string,\r\n",
+					"    vlr_recurso_ordinario string,\r\n",
+					"    vlr_recurs_oderevista string,\r\n",
+					"    vlr_penhora_online string,\r\n",
+					"    vlr_bens_penhorados string,\r\n",
+					"    vlr_demais_garantias string,\r\n",
+					"    sts_proceso string,\r\n",
+					"    motivodo_arquivamento string,\r\n",
+					"    vlr_valor_pago_acordo string,\r\n",
+					"    vlr_valor_pago_condenacao string,\r\n",
+					"    vlr_valor_economizado string,\r\n",
+					"    vlr_custas string,\r\n",
+					"    vlr_valor_levantado_vivo string,\r\n",
+					"    num_cpf_cnpj string,\r\n",
+					"    dtc_cadastro string,\r\n",
+					"    cod_fotografia_modulo string,\r\n",
+					"    dtc_arquivamento string,\r\n",
+					"    dtc_fim string,\r\n",
+					"    cod_tipo_acao string,\r\n",
+					"    cod_especific_tipo_acao string,\r\n",
+					"    dtc_citacao string,\r\n",
+					"    sig_escritorio_contratado string,\r\n",
+					"    dtc_cadastro_processo string,\r\n",
+					"    dtc_protocolo_aforamento string,\r\n",
+					"    cod_natureza string,\r\n",
+					"    cod_especificacao_natureza string,\r\n",
+					"    cod_detalhe_especific_natureza string,\r\n",
+					"    cod_tipo_acao_processo string,\r\n",
+					"    sig_estado string,\r\n",
+					"    cod_comarca string,\r\n",
+					"    cod_juizo string,\r\n",
+					"    num_processo1_instancia string,\r\n",
+					"    cod_divisao_processo string,\r\n",
+					"    cod_tipo_ocorrencia_arquiva string,\r\n",
+					"    cod_fase_processual string,\r\n",
+					"    vlr_correcao_monetaria string,\r\n",
+					"    cod_tipo_contingencia string,\r\n",
+					"    cod_especif_tipo_contingencia string,\r\n",
+					"    tipo_operacao string,\r\n",
+					"    dtc_backup string,\r\n",
+					"    sts_solvencia string,\r\n",
+					"    cod_tipo_provisao string,\r\n",
+					"    cod_pre_objeto_empresa string,\r\n",
+					"    pasta_benner string,\r\n",
+					"    ajuste_financeiro string,\r\n",
+					"    ajuste_financeiro_prov_cp string,\r\n",
+					"    ajuste_financeiro_prov_lp string,\r\n",
+					"    ajuste_operacional string,\r\n",
+					"    ajuste_operacional_prov_cp string,\r\n",
+					"    ajuste_operacional_prov_lp string,\r\n",
+					"    baixa_prov_curto_financeira string,\r\n",
+					"    baixa_prov_curto_operacional string,\r\n",
+					"    baixa_prov_financeira string,\r\n",
+					"    baixa_prov_longo_financeira string,\r\n",
+					"    baixa_prov_longo_operacional string,\r\n",
+					"    baixa_prov_operacional string,\r\n",
+					"    cod_canal_habilitador string,\r\n",
+					"    cod_det_especific_tipo_acao string,\r\n",
+					"    cod_fotografia_divisao string,\r\n",
+					"    correcao_prov string,\r\n",
+					"    correcao_prov_curto string,\r\n",
+					"    correcao_prov_longo string,\r\n",
+					"    dtc_distribuicao string,\r\n",
+					"    juros_prov string,\r\n",
+					"    juros_prov_curto string,\r\n",
+					"    juros_prov_longo string,\r\n",
+					"    motivo_arquivamento string,\r\n",
+					"    provisao_curto_anterior string,\r\n",
+					"    provisao_longo_anterior string,\r\n",
+					"    prov_cp_financeira_anterior string,\r\n",
+					"    prov_cp_operacional_anterior string,\r\n",
+					"    prov_financeira_anterior string,\r\n",
+					"    prov_lp_financeira_anterior string,\r\n",
+					"    prov_lp_operacional_anterior string,\r\n",
+					"    prov_operacional_anterior string,\r\n",
+					"    sts_empresa_citada string,\r\n",
+					"    sts_origem_processo string,\r\n",
+					"    sts_origem_segregacao string,\r\n",
+					"    total_provavel_financeiro string,\r\n",
+					"    total_provavel_operacional string,\r\n",
+					"    vlr_curto_prazo_anterior string,\r\n",
+					"    vlr_curto_prazo_fin string,\r\n",
+					"    vlr_longo_prazo_anterior string,\r\n",
+					"    vlr_longo_prazo_fin string,\r\n",
+					"    vlr_pagamento string,\r\n",
+					"    vlr_pedido_anterior string,\r\n",
+					"    vlr_possivel_anterior string,\r\n",
+					"    vlr_remoto_anterior string,\r\n",
+					"    num_pj string,\r\n",
+					"    vlr_pgt_pos_corte_tt_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_op_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_fi_mes_an string,\r\n",
+					"    vlr_dep_pos_corte_tt_mes_an string,\r\n",
+					"    vlr_dep_pos_corte_op_mes_an string,\r\n",
+					"    vlr_dep_pos_corte_fi_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_op_cp_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_op_lp_mes_an string,\r\n",
+					"    vlr_bai_pos_corte_op_cp_mes_an string,\r\n",
+					"    vlr_bai_pos_corte_op_lp_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_fi_cp_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_fi_lp_mes_an string,\r\n",
+					"    vlr_bai_pos_corte_fi_cp_mes_an string,\r\n",
+					"    vlr_bai_pos_corte_fi_lp_mes_an string,\r\n",
+					"    vlr_deposito_cp_op string,\r\n",
+					"    vlr_deposito_lp_op string,\r\n",
+					"    vlr_baixa_deposito_cp_op string,\r\n",
+					"    vlr_baixa_deposito_lp_op string,\r\n",
+					"    vlr_pgt_on_going_tt string,\r\n",
+					"    vlr_pgt_on_going_op string,\r\n",
+					"    vlr_pgt_on_going_fi string,\r\n",
+					"    vlr_dep_on_going_tt string,\r\n",
+					"    vlr_dep_on_going_op string,\r\n",
+					"    vlr_dep_on_going_fi string,\r\n",
+					"    vlr_pgt_on_going_op_cp string,\r\n",
+					"    vlr_pgt_on_going_op_lp string,\r\n",
+					"    vlr_bai_on_going_op_cp string,\r\n",
+					"    vlr_bai_on_going_op_lp string,\r\n",
+					"    vlr_pgt_on_going_fi_cp string,\r\n",
+					"    vlr_pgt_on_going_fi_lp string,\r\n",
+					"    vlr_bai_on_going_fi_cp string,\r\n",
+					"    vlr_bai_on_going_fi_lp string,\r\n",
+					"    vlr_bai_reav_op_cp string,\r\n",
+					"    vlr_bai_reav_op_lp string,\r\n",
+					"    vlr_bai_reav_fi_cp string,\r\n",
+					"    vlr_bai_reav_fi_lp string,\r\n",
+					"    situacao_processo string,\r\n",
+					"    log_dtc_citacao string,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss//datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/bkp_fotografia_item'"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela CALENDARIO_MONETARIO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.calendario_monetario (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_calendario_monetario string,\r\n",
+					"    dtc_inicial string,\r\n",
+					"    dtc_final string,\r\n",
+					"    sts_ativo string,\r\n",
+					"    desc_calendario string,\r\n",
+					"    dtc_limite_foto string,\r\n",
+					"    nom_usuario_cadastro string,\r\n",
+					"    dtc_cadastro string,\r\n",
+					"    val_taxa_trabalhista string,\r\n",
+					"    val_taxa_civel string,\r\n",
+					"    val_juros string,\r\n",
+					"    val_juros_trabalhista string,\r\n",
+					"    var_taxa_selic string,\r\n",
+					"    sts_selic_simples string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/calendario_monetario'"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela canal_habilitador\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.canal_habilitador (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_canal_habilitador string,\r\n",
+					"\tdesc_canal_habilitador string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/canal_habilitador'"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela COMARCA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.comarca (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_comarca string,\r\n",
+					"    nom_comarca string,\r\n",
+					"    sig_estado string,\r\n",
+					"    sig_municipio string,\r\n",
+					"    sts_ativo string,\r\n",
+					"    sts_ativo_procuracao string,\r\n",
+					"    sts_recente string,\r\n",
+					"    sts_migracao_benner string,\r\n",
+					"    sts_migracao_cpj string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/comarca'\r\n",
+					""
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela DET_ESPECIFIC_TIPO_ACAO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.det_especific_tipo_acao (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_tipo_acao string,\r\n",
+					"    cod_especific_tipo_acao string,\r\n",
+					"    cod_det_especific_tipo_acao string,\r\n",
+					"    nom_det_especific_tipo_acao string,\r\n",
+					"    cod_natureza string,\r\n",
+					"    cod_especificacao_natureza string,\r\n",
+					"    cod_detalhe_especific_natureza string,\r\n",
+					"    sts_visualiza_relatorio string,\r\n",
+					"    sts_ativo string,\r\n",
+					"    cod_pre_objeto_empresa string,\r\n",
+					"    sts_migracao_cpj string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/det_especific_tipo_acao'"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql \r\n",
+					"-- Tabela DETALHE_ESPECIFIC_NATUREZA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.detalhe_especific_natureza (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_natureza string,\r\n",
+					"    cod_especificacao_natureza string,\r\n",
+					"    cod_detalhe_especific_natureza string,\r\n",
+					"    nom_detalhe_especific_natureza string,\r\n",
+					"    sts_visualiza_relatorio string,\r\n",
+					"    sts_exige_objeto string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/detalhe_especific_natureza'"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela DIVISAO_PROCESSO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.divisao_processo (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_divisao_processo string,\r\n",
+					"    nom_divisao string,\r\n",
+					"    sig_divisao string,\r\n",
+					"    sts_tipo_provisao_automatica string,\r\n",
+					"    sts_ativo_divisao string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/divisao_processo'"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela EMPRESA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.empresa (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_empresa string,\r\n",
+					"\tnom_empresa string,\r\n",
+					"\tnom_fantasia_empresa string,\r\n",
+					"\tsig_estado string,\r\n",
+					"\tsig_municipio string,\r\n",
+					"\tdes_endereco string,\r\n",
+					"\tdes_comp_endereco string,\r\n",
+					"\tnom_bairro string,\r\n",
+					"\tnum_cnpj string,\r\n",
+					"\tnum_insc_estadual string,\r\n",
+					"\tnum_insc_municipal string,\r\n",
+					"\tnum_tel_fixo string,\r\n",
+					"\tnum_fax string,\r\n",
+					"\tnum_cep string,\r\n",
+					"\tnom_pessoa_contato string,\r\n",
+					"\tdes_email string,\r\n",
+					"\tdes_logomarca_empresa string,\r\n",
+					"\tdes_chancela_juridico string,\r\n",
+					"\tnom_final_email string,\r\n",
+					"\tnum_oficio_limite_inicio string,\r\n",
+					"\tnum_oficio_limite_fim string,\r\n",
+					"\tano_ref_oficio_limite string,\r\n",
+					"\tnom_cidade string,\r\n",
+					"\tnom_usuario_envio_copia_agenda string,\r\n",
+					"\tsts_envia_email_estacao string,\r\n",
+					"\tsts_obriga_digitalizacao_prot string,\r\n",
+					"\tsts_obriga_associacao_prot string,\r\n",
+					"\tsts_envia_email_alt_proc_web string,\r\n",
+					"\tarq_logo_empresa string,\r\n",
+					"\tsts_tipo_empresa string,\r\n",
+					"\tnom_holding string,\r\n",
+					"\tsts_empresa_terceiro string,\r\n",
+					"\tsig_divisao_sap string,\r\n",
+					"\tsts_tipo_empresa_sap string,\r\n",
+					"\tversao_sap string,\r\n",
+					"\tsig_empresa string,\r\n",
+					"\tsts_area_responsavel_processo string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/empresa'"
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela ESCRITORIO_CONTRATADO_SAP\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.escritorio_contratado_sap (\t\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_escritorio_contratado_sap string,\r\n",
+					"    nom_escritorio_sap string,\r\n",
+					"    sig_escritorio_contratado string,\r\n",
+					"    dtc_cadastro string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/escritorio_contratado_sap'"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela ESCRITORIO_CONTRATADO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.escritorio_contratado (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    sig_escritorio_contratado string,\r\n",
+					"    nom_escritorio_contratado string,\r\n",
+					"    sig_estado string,\r\n",
+					"    sig_municipio string,\r\n",
+					"    des_endereco string,\r\n",
+					"    des_comp_endereco string,\r\n",
+					"    nom_bairro string,\r\n",
+					"    num_cnpj string,\r\n",
+					"    num_insc_estadual string,\r\n",
+					"    num_insc_municipal string,\r\n",
+					"    num_tel_fixo string,\r\n",
+					"    num_fax string,\r\n",
+					"    num_cep string,\r\n",
+					"    nom_pessoa_contato string,\r\n",
+					"    des_email string,\r\n",
+					"    cod_grupo_usuario string,\r\n",
+					"    sts_migracao_benner string,\r\n",
+					"    sig_processum string,\r\n",
+					"    nom_processum string,\r\n",
+					"    sts_processos_criminais string,\r\n",
+					"    sts_migracao_cpj string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/escritorio_contratado'"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela especif_tipo_contingencia\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.especif_tipo_contingencia (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_especif_tipo_contingencia string,\r\n",
+					"\tnome string,\r\n",
+					"\tcod_tipo_contingencia string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/especif_tipo_contingencia'"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela ESPECIFIC_TIPO_ACAO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.especific_tipo_acao (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_especific_tipo_acao string,\r\n",
+					"    des_especific_tipo_acao string,\r\n",
+					"    cod_tipo_acao string,\r\n",
+					"    cod_natureza string,\r\n",
+					"    cod_especificacao_natureza string,\r\n",
+					"    sig_escritorio_contratado string,\r\n",
+					"    sts_visualiza_relatorio string,\r\n",
+					"    cod_detalhe_especific_natureza string,\r\n",
+					"    sts_ativo string,\r\n",
+					"    cod_pre_objeto_empresa string,\r\n",
+					"    sts_migracao_benner string,\r\n",
+					"    sts_migracao_cpj string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/especific_tipo_acao'"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela ESPECIFIC_TIPO_OCORRENCIA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.especific_tipo_ocorrencia (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_especific_tipo_ocorrencia string,\r\n",
+					"\tcod_tipo_ocorrencia string,\r\n",
+					"\tdes_especific_tipo_ocorrencia string,\r\n",
+					"\tcod_natureza string,\r\n",
+					"\tcod_especificacao_natureza string,\r\n",
+					"\tnum_dias_antecedencia_adv string,\r\n",
+					"\tnum_dias_antecedencia_prep string,\r\n",
+					"\tsts_aciona_esc_contratado string,\r\n",
+					"\tnum_dias_anteced_menor string,\r\n",
+					"\tnum_dias_anteced_maior string,\r\n",
+					"\tsts_aciona_menor string,\r\n",
+					"\tsts_aciona_maior string,\r\n",
+					"\tsts_visualiza_relatorio string,\r\n",
+					"\tcod_detalhe_especific_natureza string,\r\n",
+					"\tsts_ativo string,\r\n",
+					"\tsts_exibe_escritorio string,\r\n",
+					"\tsts_reter_linha string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tsts_area_responsavel string,\r\n",
+					"\tsts_proc_inativo_escritorio string,\r\n",
+					"\tsts_pesquisa_automatica string,\r\n",
+					"\tsts_exibe_escritorio_proc_inat string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_valenvolvido string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string \r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/especific_tipo_ocorrencia'"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela ESPECIFIC_TIPO_PAGAMENTO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.especific_tipo_pagamento (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_tipo_pagamento string,\r\n",
+					"\tcod_especific_tipo_pagamento string,\r\n",
+					"\tnom_especific_tipo_pagamento string,\r\n",
+					"\tsts_bens string,\r\n",
+					"\tsts_carta_fianca string,\r\n",
+					"\tsts_especific_tipo_pagamento string,\r\n",
+					"\tsts_presta_contas string,\r\n",
+					"\tsts_form_prest_conta string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/especific_tipo_pagamento'"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela ESPECIFICACAO_NATUREZA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.especificacao_natureza (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_especificacao_natureza string,\r\n",
+					"    cod_natureza string,\r\n",
+					"    des_especificacao_natureza string,\r\n",
+					"    sig_escritorio_contratado string,\r\n",
+					"    sts_visualiza_relatorio string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/especificacao_natureza'"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela ESTADO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.estado (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    sig_estado string,\r\n",
+					"    nom_estado string,\r\n",
+					"    sts_ativo string,\r\n",
+					"    sts_ativo_procuracao string,\r\n",
+					"    sts_migracao_benner string,\r\n",
+					"    sts_recente string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/estado'"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela FASE_PROCESSUAL\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.fase_processual (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_fase_processual string,\r\n",
+					"    nom_fase_processual string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/fase_processual'"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela FOTOGRAFIA_DIVISAO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.fotografia_divisao (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_fotografia string,\r\n",
+					"    cod_divisao_processo string,\r\n",
+					"    sts_fotografia_divisao string,\r\n",
+					"    cod_fotografia_divisao string,\r\n",
+					"    cod_empresa string,\r\n",
+					"    dtc_fotografia string,\r\n",
+					"    nom_usuario_fotografo string,\r\n",
+					"    sts_falha_threads_foto_divisao string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/fotografia_divisao'\r\n",
+					""
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela FOTOGRAFIA_ITEM_REU\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.fotografia_item_reu (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_fotografia_item string,\r\n",
+					"    cod_fotografia string,\r\n",
+					"    cod_parte_processo string,\r\n",
+					"    sts_solvencia string,\r\n",
+					"    dtc_cadastro string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/fotografia_item_reu'"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela FOTOGRAFIA_ITEM\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.fotografia_item (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    num_processo string,\r\n",
+					"    cod_empresa string,\r\n",
+					"    cod_fotografia_item string,\r\n",
+					"    cod_fotografia string,\r\n",
+					"    vlr_longo_prazo string,\r\n",
+					"    vlr_curto_prazo string,\r\n",
+					"    vlr_possivel string,\r\n",
+					"    vlr_remoto string,\r\n",
+					"    vlr_pedido string,\r\n",
+					"    vlr_longo_prazo_anterior string,\r\n",
+					"    vlr_curto_prazo_anterior string,\r\n",
+					"    vlr_possivel_anterior string,\r\n",
+					"    vlr_remoto_anterior string,\r\n",
+					"    vlr_pedido_anterior string,\r\n",
+					"    vlr_deposito_judicial string,\r\n",
+					"    vlr_recurso_ordinario string,\r\n",
+					"    vlr_recurs_oderevista string,\r\n",
+					"    vlr_penhora_online string,\r\n",
+					"    vlr_bens_penhorados string,\r\n",
+					"    vlr_demais_garantias string,\r\n",
+					"    sts_proceso string,\r\n",
+					"    motivodo_arquivamento string,\r\n",
+					"    vlr_valor_pago_acordo string,\r\n",
+					"    vlr_valor_pago_condenacao string,\r\n",
+					"    vlr_valor_economizado string,\r\n",
+					"    vlr_custas string,\r\n",
+					"    vlr_valor_levantado_vivo string,\r\n",
+					"    num_cpf_cnpj string,\r\n",
+					"    dtc_cadastro string,\r\n",
+					"    cod_fotografia_modulo string,\r\n",
+					"    dtc_arquivamento string,\r\n",
+					"    dtc_fim string,\r\n",
+					"    cod_tipo_acao string,\r\n",
+					"    cod_especific_tipo_acao string,\r\n",
+					"    motivo_arquivamento string,\r\n",
+					"    dtc_citacao string,\r\n",
+					"    sig_escritorio_contratado string,\r\n",
+					"    dtc_cadastro_processo string,\r\n",
+					"    dtc_protocolo_aforamento string,\r\n",
+					"    cod_natureza string,\r\n",
+					"    cod_especificacao_natureza string,\r\n",
+					"    cod_detalhe_especific_natureza string,\r\n",
+					"    cod_tipo_acao_processo string,\r\n",
+					"    sig_estado string,\r\n",
+					"    cod_comarca string,\r\n",
+					"    cod_juizo string,\r\n",
+					"    num_processo1_instancia string,\r\n",
+					"    cod_divisao_processo string,\r\n",
+					"    cod_tipo_ocorrencia_arquiva string,\r\n",
+					"    cod_fase_processual string,\r\n",
+					"    vlr_correcao_monetaria string,\r\n",
+					"    cod_tipo_contingencia string,\r\n",
+					"    cod_especif_tipo_contingencia string,\r\n",
+					"    sts_solvencia string,\r\n",
+					"    cod_tipo_provisao string,\r\n",
+					"    cod_pre_objeto_empresa string,\r\n",
+					"    pasta_benner string,\r\n",
+					"    cod_fotografia_divisao string,\r\n",
+					"    vlr_curto_prazo_fin string,\r\n",
+					"    vlr_longo_prazo_fin string,\r\n",
+					"    vlr_pagamento string,\r\n",
+					"    baixa_prov_curto_operacional string,\r\n",
+					"    baixa_prov_curto_financeira string,\r\n",
+					"    correcao_prov_curto string,\r\n",
+					"    juros_prov_curto string,\r\n",
+					"    prov_operacional_anterior string,\r\n",
+					"    prov_financeira_anterior string,\r\n",
+					"    prov_cp_operacional_anterior string,\r\n",
+					"    prov_cp_financeira_anterior string,\r\n",
+					"    prov_lp_operacional_anterior string,\r\n",
+					"    prov_lp_financeira_anterior string,\r\n",
+					"    provisao_curto_anterior string,\r\n",
+					"    provisao_longo_anterior string,\r\n",
+					"    baixa_prov_operacional string,\r\n",
+					"    baixa_prov_financeira string,\r\n",
+					"    correcao_prov string,\r\n",
+					"    juros_prov string,\r\n",
+					"    ajuste_operacional string,\r\n",
+					"    ajuste_financeiro string,\r\n",
+					"    ajuste_operacional_prov_cp string,\r\n",
+					"    ajuste_financeiro_prov_cp string,\r\n",
+					"    ajuste_operacional_prov_lp string,\r\n",
+					"    ajuste_financeiro_prov_lp string,\r\n",
+					"    baixa_prov_longo_operacional string,\r\n",
+					"    baixa_prov_longo_financeira string,\r\n",
+					"    correcao_prov_longo string,\r\n",
+					"    juros_prov_longo string,\r\n",
+					"    total_provavel_operacional string,\r\n",
+					"    total_provavel_financeiro string,\r\n",
+					"    cod_det_especific_tipo_acao string,\r\n",
+					"    cod_canal_habilitador string,\r\n",
+					"    dtc_distribuicao string,\r\n",
+					"    sts_origem_processo string,\r\n",
+					"    sts_empresa_citada string,\r\n",
+					"    sts_origem_segregacao string,\r\n",
+					"    num_pj string,\r\n",
+					"    vlr_pgt_pos_corte_tt_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_op_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_fi_mes_an string,\r\n",
+					"    vlr_dep_pos_corte_tt_mes_an string,\r\n",
+					"    vlr_dep_pos_corte_op_mes_an string,\r\n",
+					"    vlr_dep_pos_corte_fi_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_op_cp_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_op_lp_mes_an string,\r\n",
+					"    vlr_bai_pos_corte_op_cp_mes_an string,\r\n",
+					"    vlr_bai_pos_corte_op_lp_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_fi_cp_mes_an string,\r\n",
+					"    vlr_pgt_pos_corte_fi_lp_mes_an string,\r\n",
+					"    vlr_bai_pos_corte_fi_cp_mes_an string,\r\n",
+					"    vlr_bai_pos_corte_fi_lp_mes_an string,\r\n",
+					"    vlr_deposito_cp_op string,\r\n",
+					"    vlr_deposito_lp_op string,\r\n",
+					"    vlr_baixa_deposito_cp_op string,\r\n",
+					"    vlr_baixa_deposito_lp_op string,\r\n",
+					"    vlr_pgt_on_going_tt string,\r\n",
+					"    vlr_pgt_on_going_op string,\r\n",
+					"    vlr_pgt_on_going_fi string,\r\n",
+					"    vlr_dep_on_going_tt string,\r\n",
+					"    vlr_dep_on_going_op string,\r\n",
+					"    vlr_dep_on_going_fi string,\r\n",
+					"    vlr_pgt_on_going_op_cp string,\r\n",
+					"    vlr_pgt_on_going_op_lp string,\r\n",
+					"    vlr_bai_on_going_op_cp string,\r\n",
+					"    vlr_bai_on_going_op_lp string,\r\n",
+					"    vlr_pgt_on_going_fi_cp string,\r\n",
+					"    vlr_pgt_on_going_fi_lp string,\r\n",
+					"    vlr_bai_on_going_fi_cp string,\r\n",
+					"    vlr_bai_on_going_fi_lp string,\r\n",
+					"    vlr_bai_reav_op_cp string,\r\n",
+					"    vlr_bai_reav_op_lp string,\r\n",
+					"    vlr_bai_reav_fi_cp string,\r\n",
+					"    vlr_bai_reav_fi_lp string,\r\n",
+					"    situacao_processo string,\r\n",
+					"    log_dtc_citacao string,\r\n",
+					"    aliquota_indice string,\r\n",
+					"    aliquota_juros string,\r\n",
+					"    cod_tipo_indice string,\r\n",
+					"    sig_municipio string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/fotografia_item'"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela FOTOGRAFIA_MODULO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.fotografia_modulo (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_fotografia string,\r\n",
+					"    cod_modulo string,\r\n",
+					"    sts_fotografia_modulo string,\r\n",
+					"    cod_fotografia_modulo string,\r\n",
+					"    cod_empresa string,\r\n",
+					"    dtc_fotografia string,\r\n",
+					"    nom_usuario_fotografo string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/fotografia_modulo'"
+				],
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela FOTOGRAFIA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.fotografia (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    dtc_cadastro string,\r\n",
+					"    cod_fotografia string,\r\n",
+					"    cod_calendario_monetario string,\r\n",
+					"    sig_escritorio_contratado string,\r\n",
+					"    nom_usuario_responsavel string,\r\n",
+					"    sts_foto string,\r\n",
+					"    nom_usuario_fotografo string,\r\n",
+					"    dtc_data_fotografia string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/fotografia'"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela FUNCIONARIO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.funcionario (\t\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_empresa string,\r\n",
+					"    cod_funcionario string,\r\n",
+					"    cod_cargo string,\r\n",
+					"    cod_lotacao string,\r\n",
+					"    nom_funcionario string,\r\n",
+					"    num_cpf string,\r\n",
+					"    num_rg string,\r\n",
+					"    des_endereco string,\r\n",
+					"    des_comp_endereco string,\r\n",
+					"    sig_estado string,\r\n",
+					"    sig_municipio string,\r\n",
+					"    nom_bairro string,\r\n",
+					"    num_tel_fixo string,\r\n",
+					"    num_tel_fax string,\r\n",
+					"    num_cep string,\r\n",
+					"    num_tel_celular string,\r\n",
+					"    cod_estado_civil string,\r\n",
+					"    des_email string,\r\n",
+					"    sig_centro_custo string,\r\n",
+					"    sts_gerente string,\r\n",
+					"    sts_ativo string,\r\n",
+					"    dtc_recisao string,\r\n",
+					"    sig_centro_custo_dir string,\r\n",
+					"    sig_centro_custo_vp string,\r\n",
+					"    arq_assinatura string, \r\n",
+					"    cod_empresa_superior string,\r\n",
+					"    cod_funcionario_superior string,\r\n",
+					"    cod_empresa_terceiro string,\r\n",
+					"    seq_diretoria string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/funcionario'"
+				],
+				"execution_count": 24
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela JUIZ\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.juiz ( \r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_juiz string,\r\n",
+					"\tnom_juiz string,\r\n",
+					"\tcod_juizo string,\r\n",
+					"\tcod_comarca string,\r\n",
+					"\tnom_apelido string,\r\n",
+					"\tnum_cpf string,\r\n",
+					"\tnum_rg string,\r\n",
+					"\tdes_endereco string,\r\n",
+					"\tdes_comp_endereco string,\r\n",
+					"\tsig_estado string,\r\n",
+					"\tsig_municipio string,\r\n",
+					"\tnom_bairro string,\r\n",
+					"\tnum_tel_fixo string,\r\n",
+					"\tnum_tel_fax string,\r\n",
+					"\tnum_cep string,\r\n",
+					"\tnum_tel_celular string,\r\n",
+					"\tcod_estado_civil string,\r\n",
+					"\tdes_email string,\r\n",
+					"\tsts_convenio string,\r\n",
+					"\tsts_recente string,\r\n",
+					"\tmatricula string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string \r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/juiz'"
+				],
+				"execution_count": 25
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela JUIZO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.juizo (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_juizo string,\r\n",
+					"    nom_juizo string,\r\n",
+					"    cod_comarca string,\r\n",
+					"    cod_natureza string,\r\n",
+					"    cod_especificacao_natureza string,\r\n",
+					"    des_endereco string,\r\n",
+					"    des_comp_endereco string,\r\n",
+					"    nom_bairro string,\r\n",
+					"    num_cnpj string,\r\n",
+					"    num_insc_estadual string,\r\n",
+					"    num_insc_municipal string,\r\n",
+					"    num_tel_fixo string,\r\n",
+					"    num_fax string,\r\n",
+					"    num_cep string,\r\n",
+					"    nom_pessoa_contato string,\r\n",
+					"    des_email string,\r\n",
+					"    cod_detalhe_especific_natureza string,\r\n",
+					"    sts_ativo string,\r\n",
+					"    sts_recente string,\r\n",
+					"    sts_migracao_benner string,\r\n",
+					"    sts_migracao_cpj string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/juizo'"
+				],
+				"execution_count": 26
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela MODULO_NATUREZA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.modulo_natureza (\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_modulo string,\r\n",
+					"    cod_natureza string,\r\n",
+					"    cod_especificacao_natureza string,\r\n",
+					"    cod_detalhe_especific_natureza string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/modulo_natureza'"
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela MODULO_PAGAMENTO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.modulo_pagamento (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_modulo_pagamento string,\r\n",
+					"\tcod_modulo string,\r\n",
+					"\tcod_tipo_pagamento string,\r\n",
+					"\tcod_especific_tipo_pagamento string,\r\n",
+					"\tcod_detalhe_especific_tipo_pag string,\r\n",
+					"\tsts_modulo_pagamento string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/modulo_pagamento'"
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela MODULO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.modulo (\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_modulo string,\r\n",
+					"    nom_modulo string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/modulo'"
+				],
+				"execution_count": 29
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela MUNICIPIO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.municipio (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    sig_municipio string,\r\n",
+					"\tnom_municipio string,\r\n",
+					"\tsig_estado string,\r\n",
+					"\tsts_ativo string,\r\n",
+					"\tsts_ativo_procuracao string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_recente numeric,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/municipio'"
+				],
+				"execution_count": 30
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela NATUREZA \r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.natureza (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_natureza string, \r\n",
+					"    des_natureza string,\r\n",
+					"    sts_visualiza_relatorio string,\r\n",
+					"    updated_at  timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/natureza'"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql \r\n",
+					"-- Tabela OCORRENCIA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.ocorrencia (\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\t\r\n",
+					"\tcod_ocorrencia string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_tipo_ocorrencia string,\r\n",
+					"\tcod_especific_tipo_ocorrencia string,\r\n",
+					"\tsig_advogado_responsavel string,\r\n",
+					"\tsig_advogado_contra string,\r\n",
+					"\tsig_escritorio_contratado string,\r\n",
+					"\tsig_advogado_externo string,\r\n",
+					"\tcod_juiz string,\r\n",
+					"\tcod_juiz_relator_revisor string,\r\n",
+					"\tdtc_cadastro string,\r\n",
+					"\tdtc_publicacao string,\r\n",
+					"\tdtc_prazo_audiencia string,\r\n",
+					"\tdes_observacao string,\r\n",
+					"\tsts_concluida_remarcada string,\r\n",
+					"\tdtc_conclusao string,\r\n",
+					"\tcod_empresa_preposto string,\r\n",
+					"\tcod_preposto string,\r\n",
+					"\tdtc_protocolo string,\r\n",
+					"\tcod_comarca string,\r\n",
+					"\tcod_juizo string,\r\n",
+					"\tsig_advogado_co_responsavel string,\r\n",
+					"\tsig_municipio string,\r\n",
+					"\tsig_estado string,\r\n",
+					"\tdtc_prazo string,\r\n",
+					"\tdtc_ocorrencia string,\r\n",
+					"\tcod_emp_resp_cumprimento string,\r\n",
+					"\tcod_func_resp_cumprimento string,\r\n",
+					"\tsig_adv_externo_cumprimento string,\r\n",
+					"\tvlr_multa string,\r\n",
+					"\tsts_tipo_multa string,\r\n",
+					"\tcod_emp_design_cumprimento string,\r\n",
+					"\tcod_func_design_cumprimento string,\r\n",
+					"\tvlr_economico_envolvido string,\r\n",
+					"\tid_pagamento string,        \r\n",
+					"\tnum_dependencia_banco string,\r\n",
+					"\tnum_incidente string,\r\n",
+					"\tnum_doc_sap string,\r\n",
+					"\tdtc_doc_sap string,\r\n",
+					"\tnom_usuario_doc_sap string,\r\n",
+					"\tnom_usuario string,\r\n",
+					"\tdes_favorecido string,\r\n",
+					"\tcnpj_favorecido string,\r\n",
+					"\tcpf_favorecido string,\r\n",
+					"\tcod_tipo_pagamento string,\r\n",
+					"\tcod_banco string,\r\n",
+					"\tnum_agencia_bkp string,\r\n",
+					"\tdes_digito_agencia string,\r\n",
+					"\tnum_conta_corrente_bkp string,\r\n",
+					"\tdes_digito_conta_corrente string,\r\n",
+					"\tdtc_pagamento string,\r\n",
+					"\tval_deposito_levantado string,\r\n",
+					"\tval_base_calculo_ir string,\r\n",
+					"\tnum_inss_reclamante string,\r\n",
+					"\tnum_ir_reclamada string,\r\n",
+					"\tval_liquido string,\r\n",
+					"\tval_bruto_pagamento string,\r\n",
+					"\tdtc_geracao_sap string,\r\n",
+					"\tnom_usuario_geracao_sap string,\r\n",
+					"\tnum_protocolo_bacen_jud string,\r\n",
+					"\tdes_agencia string,\r\n",
+					"\tdes_conta string,\r\n",
+					"\tcod_agencia string,\r\n",
+					"\tcod_conta string,\r\n",
+					"\tval_ir_reclamada string,\r\n",
+					"\tval_inss_reclamante string,\r\n",
+					"\tcod_referencia_benner string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tnum_agencia string,\r\n",
+					"\tnum_conta_corrente string,\r\n",
+					"\tmeses_ir string,\r\n",
+					"\tid_fisico_pagamento_garantia string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_migracao_turquesa string,\r\n",
+					"\tvlr_economico_envolvido_op string,\r\n",
+					"\tvlr_economico_envolvido_fin string,\r\n",
+					"\tid_apuracao_p2 string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"   )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/ocorrencia'"
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql \r\n",
+					"-- Tabela PARAMETRO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.parametro (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    nom_versao string,\r\n",
+					"\tnom_versao_contrato string,\r\n",
+					"\tnom_servidor string,\r\n",
+					"\tnom_usuario_servidor string,\r\n",
+					"\tnom_senha_servidor string,\r\n",
+					"\tnom_caminho_arquivo string,\r\n",
+					"\tnom_arquivo string,\r\n",
+					"\tnom_arquivo_contrato string,\r\n",
+					"\tnom_versao_atualizador string,\r\n",
+					"\tnom_arquivo_atualizador string,\r\n",
+					"\tcod_ocorrencia_audiencia string,\r\n",
+					"\tcod_natureza_regulatorio string,\r\n",
+					"\tcod_natureza_trabalhista string,\r\n",
+					"\tcod_especific_nat_reg_tran string,\r\n",
+					"\tnom_host string,\r\n",
+					"\tnom_final_email_ba string,\r\n",
+					"\tnom_final_email_se string,\r\n",
+					"\tnom_final_email_rj string,\r\n",
+					"\tnom_address_from string,\r\n",
+					"\tnom_user_id string,\r\n",
+					"\tnom_usuario_envio_oculta string,\r\n",
+					"\tnom_usuario_envio_copia string,\r\n",
+					"\tdes_assunto_email_preposto string,\r\n",
+					"\tdes_corpo_email_preposto string,\r\n",
+					"\tnom_caminho_oficios string,\r\n",
+					"\tnum_oficio_limite_inicio_ba string,\r\n",
+					"\tnum_oficio_limite_fim_ba string,\r\n",
+					"\tnum_oficio_limite_inicio_se string,\r\n",
+					"\tnum_oficio_limite_fim_se string,\r\n",
+					"\tnum_oficio_limite_inicio_rj string,\r\n",
+					"\tnum_oficio_limite_fim_rj string,\r\n",
+					"\tcod_empresa_referencia_ba string,\r\n",
+					"\tcod_empresa_referencia_se string,\r\n",
+					"\tcod_empresa_referencia_rj string,\r\n",
+					"\tano_referencia string,\r\n",
+					"\tnom_user_contrato_id string,\r\n",
+					"\tnom_address_from_contrato string,\r\n",
+					"\tdes_assunto_email_contrato string,\r\n",
+					"\tdes_corpo_email_contrato string,\r\n",
+					"\tdes_assunto_acomp_email_cont string,\r\n",
+					"\tdes_corpo_acomp_email_cont string,\r\n",
+					"\tnom_caminho_contrato string,\r\n",
+					"\tnom_caminho_modelo_contrato string,\r\n",
+					"\tdes_assunto_email_oficio string,\r\n",
+					"\tdes_corpo_email_oficio string,\r\n",
+					"\tdes_assunto_comentario_oficio string,\r\n",
+					"\tdes_corpo_comentario_oficio string,\r\n",
+					"\tcod_usuario_relatorio string,\r\n",
+					"\tnom_cidade_ba string,\r\n",
+					"\tnom_cidade_se string,\r\n",
+					"\tnom_cidade_rj string,\r\n",
+					"\tnom_caminho_protocolo string,\r\n",
+					"\tcod_documento_protocolo string,\r\n",
+					"\tcod_documento_processo string,\r\n",
+					"\tcod_documento_oficio string,\r\n",
+					"\tcod_documento_contrato string,\r\n",
+					"\tdes_assunto_email_protocolo string,\r\n",
+					"\tdes_corpo_email_protocolo string,\r\n",
+					"\tdes_assunto_aviso_preposto string,\r\n",
+					"\tdes_corpo_aviso_preposto string,\r\n",
+					"\tnom_caminho_comenta_ocorrencia string,\r\n",
+					"\tdes_assunto_email_coment_oco string,\r\n",
+					"\tdes_corpo_email_coment_oco string,\r\n",
+					"\tnom_caminho_agenda string,\r\n",
+					"\tdes_doc_cond_gerais_contrat string,\r\n",
+					"\tdes_doc_regulamento_compra string,\r\n",
+					"\tdes_assunto_email_coment_proc string,\r\n",
+					"\tdes_corpo_email_coment_proc string,\r\n",
+					"\tcod_perfil_comenta_processo string,\r\n",
+					"\tnum_limite_valor_acao_aciona string,\r\n",
+					"\tdes_assunto_email_aciona_esc string,\r\n",
+					"\tdes_corpo_email_aciona_esc string,\r\n",
+					"\tnom_caminho_arq_req_compra string,\r\n",
+					"\tcod_perfil_comenta_contrato string,\r\n",
+					"\tdes_assunto_email_req_compra string,\r\n",
+					"\tdes_corpo_email_req_compra string,\r\n",
+					"\tdes_assunto_email_req_proc string,\r\n",
+					"\tdes_corpo_email_req_proc string,\r\n",
+					"\tdes_assunto_email_mod_contrato string,\r\n",
+					"\tdes_corpo_email_mod_contrato string,\r\n",
+					"\tnom_caminho_requisicao_compra string,\r\n",
+					"\tdes_ass_acomp_email_req_comp string,\r\n",
+					"\tdes_cor_acomp_email_req_comp string,\r\n",
+					"\tnom_servidor_interf_forn string,\r\n",
+					"\tnom_usuario_serv_interf_forn string,\r\n",
+					"\tnom_senha_serv_interf_forn string,\r\n",
+					"\tnom_caminho_serv_interf_forn string,\r\n",
+					"\tnom_caminho_local_interf_forn string,\r\n",
+					"\tnom_caminho_parecer string,\r\n",
+					"\tdes_assunto_email_parecer string,\r\n",
+					"\tdes_corpo_email_parecer string,\r\n",
+					"\tdes_assunto_email_sts_procesc string,\r\n",
+					"\tdes_corpo_email_sts_procesc string,\r\n",
+					"\tdes_assunto_email_coment_prot string,\r\n",
+					"\tdes_corpo_email_coment_prot string,\r\n",
+					"\tnom_caminho_atualiza_provis string,\r\n",
+					"\tnom_caminho_mod_doc_ass string,\r\n",
+					"\tnom_caminho_arq_treina_online string,\r\n",
+					"\tdes_assunto_email_alt_web_proc string,\r\n",
+					"\tdes_corpo_email_alt_web_proc string,\r\n",
+					"\tdes_assunto_email_alt_web_oco string,\r\n",
+					"\tdes_corpo_email_alt_web_oco string,\r\n",
+					"\tdes_assunto_email_alt_web_val string,\r\n",
+					"\tdes_corpo_email_alt_web_val string,\r\n",
+					"\tdes_assunto_email_resp_oficio string,\r\n",
+					"\tdes_corpo_email_resp_oficio string,\r\n",
+					"\tdes_senha_resp_informe string,\r\n",
+					"\ttamanho_anexo_max string,\r\n",
+					"\tpeso_notf_portabilidade_min string,\r\n",
+					"\tpeso_notf_portabilidade_max string,\r\n",
+					"\tperiodo_sessao_inativa string,\r\n",
+					"\ttempo_resposta_portabilidade string,\r\n",
+					"\tdtc_inicio_mask string,\r\n",
+					"\tspt_an_comentario_senha_oficio string,\r\n",
+					"\tspt_an_comentario_oficio string,\r\n",
+					"\tspt_resposta_ofico string,\r\n",
+					"\tspt_imagem_protocolo string,\r\n",
+					"\tspt_prt_anexo_solic_ofico string,\r\n",
+					"\tserial_key_weblogic10 string,\r\n",
+					"\tdtc_inicio_spn string,\r\n",
+					"\ttempo_sessao_inativa string,\r\n",
+					"\ttempo_refresh_painel string,\r\n",
+					"\tcaminho_arquivo_dw string,\r\n",
+					"\tsts_integracao_billing_mg string,\r\n",
+					"\tnom_path_file_system_spic string,\r\n",
+					"\tdes_corpo_email_senha_oficio string,\r\n",
+					"\tdes_titulo_email_senha_oficio string,\r\n",
+					"\tnom_path_file_system_ura string,\r\n",
+					"\tnom_path_java_ura string,\r\n",
+					"\tsts_nova_interface_vivo_net string,\r\n",
+					"\ttempo_delay_consulta_spic_cpi string,\r\n",
+					"\ttempo_delay_retent_spic_cpi string,\r\n",
+					"\ttempo_delay_busca_vivo_net_cpi string,\r\n",
+					"\ttimezone string,\r\n",
+					"\tsts_consolidacao_cpi_ctrl_m string,\r\n",
+					"\ttempo_timeout_consolidacao string,\r\n",
+					"\ttempo_apaga_consolidacao string,\r\n",
+					"\tdes_address_vivo_net string,\r\n",
+					"\tdes_address_device_manager string,\r\n",
+					"\tsts_notif_acomp_solic_vigia string,\r\n",
+					"\tsts_notif_respon_solic_vigia string,\r\n",
+					"\tsts_notif_corresp_solic_vigia string,\r\n",
+					"\tusuario_proxy string,\r\n",
+					"\tsenha_proxy string,\r\n",
+					"\tendereco_proxy string,\r\n",
+					"\tporta_proxy string,\r\n",
+					"\ttempo_alarme_atendimento_cip string,\r\n",
+					"\tintervalo_envio_sms string,\r\n",
+					"\ttamanho_anexo_resposta_cip_max string,\r\n",
+					"\ttempo_analise_doc_recebido string,\r\n",
+					"\turl_processum_externo string,\r\n",
+					"\tsts_envia_resposta_html string,\r\n",
+					"\tnum_total_erros_senha string,\r\n",
+					"\tmax_hist_senha string,\r\n",
+					"\tsts_extrair_quantidade string,\r\n",
+					"\tregistros_pagina_vigia string,\r\n",
+					"\tdias_expiracao_usuario_vigia string,\r\n",
+					"\tsts_desagregar_oficio string,\r\n",
+					"\tdes_url_contexto_oficio string,\r\n",
+					"\tdtc_inicio_pesquisa_vigia string,\r\n",
+					"\tcod_grupo_auditoria_vigia string,\r\n",
+					"\tdtc_fim_pesquisa_vigia string,\r\n",
+					"\tsts_programar_vigia string,\r\n",
+					"\tarquivo_outorgado_lote string,\r\n",
+					"\tdtc_inicio_polo_ativo string,\r\n",
+					"\tnum_mes_imagem_protocolo_hist string,\r\n",
+					"\tnum_mes_backup_fotografia_item string,\r\n",
+					"\thide_tooltip string,\r\n",
+					"\tqtd_dias_int_envio_compromisso string,\r\n",
+					"\tdes_usuario_bac string,\r\n",
+					"\tdesc_faixa_ddd string,\r\n",
+					"\tlimite_recebimento_arq_sittel string,\r\n",
+					"\tdtc_programacao_fotografia string,\r\n",
+					"\tsts_fotografia string,\r\n",
+					"\tdes_erro_fotografia string,\r\n",
+					"\tretjud_user string,\r\n",
+					"\tretjud_pass string,\r\n",
+					"\tretjud_ws_url string,\r\n",
+					"\tretjud_namespace_1 string,\r\n",
+					"\tretjud_namespace_3 string,\r\n",
+					"\turl_redi string,\r\n",
+					"\tdtc_migracao_benner string,\r\n",
+					"\turl_processum_fixa_interno string,\r\n",
+					"\turl_processum_fixa_externo string,\r\n",
+					"\tin_bloquear_relatorio_fixa string,\r\n",
+					"\tds_pasta_relatorio_job string,\r\n",
+					"\ttam_relatorio_ped_trabalhista string,\r\n",
+					"\tdtc_corte string,\r\n",
+					"\tcod_tp_ocorr_audiencia_trabal string,\r\n",
+					"\tlista_tipo_arquivos_permitidos string,\r\n",
+					"\tlista_exte_arquivos_permitidos string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"   )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/parametro'"
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"-- Tabela PARTE_PROCESSO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.parte_processo (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_parte_processo string,\r\n",
+					"\tnom_parte_processo string,\r\n",
+					"\tsts_pessoa_fisica string,\r\n",
+					"\tnum_cpf_cnpj string,\r\n",
+					"\tnum_rg string,\r\n",
+					"\tdes_endereco string,\r\n",
+					"\tdes_comp_endereco string,\r\n",
+					"\tsig_estado string,\r\n",
+					"\tsig_municipio string,\r\n",
+					"\tnom_bairro string,\r\n",
+					"\tnum_tel_fixo string,\r\n",
+					"\tnum_tel_fax string,\r\n",
+					"\tnum_cep string,\r\n",
+					"\tnum_tel_celular string,\r\n",
+					"\tcod_estado_civil string,\r\n",
+					"\tdes_email string,\r\n",
+					"\tnum_insc_estadual string,\r\n",
+					"\tnum_insc_municipal string,\r\n",
+					"\tnom_pessoa_contato string,\r\n",
+					"\tsts_funcionario string,\r\n",
+					"\tsts_condutor string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tcod_funcionario string,\r\n",
+					"\tsts_empresa_operadora string,\r\n",
+					"\tnum_conta string,\r\n",
+					"\tsts_cad_parcial string,\r\n",
+					"\tnum_ctps string,\r\n",
+					"\tnum_pis string,\r\n",
+					"\tsts_area_responsavel string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_migracao_turquesa string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/parte_processo'"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"-- Tabela PEDIDO_PROCESSO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.pedido_processo (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_pedido_processo string,\r\n",
+					"\tnom_pedido_processo string,\r\n",
+					"\tcod_natureza string,\r\n",
+					"\tcod_especificacao_natureza string,\r\n",
+					"\tcod_detalhe_especific_natureza string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_migracao_turquesa string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/pedido_processo'\r\n",
+					""
+				],
+				"execution_count": 35
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela PERFIL_USUARIO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.perfil_usuario (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_perfil_usuario string,\r\n",
+					"\tnom_perfil_usuario string,\r\n",
+					"\tsts_comenta_parecer string,\r\n",
+					"\tsts_comenta_contrato string,\r\n",
+					"\tsts_area_responsavel_oficio string,\r\n",
+					"\tsts_atualiza_todo_protocolo string,\r\n",
+					"\tsts_comenta_processo string,\r\n",
+					"\tsts_area_responsavel_processo string,\r\n",
+					"\tsts_atualiza_ig_completo string,\r\n",
+					"\tsts_visua_resumo_oficio_comp string,\r\n",
+					"\tsts_acesso_via_internet string,\r\n",
+					"\tsts_carrega_map string,\r\n",
+					"\tsts_obriga_esp_objeto_acao string,\r\n",
+					"\tsts_area_responsavel_invest string,\r\n",
+					"\tsts_administrador_investigacao string,\r\n",
+					"\tsts_acompanhante_investigacao string,\r\n",
+					"\tsts_analista_investigacao string,\r\n",
+					"\tcod_area_parecer string,\r\n",
+					"\tsts_area_responsavel_alerta string,\r\n",
+					"\tsts_editar_processo string,\r\n",
+					"\tdes_perfil_usuario string,\r\n",
+					"\tsts_perfil_compra string,\r\n",
+					"\tsts_painel_oficio_fax string,\r\n",
+					"\tsts_perfil_procuracao string,\r\n",
+					"\tsts_perfil_fraude string,\r\n",
+					"\tsts_area_responsavel_geral string,\r\n",
+					"\tsts_perfil_cadastro_oficio string,\r\n",
+					"\tsts_perfil_resposta_oficio string,\r\n",
+					"\tsts_area_resp_procuracao string,\r\n",
+					"\tsts_perfil_regulatorio string,\r\n",
+					"\tsts_advogado_contencioso string,\r\n",
+					"\tsts_secretario_contencioso string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/perfil_usuario'\r\n",
+					""
+				],
+				"execution_count": 36
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela pre_objeto_empresa\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.pre_objeto_empresa (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_pre_objeto_empresa string,\r\n",
+					"\tnom_pre_objeto_empresa string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/pre_objeto_empresa'"
+				],
+				"execution_count": 37
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela PRESTACAO_CONTAS\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.prestacao_contas (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_prestacao_contas string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tcod_valor_data_processo string,\r\n",
+					"\tsaldo_garantia string,\r\n",
+					"\tnum_doc_compensacao string,\r\n",
+					"\tdtc_compensacao string,\r\n",
+					"\tnum_doc_sap string,\r\n",
+					"\tdtc_doc_sap string,\r\n",
+					"\tdtc_prestacao string,\r\n",
+					"\tdtc_enviado_contabilidade string,\r\n",
+					"\tnom_usuario_envio_contab string,\r\n",
+					"\tnom_usuario string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/prestacao_contas'\r\n",
+					""
+				],
+				"execution_count": 38
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela PROCESSO_PEDIDO_PROCESSO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.processo_pedido_processo (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tcod_pedido_processo string,\r\n",
+					"\tvlr_provavel string,\r\n",
+					"\tvlr_possivel string,\r\n",
+					"\tvlr_remoto string,\r\n",
+					"\tvlr_pedido string,\r\n",
+					"\tvlr_longo_prazo string,\r\n",
+					"\tdtc_cadastro string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tvlr_curto_prazo_fin string,\r\n",
+					"\tvlr_longo_prazo_fin string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_migracao_turquesa string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/processo_pedido_processo'"
+				],
+				"execution_count": 39
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela processo_produto\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.processo_produto (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tcod_processo_produto string,\r\n",
+					"\tcod_produto string,\r\n",
+					"\tcod_espec_produto string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/processo_produto'"
+				],
+				"execution_count": 40
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela PROCESSO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.processo (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tcod_natureza string,\r\n",
+					"\tcod_especificacao_natureza string,\r\n",
+					"\tcod_tipo_acao string,\r\n",
+					"\tcod_risco string,\r\n",
+					"\tsig_advogado_responsavel string,\r\n",
+					"\tsig_advogado_contra string,\r\n",
+					"\tsig_escritorio_contratado string,\r\n",
+					"\tsig_advogado_externo string,\r\n",
+					"\tcod_comarca string,\r\n",
+					"\tcod_juizo string,\r\n",
+					"\tcod_juiz string,\r\n",
+					"\tcod_juiz_relator_revisor string,\r\n",
+					"\tdtc_cadastro string,\r\n",
+					"\tdtc_citacao string,\r\n",
+					"\tdtc_fim string,\r\n",
+					"\tvlr_acao string,\r\n",
+					"\tvlr_pago string,\r\n",
+					"\tnum_tel_parte_contraria string,\r\n",
+					"\tdes_observacao string,\r\n",
+					"\tsts_ativo string,\r\n",
+					"\tsts_individual string,\r\n",
+					"\tcod_empresa_preposto string,\r\n",
+					"\tcod_preposto string,\r\n",
+					"\tcod_especific_tipo_acao string,\r\n",
+					"\tdtc_arquivamento string,\r\n",
+					"\tvlr_provisionamento string,\r\n",
+					"\tvlr_provavel string,\r\n",
+					"\tvlr_possivel string,\r\n",
+					"\tvlr_remoto string,\r\n",
+					"\tvlr_pedido string,\r\n",
+					"\tsig_advogado_co_responsavel string,\r\n",
+					"\tdtc_envio_escritorio_externo string,\r\n",
+					"\tvlr_acao_indice string,\r\n",
+					"\tsig_indice_moeda_vlr_acao string,\r\n",
+					"\tvlr_pedido_indice string,\r\n",
+					"\tsig_indice_moeda_vlr_pedido string,\r\n",
+					"\tvlr_provavel_indice string,\r\n",
+					"\tsig_indice_moeda_vlr_provavel string,\r\n",
+					"\tvlr_possivel_indice string,\r\n",
+					"\tsig_indice_moeda_vlr_possivel string,\r\n",
+					"\tvlr_remoto_indice string,\r\n",
+					"\tsig_indice_moeda_vlr_remoto string,\r\n",
+					"\tsig_municipio string,\r\n",
+					"\tsig_estado string,\r\n",
+					"\tdtc_lavratura string,\r\n",
+					"\tdtc_protocolo_aforamento string,\r\n",
+					"\tvlr_tributo string,\r\n",
+					"\tvlr_multa_tributo string,\r\n",
+					"\tvlr_juros_tributo string,\r\n",
+					"\tvlr_tributo_indice string,\r\n",
+					"\tsig_indice_moeda_vlr_tributo string,\r\n",
+					"\tvlr_multa_tributo_indice string,\r\n",
+					"\tvlr_juros_tributo_indice string,\r\n",
+					"\tnum_seq_processo string,\r\n",
+					"\tdtc_ano_num_seq_processo string,\r\n",
+					"\tnum_processo1_instancia string,\r\n",
+					"\tnum_processo2_instancia string,\r\n",
+					"\tnum_auto_infracao string,\r\n",
+					"\tsts_relevante string,\r\n",
+					"\tcod_detalhe_especific_natureza string,\r\n",
+					"\tcod_det_especific_tipo_acao string,\r\n",
+					"\tsts_area_responsavel string,\r\n",
+					"\tsts_faturavel string,\r\n",
+					"\tstr_palavras_chave string,\r\n",
+					"\tsts_processa_palavras string,\r\n",
+					"\tsts_consumerista string,\r\n",
+					"\tsts_call_center string,\r\n",
+					"\tcod_tipo_incidente string,\r\n",
+					"\tsts_tipo_prazo string,\r\n",
+					"\tcod_tipo_acao_processo string,\r\n",
+					"\tsts_procon string,\r\n",
+					"\tsts_drc string,\r\n",
+					"\tvlr_longo_prazo string,\r\n",
+					"\tmotivo_arquivamento string,\r\n",
+					"\tsts_excluido string,\r\n",
+					"\tvlr_original string,\r\n",
+					"\tdata_original string,\r\n",
+					"\tcod_divisao_processo string,\r\n",
+					"\tcod_fase_processual string,\r\n",
+					"\tcod_produto string,\r\n",
+					"\tsts_area_responsavel_geral string,\r\n",
+					"\tcod_tipo_contingencia string,\r\n",
+					"\tcod_especif_tipo_contingencia string,\r\n",
+					"\tcod_det_esp_tipo_contingencia string,\r\n",
+					"\tnom_usuario string,\r\n",
+					"\tcod_tipo_provisao string,\r\n",
+					"\tcod_solvencia string,\r\n",
+					"\tcod_pre_objeto_empresa string,\r\n",
+					"\tpasta_benner string,\r\n",
+					"\tid_benner string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tvlr_curto_prazo_fin string,\r\n",
+					"\tvlr_longo_prazo_fin string,\r\n",
+					"\tvlr_pagamento string,\r\n",
+					"\tprov_operacional_anterior string,\r\n",
+					"\tprov_financeira_anterior string,\r\n",
+					"\tprov_cp_financeira_anterior string,\r\n",
+					"\tprov_lp_operacional_anterior string,\r\n",
+					"\tprov_lp_financeira_anterior string,\r\n",
+					"\tprovisao_curto_anterior string,\r\n",
+					"\tprovisao_longo_anterior string,\r\n",
+					"\tbaixa_prov_operacional string,\r\n",
+					"\tbaixa_prov_financeira string,\r\n",
+					"\tjuros_prov string,\r\n",
+					"\tajuste_operacional string,\r\n",
+					"\tajuste_financeiro string,\r\n",
+					"\tajuste_operacional_prov_cp string,\r\n",
+					"\tajuste_financeiro_prov_cp string,\r\n",
+					"\tbaixa_prov_curto_operacional string,\r\n",
+					"\tcorrecao_prov_curto string,\r\n",
+					"\tjuros_prov_curto string,\r\n",
+					"\tbaixa_prov_longo_operacional string,\r\n",
+					"\tbaixa_prov_longo_financeira string,\r\n",
+					"\tcorrecao_prov_longo string,\r\n",
+					"\tjuros_prov_longo string,\r\n",
+					"\tajuste_operacional_prov_lp string,\r\n",
+					"\tajuste_financeiro_prov_lp string,\r\n",
+					"\ttotal_provavel_operacional string,\r\n",
+					"\tprov_cp_operacional_anterior string,\r\n",
+					"\tcorrecao_prov string,\r\n",
+					"\tbaixa_prov_curto_financeira string,\r\n",
+					"\ttotal_provavel_financeiro string,\r\n",
+					"\tdtc_ano_saldo_oper string,\r\n",
+					"\tcod_canal_habilitador string,\r\n",
+					"\tdsc_resumo_processo string,\r\n",
+					"\tdsc_andamento_processual string,\r\n",
+					"\tdtc_distribuicao string,\r\n",
+					"\tsts_origem_processo string,\r\n",
+					"\tsts_empresa_citada string,\r\n",
+					"\tsts_origem_segregacao string,\r\n",
+					"\tnum_pj string,\r\n",
+					"\tsts_migracao_turquesa string,\r\n",
+					"\tsts_origem_segregacao_bkp string,\r\n",
+					"\tvlr_pgt_pos_corte_tt_mes_an string,\r\n",
+					"\tvlr_pgt_pos_corte_op_mes_an string,\r\n",
+					"\tvlr_pgt_pos_corte_fi_mes_an string,\r\n",
+					"\tvlr_dep_pos_corte_tt_mes_an string,\r\n",
+					"\tvlr_dep_pos_corte_op_mes_an string,\r\n",
+					"\tvlr_dep_pos_corte_fi_mes_an string,\r\n",
+					"\tvlr_pgt_pos_corte_op_cp_mes_an string,\r\n",
+					"\tvlr_pgt_pos_corte_op_lp_mes_an string,\r\n",
+					"\tvlr_bai_pos_corte_op_cp_mes_an string,\r\n",
+					"\tvlr_bai_pos_corte_op_lp_mes_an string,\r\n",
+					"\tvlr_pgt_pos_corte_fi_cp_mes_an string,\r\n",
+					"\tvlr_pgt_pos_corte_fi_lp_mes_an string,\r\n",
+					"\tvlr_bai_pos_corte_fi_cp_mes_an string,\r\n",
+					"\tvlr_bai_pos_corte_fi_lp_mes_an string,\r\n",
+					"\tvlr_deposito_cp_op string,\r\n",
+					"\tvlr_deposito_lp_op string,\r\n",
+					"\tvlr_baixa_deposito_cp_op string,\r\n",
+					"\tvlr_baixa_deposito_lp_op string,\r\n",
+					"\tvlr_pgt_on_going_tt string,\r\n",
+					"\tvlr_pgt_on_going_op string,\r\n",
+					"\tvlr_pgt_on_going_fi string,\r\n",
+					"\tvlr_dep_on_going_tt string,\r\n",
+					"\tvlr_dep_on_going_op string,\r\n",
+					"\tvlr_dep_on_going_fi string,\r\n",
+					"\tvlr_pgt_on_going_op_cp string,\r\n",
+					"\tvlr_pgt_on_going_op_lp string,\r\n",
+					"\tvlr_bai_on_going_op_cp string,\r\n",
+					"\tvlr_bai_on_going_op_lp string,\r\n",
+					"\tvlr_pgt_on_going_fi_cp string,\r\n",
+					"\tvlr_pgt_on_going_fi_lp string,\r\n",
+					"\tvlr_bai_on_going_fi_cp string,\r\n",
+					"\tvlr_bai_on_going_fi_lp string,\r\n",
+					"\tvlr_bai_reav_op_cp string,\r\n",
+					"\tvlr_bai_reav_op_lp string,\r\n",
+					"\tvlr_bai_reav_fi_cp string,\r\n",
+					"\tvlr_bai_reav_fi_lp string,\r\n",
+					"\tlog_dtc_citacao string,\r\n",
+					"\tlog_nom_usuario_data_citacao string,\r\n",
+					"\taliquota_indice string,\r\n",
+					"\taliquota_juros string,\r\n",
+					"\tcod_tipo_indice_atualizacao string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/processo'"
+				],
+				"execution_count": 41
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela produto\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.produto (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_produto string,\r\n",
+					"\tdesc_produto string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/produto'"
+				],
+				"execution_count": 42
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela PROG_REL_ANDAMENT_PENHOR_ON\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.prog_rel_andament_penhor_on (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tid_prog_rel_andament_penhor_on string,\r\n",
+					"\tdt_criacao string,\r\n",
+					"\tdt_solicitacao string, \r\n",
+					"\tim_relatorio string, \r\n",
+					"\tno_usuario string,\r\n",
+					"\tte_erro string,\r\n",
+					"\tdt_inicial string,\r\n",
+					"\tdt_final string,\r\n",
+					"\tcod_status string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/prog_rel_andament_penhor_on'"
+				],
+				"execution_count": 43
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela PROG_REL_PRESTACAO_CONTA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.prog_rel_prestacao_conta (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tid_prog_rel_prestacao_conta string,\r\n",
+					"\tin_emitir_relatorio string,\r\n",
+					"\tdt_cadastro_emissao string,\r\n",
+					"\tdt_criacao string,\r\n",
+					"\tdt_solicitacao string, \r\n",
+					"\tim_relatorio string, \r\n",
+					"\tno_usuario string,\r\n",
+					"\tte_erro string,\r\n",
+					"\tdt_inicial string,\r\n",
+					"\tdt_final string,\r\n",
+					"\tcod_status string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/prog_rel_prestacao_conta'\r\n",
+					""
+				],
+				"execution_count": 44
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela PROG_REL_RECLASSI_PENHOR_ON\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.prog_rel_reclassi_penhor_on (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tid_prog_rel_reclassi_penhor_on string,\r\n",
+					"\tdt_criacao string,\r\n",
+					"\tdt_solicitacao string,\r\n",
+					"\tim_relatorio string, \r\n",
+					"\tno_usuario string,\r\n",
+					"\tte_erro string,\r\n",
+					"\tdt_inicial string,\r\n",
+					"\tdt_final string,\r\n",
+					"\tcod_status string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/prog_rel_reclassi_penhor_on'"
+				],
+				"execution_count": 45
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela PROG_RELATORIO_ACOMP_PRAZO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.prog_relatorio_acomp_prazo (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tid_prog_relatorio_acomp_prazo string,\r\n",
+					"\tte_sql string, \r\n",
+					"\tte_parametros string,\r\n",
+					"\tdt_criacao string,\r\n",
+					"\tdt_solicitacao string,\r\n",
+					"\tim_relatorio string, \r\n",
+					"\tno_usuario string,\r\n",
+					"\tte_erro string,\r\n",
+					"\tds_email string,\r\n",
+					"\tte_filtros_selecionados string,\r\n",
+					"\ttp_relatorio string,\r\n",
+					"\tjob string,\r\n",
+					"\tsngerando string,\r\n",
+					"\tte_parametros_originais string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/prog_relatorio_acomp_prazo'"
+				],
+				"execution_count": 46
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela REAVALIACAO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.reavaliacao (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_reavaliacao string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tdtc_cadastro string,\r\n",
+					"\tnom_usuario_cadastro string,\r\n",
+					"\tvlr_curto_prazo string,\r\n",
+					"\tvlr_curto_prazo_fin string,\r\n",
+					"\tvlr_longo_prazo string,\r\n",
+					"\tvlr_longo_prazo_fin string,\r\n",
+					"\tvlr_possivel string,\r\n",
+					"\tvlr_remoto string,\r\n",
+					"\tvlr_pedido string,\r\n",
+					"\tvlr_pagamento string,\r\n",
+					"\tsts_ativo string,\r\n",
+					"\tsts_remoto_reversao string,\r\n",
+					"\tcod_tipo_reav_curto_prov string,\r\n",
+					"\tcod_tipo_reav_longo_prov string,\r\n",
+					"\tcod_tipo_reav_remo string,\r\n",
+					"\tcod_tipo_reav_poss string,\r\n",
+					"\tcod_pedido_processo string,\r\n",
+					"\tcod_calendario_monetario string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/reavaliacao'"
+				],
+				"execution_count": 47
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela REU\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.reu (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_parte_processo string,\r\n",
+					"\tdtc_inicio string,\r\n",
+					"\tdtc_fim string,\r\n",
+					"\tsts_solvencia string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_migracao_turquesa string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/reu'"
+				],
+				"execution_count": 48
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql \r\n",
+					"\r\n",
+					"-- Tabela terceiro_interessado\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.terceiro_interessado (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_parte_processo string,\r\n",
+					"\tdtc_inicio string,\r\n",
+					"\tdtc_fim string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_migracao_turquesa string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/terceiro_interessado'\r\n",
+					""
+				],
+				"execution_count": 49
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"\r\n",
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela TIPO_ACAO_PROCESSO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.tipo_acao_processo (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_tipo_acao_processo string,\r\n",
+					"\tnom_tipo_acao_processo string,\r\n",
+					"\tcod_modulo string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/tipo_acao_processo'\r\n",
+					""
+				],
+				"execution_count": 50
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela TIPO_ACAO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.tipo_acao (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_tipo_acao string,\r\n",
+					"\tdes_tipo_acao string,\r\n",
+					"\tcod_natureza string,\r\n",
+					"\tcod_especificacao_natureza string,\r\n",
+					"\tsts_visualiza_relatorio string,\r\n",
+					"\tcod_detalhe_especific_natureza string,\r\n",
+					"\tsts_ativo string,\r\n",
+					"\tcod_pre_objeto_empresa string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/tipo_acao'"
+				],
+				"execution_count": 51
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"\r\n",
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela TIPO_CONTINGENCIA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.tipo_contingencia (\t\r\n",
+					"   table string,\r\n",
+					"   op_type string,\r\n",
+					"   op_ts string,\r\n",
+					"   current_ts string,\r\n",
+					"   pos string,\r\n",
+					"   cod_tipo_contingencia string,\r\n",
+					"   nome string,\r\n",
+					"   updated_at timestamp,\r\n",
+					"   created_at timestamp,\r\n",
+					"   updated_by string,\r\n",
+					"   created_by string\r\n",
+					"   )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/tipo_contingencia'"
+				],
+				"execution_count": 52
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela TIPO_INDICE_ATUALIZACAO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.tipo_indice_atualizacao (\t\r\n",
+					"   table string,\r\n",
+					"   op_type string,\r\n",
+					"   op_ts string,\r\n",
+					"   current_ts string,\r\n",
+					"   pos string,\r\n",
+					"   cod_tipo_indice_atualizacao string,\r\n",
+					"   nom_tipo_indice_atualizacao string,\r\n",
+					"   updated_at timestamp,\r\n",
+					"   created_at timestamp,\r\n",
+					"   updated_by string,\r\n",
+					"   created_by string\r\n",
+					"   )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/tipo_indice_atualizacao'"
+				],
+				"execution_count": 53
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela TIPO_OCORRENCIA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.tipo_ocorrencia (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_tipo_ocorrencia string,\r\n",
+					"\tnom_tipo_ocorrencia string,\r\n",
+					"\tcod_natureza string,\r\n",
+					"\tcod_especificacao_natureza string,\r\n",
+					"\tnum_dias_antecedencia_adv string,\r\n",
+					"\tnum_dias_antecedencia_prep string,\r\n",
+					"\tsts_visualiza_relatorio string,\r\n",
+					"\tcod_detalhe_especific_natureza string,\r\n",
+					"\tsts_cumprimento string,\r\n",
+					"\tsts_espec_tipo_oco_obrigatoria string,\r\n",
+					"\tsts_ativo string,\r\n",
+					"\tsts_incidente string,\r\n",
+					"\tsts_afeta_procon string,\r\n",
+					"\tsts_arquivamento string,\r\n",
+					"\tsts_exibe_escritorio string,\r\n",
+					"\tsts_penhora_online string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tsts_proc_inativo_escritorio string,\r\n",
+					"\tsts_exibe_escritorio_proc_inat string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_exibe_processum_um string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/tipo_ocorrencia'"
+				],
+				"execution_count": 54
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"\r\n",
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela TIPO_PAGAMENTO_OCORRENCIA\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.tipo_pagamento_ocorrencia (\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\t\r\n",
+					"    cod_tipo_pagamento_ocorrencia string,\r\n",
+					"\tstr_nome string,\r\n",
+					"\tstr_nome_sap string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/tipo_pagamento_ocorrencia'"
+				],
+				"execution_count": 55
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela TIPO_PAGAMENTO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.tipo_pagamento (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_tipo_pagamento string,\r\n",
+					"\tnom_tipo_pagamento string,\r\n",
+					"\tsts_classificacao string,\r\n",
+					"\tsts_tipo_pagamento string,\r\n",
+					"\tsts_presta_contas string,\r\n",
+					"\tsts_form_prest_conta string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"\t\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/tipo_pagamento'\r\n",
+					""
+				],
+				"execution_count": 56
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela USUARIO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.usuario (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    nom_usuario string,\r\n",
+					"\tdes_senha string,\r\n",
+					"\tcod_perfil_usuario string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tcod_funcionario string,\r\n",
+					"\tsig_advogado string,\r\n",
+					"\tsts_visualiza_todos string,\r\n",
+					"\tsts_primeiro_logon string,\r\n",
+					"\tsts_funcionario_adv_esc_cont string,\r\n",
+					"\tsig_advogado_esc_contratado string,\r\n",
+					"\tdtc_troca_senha string,\r\n",
+					"\tsig_escritorio_contratado string,\r\n",
+					"\tsts_texto_toolbar string,\r\n",
+					"\tsts_visua_resumo_atividades string,\r\n",
+					"\tsts_monitora_tempo_consulta string,\r\n",
+					"\tcod_autorizado_oficio string,\r\n",
+					"\tdtc_cadastro string,\r\n",
+					"\tnum_tentativa_login string,\r\n",
+					"\tcod_objeto_sistema string,\r\n",
+					"\tdes_senha_nova string,\r\n",
+					"\tdtc_ultimo_acesso string,\r\n",
+					"\tseq_perfil_redi string,\r\n",
+					"\tsts_usuario_fixa string,\r\n",
+					"\tcod_reg_advogado string,\r\n",
+					"\tid_perfil_obrigacao string,\r\n",
+					"\tnom_usuario_ad string,\r\n",
+					"\tsts_permite_arq_proc_cont_ativ string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/usuario'"
+				],
+				"execution_count": 57
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela VALOR_DATA_PROCESSO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.valor_data_processo (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_valor_data_processo string,\r\n",
+					"\tdtc_pagamento string,\r\n",
+					"\tcod_tipo_pagamento string,\r\n",
+					"\tcod_especific_tipo_pagamento string,\r\n",
+					"\tsig_indice_moeda string,\r\n",
+					"\tvlr_pagamento string,\r\n",
+					"\tdes_observacao string,\r\n",
+					"\tdtc_expedicao string,\r\n",
+					"\tdtc_validade string,\r\n",
+					"\tcod_detalhe_especific_tipo_pag string,\r\n",
+					"\tcod_empresa_depositario string,\r\n",
+					"\tcod_funcionario_depositario string,\r\n",
+					"\tsts_aproveitamento string,\r\n",
+					"\tcod_empresa_pai string,\r\n",
+					"\tnum_processo_pai string,\r\n",
+					"\tcod_valor_data_processo_pai string,\r\n",
+					"\tcod_conta_contabil string,\r\n",
+					"\tcod_centro_custo_processo string,\r\n",
+					"\tcod_prestacao_contas string,\r\n",
+					"\tdtc_mudanca_aproveitamento string,\r\n",
+					"\tdtc_cadastro string,\r\n",
+					"\tsaldo string,\r\n",
+					"\tnum_protocolo_bacen_jud string,\r\n",
+					"\tcod_banco string,\r\n",
+					"\tdes_agencia string,\r\n",
+					"\tdes_conta string,\r\n",
+					"\tdtc_aproveitamento string,\r\n",
+					"\tcod_agencia string,\r\n",
+					"\tcod_conta string,\r\n",
+					"\tvlr_tranferencia_parcial string,\r\n",
+					"\tvlr_bloqueado string,\r\n",
+					"\tsts_valor_dt_processo_penhora string,\r\n",
+					"\tcod_benner string,\r\n",
+					"\tsts_migracao_benner string,\r\n",
+					"\tdat_ultima_alteracao string,\r\n",
+					"\tid_fisico_pagamento_garantia string,\r\n",
+					"\tcod_prestacao_contas_form string,\r\n",
+					"\tnom_usuario string,\r\n",
+					"\tsts_inativo string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_pagamento_manual string,\r\n",
+					"\tnu_sequencial string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/valor_data_processo'"
+				],
+				"execution_count": 58
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"-- Tabela vitima\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.vitima (\t\r\n",
+					"\ttable string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tcod_empresa string,\r\n",
+					"\tnum_processo string,\r\n",
+					"\tcod_parte_processo string,\r\n",
+					"\tdtc_inicio string,\r\n",
+					"\tdtc_fim string,\r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"\tsts_migracao_turquesa string,\r\n",
+					"\tupdated_at timestamp,\r\n",
+					"\tcreated_at timestamp,\r\n",
+					"\tupdated_by string,\r\n",
+					"\tcreated_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/vitima'\r\n",
+					""
+				],
+				"execution_count": 59
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"-- Tabela FERIADO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.feriado (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"\tdtc_feriado string,\t\r\n",
+					"\tnom_feriado string,\t\r\n",
+					"\tcod_empresa string,\t\r\n",
+					"\tcod_processum string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/feriado'\r\n",
+					""
+				],
+				"execution_count": 60
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"-- Tabela ASSOC_TIPO_OCO_MOV\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.assoc_tipo_oco_mov (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"   \tcod_assoc_tipo_oco_mov string, \r\n",
+					"\tcod_grupo_tipo_ocorrencia string, \r\n",
+					"\tcod_tipo_ocorrencia string, \r\n",
+					"\tcod_especific_tipo_ocorrencia string, \r\n",
+					"\tsegregacao_pagamento string, \r\n",
+					"\tsegregacao_proporcao string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/assoc_tipo_oco_mov'\r\n",
+					""
+				],
+				"execution_count": 61
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"-- Tabela STATUS_OCORRENCIA_PROCESSO\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.status_ocorrencia_processo (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_empresa string, \r\n",
+					"\tnum_processo string, \r\n",
+					"\tcod_ocorrencia string, \r\n",
+					"\tcod_status_ocorrencia_processo string, \r\n",
+					"\tdes_status_ocorrencia_processo string, \r\n",
+					"\tdtc_cadastro string, \r\n",
+					"\tcod_empresa_responsavel string, \r\n",
+					"\tcod_funcionario_responsavel string, \r\n",
+					"\tnom_email_envolvidos string, \r\n",
+					"\tsig_advogado_esc_contratado string, \r\n",
+					"\tcod_tipo_status_oco_processo string, \r\n",
+					"\tsts_migracao_benner string, \r\n",
+					"\tsts_migracao_cpj string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/status_ocorrencia_processo'\r\n",
+					""
+				],
+				"execution_count": 62
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"-- Tabela PRESTACAO_CONTAS_FORM\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.prestacao_contas_form (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    cod_prestacao_contas_form string, \r\n",
+					"\tcod_empresa string, \r\n",
+					"\tnum_processo string, \r\n",
+					"\tcod_prestacao_contas_status string, \r\n",
+					"\tdtc_status_atual string, \r\n",
+					"\tcod_prestacao_contas_stat_pend string, \r\n",
+					"\tcod_valor_data_processo_pai string, \r\n",
+					"\tid_fisico_pagamento_garantia string, \r\n",
+					"\tdtc_cadastro string, \r\n",
+					"\tnom_usuario_responsavel string, \r\n",
+					"\tdtc_atribuicao_responsavel string, \r\n",
+					"\tvlr_devido string, \r\n",
+					"\tvlr_irrf string, \r\n",
+					"\tvlr_inss string, \r\n",
+					"\tvlr_sub_despesa string, \r\n",
+					"\tvlr_honorario_pericial string, \r\n",
+					"\tvlr_custa_proc string, \r\n",
+					"\tvlr_outra_despesa string, \r\n",
+					"\tvlr_sub_outra_despesa string, \r\n",
+					"\tvlr_levantado string, \r\n",
+					"\tvlr_atualizacao_monetaria string, \r\n",
+					"\tvlr_creditado_total string, \r\n",
+					"\tvlr_total_baixado string, \r\n",
+					"\tvlr_saldo_pendente string, \r\n",
+					"\tdes_observacao string, \r\n",
+					"\tcod_tipo_aproveitamento string, \r\n",
+					"\tdtc_credito string, \r\n",
+					"\tdes_email_1 string, \r\n",
+					"\tdes_email_2 string, \r\n",
+					"\tnum_doc_compensacao string, \r\n",
+					"\tdtc_compensacao string, \r\n",
+					"\tnom_usuario_validou string, \r\n",
+					"\tdtc_validacao string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/prestacao_contas_form'\r\n",
+					""
+				],
+				"execution_count": 63
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"-- Tabela PARAM_FOTOGRAFIA_EVH\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.param_fotografia_evh (\r\n",
+					"    table string,\r\n",
+					"    op_type string,\r\n",
+					"    op_ts string,\r\n",
+					"    current_ts string,\r\n",
+					"    pos string,\r\n",
+					"    id string, \r\n",
+					"\tphotographyId string, \r\n",
+					"\tsig_escritorio_contratado string, \r\n",
+					"\tcod_divisao_processo string, \r\n",
+					"\tcod_calendario string, \r\n",
+					"\tnom_usuario_responsavel string, \r\n",
+					"\tnom_usuario_fotografo string, \r\n",
+					"\tdtc_data_fotografia string, \r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string,\r\n",
+					"    newpk string\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/param_fotografia_evh'"
+				],
+				"execution_count": 64
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"--Tabela PARAM_PROCESSO_EXCEL_P3\r\n",
+					"\r\n",
+					"CREATE TABLE IF NOT EXISTS bronze.param_processo_excel_p3 (\r\n",
+					"    id string,\r\n",
+					"    name string,\r\n",
+					"    userId string,\r\n",
+					"    start_time string,\r\n",
+					"    end_time string,\r\n",
+					"    status string,\r\n",
+					"    path string,\r\n",
+					"    num_processo string,\r\n",
+					"    is_process string,\r\n",
+					"    cod_calendars string,\r\n",
+					"    updated_at timestamp,\r\n",
+					"    created_at timestamp,\r\n",
+					"    updated_by string,\r\n",
+					"    created_by string,\r\n",
+					"    current_ts string,\r\n",
+					"    op_type string,\r\n",
+					"    current_ts_p3 timestamp\r\n",
+					"    )\r\n",
+					"USING DELTA\r\n",
+					"LOCATION 'abfss://datalake@dlstlfjarvisprod.dfs.core.windows.net/data/bronze/tables/param_processo_excel_p3'"
+				],
+				"execution_count": 65
+			}
+		]
+	}
+}

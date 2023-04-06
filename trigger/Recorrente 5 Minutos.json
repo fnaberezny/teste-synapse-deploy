@@ -1,0 +1,17 @@
+{
+	"name": "Recorrente 5 Minutos",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 5,
+				"startTime": "2022-11-11T11:10:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

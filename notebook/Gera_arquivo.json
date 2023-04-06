@@ -1,0 +1,172 @@
+{
+	"name": "Gera_arquivo",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "cb0b7e0b-4e3a-4aff-a2e2-296a0f13398f"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import time\r\n",
+					"import os\r\n",
+					"import uuid\r\n",
+					"import datetime\r\n",
+					"import random\r\n",
+					"import json\r\n",
+					"from azure.eventhub import EventHubProducerClient, EventData"
+				],
+				"execution_count": 56
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"producer = EventHubProducerClient.from_connection_string(conn_str=\"Endpoint=sb://evhntlfjarvisprod.servicebus.windows.net/;SharedAccessKeyName=syn_policy;SharedAccessKey=URZNssaVTC3vRg7k2qASgKI11Bg3nZU/ODD3/FQVuu4=\", eventhub_name=\"parametro\")\r\n",
+					"event_data_batch = producer.create_batch() # Create a batch. You will add events to the batch later. "
+				],
+				"execution_count": 57
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"elements = [\r\n",
+					"    {\"DTC_PROGRAMACAO_FOTOGRAFIA\": \"2018-07-20 00:00:00.000\", \"STS_FOTOGRAFIA\": \"1\"},\r\n",
+					"    {\"DTC_PROGRAMACAO_FOTOGRAFIA\": \"2016-07-20 00:00:00.000\", \"STS_FOTOGRAFIA\": \"1\"},\r\n",
+					" \r\n",
+					"]"
+				],
+				"execution_count": 58
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"s = json.dumps(elements, indent=4)\r\n",
+					"#print(s)"
+				],
+				"execution_count": 59
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"for element in elements:\r\n",
+					"    s = json.dumps(element)\r\n",
+					"    # print(s)\r\n",
+					"    event_data_batch.add(EventData(s))"
+				],
+				"execution_count": 60
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"print(event_data_batch)\r\n",
+					"producer.send_batch(event_data_batch)\r\n",
+					"producer.close()"
+				],
+				"execution_count": 61
+			}
+		]
+	}
+}

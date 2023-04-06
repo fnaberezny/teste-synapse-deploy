@@ -1,0 +1,17 @@
+{
+	"name": "Sincronizacao fotografia",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 2,
+				"startTime": "2023-03-26T00:00:00",
+				"timeZone": "E. South America Standard Time"
+			}
+		}
+	}
+}

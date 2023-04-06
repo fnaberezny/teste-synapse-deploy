@@ -1,0 +1,213 @@
+{
+	"name": "projecao_trabalhistas",
+	"properties": {
+		"description": "Carga da collection pedido trabalhistas no Cosmos. Esse dado",
+		"folder": {
+			"name": "cargas_cosmos"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": true,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "5577d528-e00a-4ace-bbd4-8e21d3e5b965"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"#pipe_id = '6a81e4a3-8e7f-4e30-b1e1-50b036145697'\r\n",
+					"#cod_calendario_monetario = 159"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import com.microsoft.spark.sqlanalytics\r\n",
+					"from com.microsoft.spark.sqlanalytics.Constants import Constants\r\n",
+					"from pyspark.sql.functions import col\r\n",
+					"\r\n",
+					"##pipe_id = 'c3408445-eb4e-4a7c-91a8-ea80ea0cf3ed'\r\n",
+					"\r\n",
+					"env = mssparkutils.env.getWorkspaceName()\r\n",
+					"if(env == 'syn-tlf-jarvis-prod'):\r\n",
+					"    sqlWorkspaceName = \"syndpjarvisprod\"\r\n",
+					"elif(env == 'syn-tlf-jarvis-test'):\r\n",
+					"    sqlWorkspaceName = 'syndpjarvistest'\r\n",
+					"else:\r\n",
+					"    sqlWorkspaceName = 'syndpjarvisdev'\r\n",
+					"\r\n",
+					"\r\n",
+					"# // Cosmos Variables\r\n",
+					"linkedService = 'CosmosDb'\r\n",
+					"containerTarget = 'fotografia_projecao'\r\n",
+					"\r\n",
+					"# // SQL Dedicated Variables\r\n",
+					"schema0 = \"dbo\"\r\n",
+					"schema1 = \"rl3\"\r\n",
+					"\r\n",
+					"# // SQL Tables Variables\r\n",
+					"vw_carga_projecao = \"vw_carga_projecao\"\r\n",
+					"processos_pendentes = \"processos_pendentes\"\r\n",
+					"\r\n",
+					"# // Read Tables SQL Dedicated Pool\r\n",
+					"vw_carga_projecao = spark.read.synapsesql(f'{sqlWorkspaceName}.rl3.vw_carga_projecao')\r\n",
+					"df_processos_pendentes = spark.read.synapsesql(f'{sqlWorkspaceName}.{schema1}.{processos_pendentes}')\r\n",
+					"\r\n",
+					"# //Create temp view\r\n",
+					"vw_carga_projecao.createOrReplaceTempView(\"vw_carga_projecao\")\r\n",
+					"df_processos_pendentes.createOrReplaceTempView(\"processos_pendentes\")\r\n",
+					""
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"df_query = spark.sql(f'''\r\n",
+					"Select a.* from vw_carga_projecao a\r\n",
+					"where\r\n",
+					"a.tipo_processo = 'T'\r\n",
+					"and cod_calendario_monetario = {cod_calendario_monetario}\r\n",
+					"''')"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_query = df_query.selectExpr([f'CAST({coluna} as string)' if tipo in ('timestamp', 'date') else coluna for coluna, tipo in df_query.dtypes])"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Write to Cosmos Container\r\n",
+					"(df_query\r\n",
+					"    .write\r\n",
+					"    .format(\"cosmos.oltp\")\r\n",
+					"    .option(\"spark.synapse.linkedService\", linkedService)\r\n",
+					"    .option(\"spark.cosmos.container\", containerTarget)\r\n",
+					"    .option(\"spark.cosmos.write.strategy\", \"ItemOverwrite\")\r\n",
+					"    .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"    .mode(\"append\")\r\n",
+					"    .save()\r\n",
+					")"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_query.count() #Total de linhas upserted;"
+				],
+				"execution_count": 6
+			}
+		]
+	}
+}

@@ -1,0 +1,181 @@
+{
+	"name": "loadEscritorioCosmos",
+	"properties": {
+		"folder": {
+			"name": "cargas_cosmos"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "9f8adb74-2e6b-4d23-b90a-fced31f7805b"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_spark",
+				"display_name": "scala"
+			},
+			"language_info": {
+				"name": "scala"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"val linkedService = \"CosmosDb\"\r\n",
+					"val container = \"escritorio_contratado\"\r\n",
+					"val workspace = \"syndpjarvisprod\"\r\n",
+					"val schemaTable = \"silver.vw_escritorio\""
+				],
+				"execution_count": 41
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"val df = spark.read.synapsesql(s\"$workspace.$schemaTable\")\r\n",
+					"        .select(\"sk_escritorio\"\r\n",
+					"            ,\"sig_escritorio_contratado\"\r\n",
+					"            ,\"nom_escritorio_contratado\"\r\n",
+					"            ,\"sig_estado\"\r\n",
+					"            ,\"sig_municipio\"\r\n",
+					"            ,\"des_endereco\"\r\n",
+					"            ,\"des_comp_endereco\"\r\n",
+					"            ,\"nom_bairro\"\r\n",
+					"            ,\"num_cnpj\"\r\n",
+					"            ,\"num_insc_estadual\"\r\n",
+					"            ,\"num_insc_municipal\"\r\n",
+					"            ,\"num_tel_fixo\"\r\n",
+					"            ,\"num_fax\"\r\n",
+					"            ,\"num_cep\"\r\n",
+					"            ,\"nom_pessoa_contato\"\r\n",
+					"            ,\"des_email\"\r\n",
+					"            ,\"cod_grupo_usuario\"\r\n",
+					"            ,\"sts_migracao_benner\"\r\n",
+					"            ,\"sig_processum\"\r\n",
+					"            ,\"nom_processum\"\r\n",
+					"            ,\"sts_processos_criminais\"\r\n",
+					"            ,\"sts_migracao_cpj\"\r\n",
+					"            ,\"updated_at\"\r\n",
+					"            ,\"created_at\"\r\n",
+					"            )"
+				],
+				"execution_count": 42
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"val df_id = df.withColumn(\"id\", col(\"sk_escritorio\").cast(\"string\"))\r\n",
+					"              .withColumn(\"updated_at\", to_timestamp(col(\"updated_at\"),\"yyyy-MM-dd HH mm ss\").cast(\"String\"))\r\n",
+					"              .withColumn(\"created_at\", to_timestamp(col(\"created_at\"),\"yyyy-MM-dd HH mm ss\").cast(\"String\"))"
+				],
+				"execution_count": 43
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"// All columns in LowerCase\r\n",
+					"val lowerCaseColumns = df_id\r\n",
+					"    .select(df_id\r\n",
+					"    .columns\r\n",
+					"    .map(x => col(x).as(x.toLowerCase)): _*)"
+				],
+				"execution_count": 44
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"lowerCaseColumns.write\r\n",
+					"     .format(\"cosmos.oltp\")\r\n",
+					"     .option(\"spark.synapse.linkedService\", linkedService)\r\n",
+					"     .option(\"spark.cosmos.container\", container)\r\n",
+					"     .option(\"spark.cosmos.write.strategy\", \"ItemOverwrite\")\r\n",
+					"     .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"     .mode(\"append\")\r\n",
+					"     .save()"
+				],
+				"execution_count": 17
+			}
+		]
+	}
+}

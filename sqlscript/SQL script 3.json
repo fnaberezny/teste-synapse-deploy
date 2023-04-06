@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 3",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) * FROM [bronze].[dbo].[param_fotografia_evh]\norder by current_ts asc\n\n\nSELECT * FROM [silver].[dbo].[param_fotografia_evh]\norder by current_ts desc",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "silver",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

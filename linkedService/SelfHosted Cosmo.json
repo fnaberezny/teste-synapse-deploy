@@ -1,0 +1,16 @@
+{
+	"name": "SelfHosted Cosmo",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "CosmosDb",
+		"typeProperties": {
+			"connectionString": "AccountEndpoint=https://cosmos-api-tlf-jarvis-prod.documents.azure.com:443/;Database=cosmos-jarvis-prod;",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjOGEwNGVhNC05ODAyLTQxNzktYjk5Ni1kN2EwYWU5ZjgyYWQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "SelfHost",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

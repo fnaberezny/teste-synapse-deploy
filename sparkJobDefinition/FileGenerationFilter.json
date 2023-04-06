@@ -1,0 +1,41 @@
+{
+	"name": "FileGenerationFilter",
+	"properties": {
+		"folder": {
+			"name": "FileGen_OLD"
+		},
+		"targetBigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "3.2",
+		"language": "python",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "FileGenerationFilter",
+			"file": "abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/file_gen_filter.py",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "bf5b12ee-19a9-47c4-8f1d-c6307321c395"
+			},
+			"args": [
+				"--akv",
+				"kv-tlf-jarvis-prod",
+				"-env",
+				"prod"
+			],
+			"jars": [],
+			"pyFiles": [
+				""
+			],
+			"files": [],
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2
+		}
+	}
+}

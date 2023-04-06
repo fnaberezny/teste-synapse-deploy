@@ -1,0 +1,170 @@
+{
+	"name": "delete_from_cosmos",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "e679f596-5f56-4806-88a5-425fb10a2ecb"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql.functions import regexp_replace, to_date\r\n",
+					"from collections import OrderedDict\r\n",
+					"\r\n",
+					"env = mssparkutils.env.getWorkspaceName()\r\n",
+					"if(env == 'syn-tlf-jarvis-prod'):\r\n",
+					"    sql_database = \"syndpjarvisprod\"\r\n",
+					"    akv_name ='kv-tlf-jarvis-prod'\r\n",
+					"\r\n",
+					"elif(env == 'syn-tlf-jarvis-test'):\r\n",
+					"    sql_database = 'syndpjarvistest'\r\n",
+					"    akv_name = 'kv-tlf-jarvis-test'\r\n",
+					"\r\n",
+					"else:\r\n",
+					"    sql_database = 'syndpjarvisdev'\r\n",
+					"    akv_name = 'kv-tlv-devops-dev'\r\n",
+					"\r\n",
+					"\r\n",
+					"cosmos_tables = TokenLibrary.getSecret(akv_name, 'tablesCosmos', 'AzureKeyVault').split(',')\r\n",
+					"string_pk = TokenLibrary.getSecret(akv_name, \"primaryKeyColumnNameTable\", 'AzureKeyVault')\r\n",
+					""
+				],
+				"execution_count": 39
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"###Criar dicionário com pks: {tabela : [pk]}\r\n",
+					"pk_list = string_pk.translate(str.maketrans('','',r' {}')).split(',')\r\n",
+					"pk_dict = OrderedDict()\r\n",
+					"\r\n",
+					"for item in sorted(pk_list):\r\n",
+					"    item_list = item.split('=')\r\n",
+					"    pk_dict[item_list[0]] = item_list[1].split(';')\r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"###Loop para realizar o DELETE\r\n",
+					"\r\n",
+					"for table in pk_dict.keys():\r\n",
+					"\r\n",
+					"    try:\r\n",
+					"        columns_pk = pk_dict[table]\r\n",
+					"        newpk = \"concat(\"+ \",'-',\".join(columns_pk) + ') as newpk'\r\n",
+					"\r\n",
+					"        ### Get deletes\r\n",
+					"        df_deletes = (spark.read.table(f'bronze.{table}').filter('upper(op_type) = \"D\"')\r\n",
+					"                        .filter('''to_date(current_ts) >= to_date(from_utc_timestamp(current_timestamp, 'America/Sao_Paulo')) ''') ##Retorna deletes somente do dia de hoje\r\n",
+					"                        .select( list(set(['current_ts'] + columns_pk)) ) ##Deduplicate selected coluns when current_ts is part of PK;\r\n",
+					"                        )\r\n",
+					"\r\n",
+					"\r\n",
+					"        ### Create Ids\r\n",
+					"        df_pks = (df_deletes.selectExpr('*', newpk)\r\n",
+					"                .withColumn('id', regexp_replace('newpk', '^[0]|[/_-]', ''))\r\n",
+					"                .drop_duplicates(['newpk'])\r\n",
+					"                )\r\n",
+					"\r\n",
+					"        total = df_pks.count()\r\n",
+					"        print(table, total)\r\n",
+					"\r\n",
+					"        if(total == 0):\r\n",
+					"            continue\r\n",
+					"        \r\n",
+					"        (\r\n",
+					"            df_pks.write\r\n",
+					"            .format(\"cosmos.oltp\")\r\n",
+					"            .mode(\"append\")\r\n",
+					"            .option(\"spark.synapse.linkedService\", \"CosmosDb\")\r\n",
+					"            .option(\"spark.cosmos.container\", table)\r\n",
+					"            # .option(\"spark.cosmos.write.strategy\", \"ItemOverwrite\")\r\n",
+					"            .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"            .option(\"spark.cosmos.write.strategy\", \"ItemDelete\")\r\n",
+					"            .save()\r\n",
+					"        )\r\n",
+					"    \r\n",
+					"    except Exception as e:\r\n",
+					"        print(\"Error table:\", table)\r\n",
+					"        print(e)\r\n",
+					""
+				],
+				"execution_count": 36
+			}
+		]
+	}
+}

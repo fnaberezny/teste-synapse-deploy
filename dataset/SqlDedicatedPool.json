@@ -1,0 +1,25 @@
+{
+	"name": "SqlDedicatedPool",
+	"properties": {
+		"parameters": {
+			"table_name_select": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().table_name_select",
+				"type": "Expression"
+			}
+		},
+		"sqlPool": {
+			"referenceName": "syndpjarvisprod",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

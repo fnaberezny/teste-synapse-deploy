@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 8",
+	"properties": {
+		"content": {
+			"query": "-- verifica carga de CM e Juros \n\nSELECT TOP 10\n    sequencial,\n    modulo,\n    escritorio_contratado,\n    prov_cp_op_final,\n    prov_cp_cm_final,\n    prov_cp_juros_final,\n    prov_cp_fi_final,\n    prov_cp_op_fi_final,\n    prov_lp_op_final,\n    prov_lp_cm_final,\n    prov_lp_juros_final,\n    prov_lp_fi_final,\n    prov_lp_op_fi_final, -- NOK\n    possivel_op_final,\n    possivel_cm_final,\n    possivel_juros_final,\n    possivel_fi_final,\n    possivel_op_fi_final,\n    remoto_op_final,\n    remoto_cm_final,\n    remoto_juros_final,\n    remoto_fi_final,\n    remoto_op_fi_final,\n    prov_cp_lp_op_final,\n    prov_cp_lp_cm_final, -- NOK\n    prov_cp_lp_juros_final,  -- NOK\n    prov_cp_lp_fi_final,\n    prov_cp_lp_op_fi_final\nfrom dbo.fotografia_item\nwhere cod_calendario_monetario = 165\nand sequencial in (\n    '10109/2017--5',\n    '10009/2018--1'\n);    ",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "syndpjarvisprod",
+				"poolName": "syndpjarvisprod"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

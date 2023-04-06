@@ -1,0 +1,194 @@
+{
+	"name": "copia_collection_cosmos",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "06f4a5c9-263c-437c-8de1-c026ae089734"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"\n",
+					"\n",
+					"akv = \"kv-tlf-jarvis-prod\"\n",
+					"\n",
+					"key = \"2Iteno6Ffv4kgeAHdZgX0A2noXDHPCEltXjbfQgpWlu8TOHuxxgtBFkX0JqrlhzaQIv6qRZswHoFFpNrK1wLYw==\"\n",
+					"host = \"https://cosmos-api-tlf-jarvis-prod.documents.azure.com:443/\"\n",
+					"database = \"cosmos-jarvis-prod\"\n",
+					"targetContainer = \"processo_bkp\"\n",
+					"sourceContainer  = \"processo\"\n",
+					"\n",
+					"\n",
+					"cfg_target = {\n",
+					"  \"spark.cosmos.accountEndpoint\" : host,\n",
+					"  \"spark.cosmos.accountKey\" : key,\n",
+					"  \"spark.cosmos.database\" : database,\n",
+					"  \"spark.cosmos.container\" : targetContainer,\n",
+					"}\n",
+					"\n",
+					"spark.conf.set(\"spark.sql.catalog.cosmosCatalog\", \"com.azure.cosmos.spark.CosmosCatalog\")\n",
+					"spark.conf.set(\"spark.sql.catalog.cosmosCatalog.spark.cosmos.accountEndpoint\", host)\n",
+					"spark.conf.set(\"spark.sql.catalog.cosmosCatalog.spark.cosmos.accountKey\", key)\n",
+					"spark.conf.set(\"spark.sql.catalog.cosmosCatalog.spark.cosmos.read.partitioning.strategy\",\"Restrictive\")\n",
+					"    "
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import uuid\n",
+					"from pyspark.sql.functions import *\n",
+					" \n",
+					""
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"query = \"select uuid() as u1 , * from cosmosCatalog.`cosmos-jarvis-prod`.processo\"\n",
+					"\n",
+					"#query = \"select * from cosmos-jarvis-test.fotografia_projecao\"\n",
+					"  \n",
+					"df = spark.sql(query)\n",
+					" \n",
+					"df.count()"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df.withColumn(\"pk\",concat_ws(\"_\",col(\"num_processo\")))\\\n",
+					"         .write \\\n",
+					"         .format(\"cosmos.oltp\")\\\n",
+					"         .mode(\"APPEND\") \\\n",
+					"         .options(**cfg_target)\\\n",
+					"         .save()"
+				],
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_old = spark.sql('select id from cosmosCatalog.<dbname>.<source_container> c') \n",
+					"df_new = spark.sql('select id from cosmosCatalog.<dbname>.<target_container> c') \n",
+					"  \n",
+					"df_delta = df_old.exceptAll(df_new).show() \n",
+					"  \n",
+					"print(df_delta.count()) "
+				]
+			}
+		]
+	}
+}

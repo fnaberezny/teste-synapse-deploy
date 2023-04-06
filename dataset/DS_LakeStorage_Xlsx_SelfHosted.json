@@ -1,0 +1,52 @@
+{
+	"name": "DS_LakeStorage_Xlsx_SelfHosted",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SelfHosted Azure",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"sheetname": {
+				"type": "String"
+			},
+			"folder": {
+				"type": "String"
+			},
+			"filename": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().sheetname",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('load_files/', dataset().folder)",
+					"type": "Expression"
+				},
+				"fileSystem": "datalake"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "SEQUENCIAL",
+				"type": "String"
+			},
+			{
+				"name": "AVALICAO_RISCO_PROCESSO",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

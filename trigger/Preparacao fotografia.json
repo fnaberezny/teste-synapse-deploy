@@ -1,0 +1,24 @@
+{
+	"name": "Preparacao fotografia",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "P3_PREPARACAO_FOTOGRAFIA",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 8,
+				"startTime": "2022-12-21T00:00:00",
+				"timeZone": "E. South America Standard Time"
+			}
+		}
+	}
+}

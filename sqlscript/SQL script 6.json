@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 6",
+	"properties": {
+		"content": {
+			"query": "update rl3.processos_pendentes\nset photo_signature = NULL,\ncosmos_signature = null\nwhere tipo_processo = 'N'\n\n[rl3].[processos_pendentes_full] 'full', 166,'processo'\n\ntruncate table \nselect top 10 * from rl3.processos_pendentes \nset photo_signature = NULL,\ncosmos_signature = null\nwhere photo_signature is NULL\n\n\nselect * from rl3.vw_carga_projecao\nwhere cod_calendario_monetario = 165\nselect sum(QTD_PROCESSO)\nfrom t_agg_fotografia\nwhere cod_calendario_monetario = 165\n\nselect max(cod_calendario_monetario) cod_calendario_monetario_anterior\n      from Silver.calendario_monetario_p3\n     where cod_calendario_monetario < (select cod_calendario_monetario\n                                         from Silver.calendario_monetario_p3\n                                        where sts_ativo = 1)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "syndpjarvisprod",
+				"poolName": "syndpjarvisprod"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

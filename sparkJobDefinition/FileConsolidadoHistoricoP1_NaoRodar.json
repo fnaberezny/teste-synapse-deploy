@@ -1,0 +1,42 @@
+{
+	"name": "FileConsolidadoHistoricoP1_NaoRodar",
+	"properties": {
+		"description": "Esse job deverá ser removido em breve",
+		"folder": {
+			"name": "FileGeneration_P3"
+		},
+		"targetBigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "3.2",
+		"language": "python",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "FileConsolidadoHistoricoP1_NaoRodar",
+			"file": "abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/file_gen_consolidado_p1.py",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "589b2bc5-a58a-4057-bf81-6e02462dc6b5"
+			},
+			"args": [
+				"-env",
+				"prod",
+				"--akv",
+				"kv-tlf-jarvis-prod"
+			],
+			"jars": [],
+			"pyFiles": [
+				""
+			],
+			"files": [],
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2
+		}
+	}
+}

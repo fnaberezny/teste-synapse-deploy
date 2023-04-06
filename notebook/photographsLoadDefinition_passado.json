@@ -1,0 +1,620 @@
+{
+	"name": "photographsLoadDefinition_passado",
+	"properties": {
+		"folder": {
+			"name": "cargas_cosmos/Carga manual"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 1,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "1",
+				"spark.autotune.trackingId": "803b32f8-37f7-43f6-b0c2-4f9e5a82d162"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1",
+				"state": {
+					"4a5b9b97-06c5-486d-b94b-3edab22db2bd": {
+						"type": "Synapse.DataFrame",
+						"sync_state": {
+							"table": {
+								"rows": [],
+								"schema": [
+									{
+										"key": "0",
+										"name": "id",
+										"type": "string"
+									},
+									{
+										"key": "1",
+										"name": "divisao",
+										"type": "StructType(StructField(cod_divisao_processo,IntegerType,true), StructField(sig_divisao,StringType,true), StructField(nom_divisao,StringType,true))"
+									},
+									{
+										"key": "2",
+										"name": "escritorio",
+										"type": "StructType(StructField(sig_escritorio_contratado,StringType,true), StructField(nom_escritorio_contratado,StringType,true), StructField(nom_escritorio_sap,StringType,true))"
+									},
+									{
+										"key": "3",
+										"name": "calendario_monetario",
+										"type": "StructType(StructField(id,StringType,true), StructField(cod_calendario_monetario,IntegerType,true), StructField(dtc_inicial,StringType,true), StructField(dtc_final,StringType,true), StructField(sts_ativo,StringType,true), StructField(desc_calendario,StringType,true), StructField(dtc_limite_foto,StringType,true), StructField(nom_usuario_cadastro,StringType,true))"
+									},
+									{
+										"key": "4",
+										"name": "current_ts",
+										"type": "string"
+									},
+									{
+										"key": "5",
+										"name": "status",
+										"type": "string"
+									},
+									{
+										"key": "6",
+										"name": "dtc_cadastro",
+										"type": "string"
+									},
+									{
+										"key": "7",
+										"name": "cod_fotografia",
+										"type": "string"
+									},
+									{
+										"key": "8",
+										"name": "cod_calendario_monetario",
+										"type": "int"
+									},
+									{
+										"key": "9",
+										"name": "sig_escritorio_contratado",
+										"type": "string"
+									},
+									{
+										"key": "10",
+										"name": "nom_usuario_responsavel",
+										"type": "string"
+									},
+									{
+										"key": "11",
+										"name": "nom_usuario_fotografo",
+										"type": "string"
+									},
+									{
+										"key": "12",
+										"name": "dtc_data_fotografia",
+										"type": "string"
+									}
+								],
+								"truncated": false
+							},
+							"isSummary": false,
+							"language": "scala"
+						},
+						"persist_state": {
+							"view": {
+								"type": "details",
+								"chartOptions": {
+									"chartType": "bar",
+									"aggregationType": "sum",
+									"categoryFieldKeys": [
+										"0"
+									],
+									"seriesFieldKeys": [
+										"8"
+									],
+									"isStacked": false
+								}
+							}
+						}
+					},
+					"fc56ed29-2bac-4d42-95e9-beae8b37fce2": {
+						"type": "Synapse.DataFrame",
+						"sync_state": {
+							"table": {
+								"rows": [],
+								"schema": [
+									{
+										"key": "0",
+										"name": "id",
+										"type": "string"
+									},
+									{
+										"key": "1",
+										"name": "divisao",
+										"type": "StructType(StructField(cod_divisao_processo,IntegerType,true), StructField(sig_divisao,StringType,true), StructField(nom_divisao,StringType,true))"
+									},
+									{
+										"key": "2",
+										"name": "escritorio",
+										"type": "StructType(StructField(sig_escritorio_contratado,StringType,true), StructField(nom_escritorio_contratado,StringType,true), StructField(nom_escritorio_sap,StringType,true))"
+									},
+									{
+										"key": "3",
+										"name": "calendario_monetario",
+										"type": "StructType(StructField(id,StringType,true), StructField(cod_calendario_monetario,IntegerType,true), StructField(dtc_inicial,StringType,true), StructField(dtc_final,StringType,true), StructField(sts_ativo,StringType,true), StructField(desc_calendario,StringType,true), StructField(dtc_limite_foto,StringType,true), StructField(nom_usuario_cadastro,StringType,true))"
+									},
+									{
+										"key": "4",
+										"name": "current_ts",
+										"type": "string"
+									},
+									{
+										"key": "5",
+										"name": "status",
+										"type": "string"
+									},
+									{
+										"key": "6",
+										"name": "dtc_cadastro",
+										"type": "string"
+									},
+									{
+										"key": "7",
+										"name": "cod_fotografia",
+										"type": "string"
+									},
+									{
+										"key": "8",
+										"name": "cod_calendario_monetario",
+										"type": "int"
+									},
+									{
+										"key": "9",
+										"name": "sig_escritorio_contratado",
+										"type": "string"
+									},
+									{
+										"key": "10",
+										"name": "nom_usuario_responsavel",
+										"type": "string"
+									},
+									{
+										"key": "11",
+										"name": "nom_usuario_fotografo",
+										"type": "string"
+									},
+									{
+										"key": "12",
+										"name": "dtc_data_fotografia",
+										"type": "string"
+									},
+									{
+										"key": "13",
+										"name": "newstatus",
+										"type": "string"
+									}
+								],
+								"truncated": false
+							},
+							"isSummary": false,
+							"language": "scala"
+						},
+						"persist_state": {
+							"view": {
+								"type": "details",
+								"chartOptions": {
+									"chartType": "bar",
+									"aggregationType": "sum",
+									"categoryFieldKeys": [
+										"0"
+									],
+									"seriesFieldKeys": [
+										"8"
+									],
+									"isStacked": false
+								}
+							}
+						}
+					}
+				}
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"cod_calendario = 164"
+				],
+				"execution_count": 30
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql.functions import col, lit, struct, to_timestamp\r\n",
+					"import com.microsoft.spark.sqlanalytics\r\n",
+					"\r\n",
+					"# // Define Variables\r\n",
+					"containerTarget = \"photographs\"\r\n",
+					"linkedService = \"CosmosDb\"\r\n",
+					"sqlWorkspaceName = \"syndpjarvisprod\"\r\n",
+					"\r\n",
+					"# // Read Fotografias Possiveis From SQL Dedicated\r\n",
+					"dfTbFotografiasPossiveis = spark.read.synapsesql(f\"{sqlWorkspaceName}.Silver.fotografias_possiveis\")\r\n",
+					"dfTbCalendarioMonetario = spark.read.synapsesql(f\"{sqlWorkspaceName}.Silver.calendario_monetario\")\r\n",
+					"dfTbFotografia = spark.read.synapsesql(f\"{sqlWorkspaceName}.rl3.fotografia\")\r\n",
+					"\r\n",
+					"\r\n",
+					"# // Read Photographs From CosmosDb\r\n",
+					"dfTbPhotographs = (spark.read\r\n",
+					"        .format(\"cosmos.oltp\")\r\n",
+					"        .option(\"spark.synapse.linkedService\", linkedService)\r\n",
+					"        .option(\"spark.cosmos.container\", containerTarget)\r\n",
+					"        .load())\r\n",
+					"\r\n",
+					"# // Select Columns From CosmosDB\r\n",
+					"dfSelected = (dfTbPhotographs.select(\"id\",\r\n",
+					"                                    \"cod_fotografia\",\r\n",
+					"                                    \"divisao.cod_divisao_processo\",\r\n",
+					"                                    \"escritorio.sig_escritorio_contratado\",\r\n",
+					"                                    \"calendario_monetario.cod_calendario_monetario\",\r\n",
+					"                                    \"status\"\r\n",
+					"                                    ))\r\n",
+					"\r\n",
+					"# // Create TempViews\r\n",
+					"dfTbFotografiasPossiveis.createOrReplaceTempView(\"fotografias_possiveis\")\r\n",
+					"dfSelected.createOrReplaceTempView(\"photographs\")\r\n",
+					"dfTbCalendarioMonetario.createOrReplaceTempView(\"calendario_monetario\")\r\n",
+					"dfTbFotografia.createOrReplaceTempView(\"fotografia\")"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"\r\n",
+					"# // Query Rules\r\n",
+					"query = spark.sql(f\"\"\"\r\n",
+					"                        SELECT \r\n",
+					"                             fp.cod_calendario_monetario\r\n",
+					"                            ,fp.sig_escritorio_contratado\r\n",
+					"                            ,fp.cod_divisao_processo\r\n",
+					"                            ,MAX(fp.cod_fotografia) AS cod_fotografia\r\n",
+					"                            ,fp.dtc_cadastro\r\n",
+					"                            ,fp.nom_cadastro_responsavel\r\n",
+					"                            ,fp.sts_ativo\r\n",
+					"                            ,fp.nom_usuario_responsavel\r\n",
+					"                            ,fp.dtc_data_fotografia\r\n",
+					"                            ,fp.nom_usuario_fotografo\r\n",
+					"                            ,fp.dtc_inicial\r\n",
+					"                            ,fp.dtc_final\r\n",
+					"                            ,fp.dtc_limite_foto\r\n",
+					"                            ,fp.nom_usuario_cadastro\r\n",
+					"                            ,fp.nom_escritorio_contratado\r\n",
+					"                            ,fp.nom_escritorio_sap\r\n",
+					"                            ,fp.sig_divisao\r\n",
+					"                            ,fp.nom_divisao\r\n",
+					"                            ,SUM(fp.qtd_processo) AS qtd_processo\r\n",
+					"                            ,fp.desc_calendario\r\n",
+					"                            ,f.status AS newstatus\r\n",
+					"                        FROM\r\n",
+					"                           fotografias_possiveis fp\r\n",
+					"                           JOIN fotografia f on f.cod_fotografia = fp.cod_fotografia\r\n",
+					"                        WHERE\r\n",
+					"                            fp.cod_calendario_monetario <= {cod_calendario}\r\n",
+					"                            AND CONCAT\r\n",
+					"                                  (\r\n",
+					"                                    UPPER(fp.sig_escritorio_contratado),\r\n",
+					"                                    UPPER(fp.cod_divisao_processo),\r\n",
+					"                                    UPPER(fp.cod_calendario_monetario)\r\n",
+					"                                  )\r\n",
+					"                                NOT IN\r\n",
+					"                                (\r\n",
+					"                                    SELECT CONCAT\r\n",
+					"                                             (\r\n",
+					"                                                UPPER(ph.sig_escritorio_contratado),\r\n",
+					"                                                UPPER(ph.cod_divisao_processo),\r\n",
+					"                                                UPPER(ph.cod_calendario_monetario)\r\n",
+					"                                             )\r\n",
+					"                                    FROM\r\n",
+					"                                        photographs ph\r\n",
+					"                                    WHERE\r\n",
+					"                                        ph.status <> '99'\r\n",
+					"                                        AND ph.cod_calendario_monetario <= {cod_calendario}\r\n",
+					"                                )\r\n",
+					"                            GROUP BY \r\n",
+					"                                            fp.cod_calendario_monetario\r\n",
+					"                            ,fp.sig_escritorio_contratado\r\n",
+					"                            ,fp.cod_divisao_processo\r\n",
+					"                            --,fp.cod_fotografia\r\n",
+					"                            ,fp.dtc_cadastro\r\n",
+					"                            ,fp.nom_cadastro_responsavel\r\n",
+					"                            ,fp.sts_ativo\r\n",
+					"                            ,fp.nom_usuario_responsavel\r\n",
+					"                            ,fp.dtc_data_fotografia\r\n",
+					"                            ,fp.nom_usuario_fotografo\r\n",
+					"                            ,fp.dtc_inicial\r\n",
+					"                            ,fp.dtc_final\r\n",
+					"                            ,fp.dtc_limite_foto\r\n",
+					"                            ,fp.nom_usuario_cadastro\r\n",
+					"                            ,fp.nom_escritorio_contratado\r\n",
+					"                            ,fp.nom_escritorio_sap\r\n",
+					"                            ,fp.sig_divisao\r\n",
+					"                            ,fp.nom_divisao\r\n",
+					"                            ,fp.desc_calendario\r\n",
+					"                            ,f.status\r\n",
+					"                        UNION\r\n",
+					"                        (SELECT distinct\r\n",
+					"                             null cod_calendario_monetario   \r\n",
+					"                            ,null sig_escritorio_contratado \r\n",
+					"                            ,null cod_divisao_processo      \r\n",
+					"                            ,PH.cod_fotografia              \r\n",
+					"                            ,null dtc_cadastro              \r\n",
+					"                            ,null nom_cadastro_responsavel  \r\n",
+					"                            ,null sts_ativo                 \r\n",
+					"                            ,null nom_usuario_responsavel   \r\n",
+					"                            ,null dtc_data_fotografia       \r\n",
+					"                            ,null nom_usuario_fotografo     \r\n",
+					"                            ,null dtc_inicial               \r\n",
+					"                            ,null dtc_final                 \r\n",
+					"                            ,null dtc_limite_foto           \r\n",
+					"                            ,null nom_usuario_cadastro      \r\n",
+					"                            ,null nom_escritorio_contratado \r\n",
+					"                            ,null nom_escritorio_sap            \r\n",
+					"                            ,null sig_divisao               \r\n",
+					"                            ,null nom_divisao               \r\n",
+					"                            ,null qtd_processo              \r\n",
+					"                            ,null desc_calendario          \r\n",
+					"                            ,'99' as newstatus\r\n",
+					"                        from photographs PH\r\n",
+					"                            left join fotografias_possiveis FP\r\n",
+					"                                on(PH.id = FP.cod_fotografia\r\n",
+					"                                    and PH.cod_calendario_monetario = FP.cod_calendario_monetario)\r\n",
+					"                        where 1=1\r\n",
+					"                            and FP.cod_fotografia is null\r\n",
+					"                            and PH.cod_calendario_monetario <= {cod_calendario}\r\n",
+					"                            and PH.status != '99')\"\"\"\r\n",
+					"                            )\r\n",
+					""
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dfFinal =  (query\r\n",
+					"        .withColumn(\"divisao\",\r\n",
+					"        struct(col(\"cod_divisao_processo\").alias(\"cod_divisao_processo\"),\r\n",
+					"            col(\"sig_divisao\").alias(\"sig_divisao\"),\r\n",
+					"            col(\"nom_divisao\").alias(\"nom_divisao\")))\r\n",
+					"        .withColumn(\"escritorio\",\r\n",
+					"        struct(col(\"sig_escritorio_contratado\").alias(\"sig_escritorio_contratado\"),\r\n",
+					"            col(\"nom_escritorio_contratado\").alias(\"nom_escritorio_contratado\"),\r\n",
+					"            col(\"nom_escritorio_sap\").alias(\"nom_escritorio_sap\")))\r\n",
+					"        .withColumn(\"calendario_monetario\",\r\n",
+					"        struct(col(\"cod_calendario_monetario\").cast(\"String\").alias(\"id\"),\r\n",
+					"            col(\"cod_calendario_monetario\").alias(\"cod_calendario_monetario\"),\r\n",
+					"            to_timestamp(col(\"dtc_inicial\"),\"yyyy-MM-dd HH mm ss\").cast(\"String\").alias(\"dtc_inicial\"),\r\n",
+					"            to_timestamp(col(\"dtc_final\"),\"yyyy-MM-dd HH mm ss\").cast(\"String\").alias(\"dtc_final\"),\r\n",
+					"            col(\"sts_ativo\").alias(\"sts_ativo\"),\r\n",
+					"            col(\"desc_calendario\").alias(\"desc_calendario\"),\r\n",
+					"            to_timestamp(col(\"dtc_limite_foto\"),\"yyyy-MM-dd HH mm ss\").cast(\"String\").alias(\"dtc_limite_foto\"),\r\n",
+					"            col(\"nom_usuario_cadastro\").alias(\"nom_usuario_cadastro\")))\r\n",
+					"        .withColumn(\"q_current_ts\",\r\n",
+					"        lit(\"\"))\r\n",
+					"        .withColumn(\"q_status\", col(\"newStatus\"))\r\n",
+					"        .select(col(\"cod_fotografia\").cast(\"String\").alias(\"id\"),\r\n",
+					"        col(\"divisao\").alias(\"divisao\"),\r\n",
+					"        col(\"escritorio\").alias(\"escritorio\"),\r\n",
+					"        col(\"calendario_monetario\").alias(\"calendario_monetario\"),\r\n",
+					"        col(\"q_current_ts\").alias(\"current_ts\"),\r\n",
+					"        col(\"q_status\").alias(\"status\"),\r\n",
+					"        to_timestamp(col(\"dtc_cadastro\"),\"yyyy-MM-dd HH mm ss\").cast(\"String\").alias(\"dtc_cadastro\"),\r\n",
+					"        col(\"cod_fotografia\").cast(\"String\").alias(\"cod_fotografia\"),\r\n",
+					"        col(\"cod_calendario_monetario\").alias(\"cod_calendario_monetario\"),\r\n",
+					"        col(\"sig_escritorio_contratado\").alias(\"sig_escritorio_contratado\"),\r\n",
+					"        col(\"nom_usuario_responsavel\").alias(\"nom_usuario_responsavel\"),\r\n",
+					"        col(\"nom_usuario_fotografo\").alias(\"nom_usuario_fotografo\"),\r\n",
+					"        to_timestamp(col(\"dtc_data_fotografia\"),\"yyyy-MM-dd HH mm ss\").cast(\"String\").alias(\"dtc_data_fotografia\"),\r\n",
+					"        col(\"newstatus\").alias(\"newstatus\"))\r\n",
+					"        .distinct())\r\n",
+					"\r\n",
+					"dfNoSelected = dfFinal.select(\r\n",
+					"                                \"id\",\r\n",
+					"                                \"divisao\",\r\n",
+					"                                \"escritorio\",\r\n",
+					"                                \"calendario_monetario\",\r\n",
+					"                                \"current_ts\",\r\n",
+					"                                \"status\",\r\n",
+					"                                \"dtc_cadastro\",\r\n",
+					"                                \"cod_fotografia\",\r\n",
+					"                                \"cod_calendario_monetario\",\r\n",
+					"                                \"sig_escritorio_contratado\",\r\n",
+					"                                \"nom_usuario_responsavel\",\r\n",
+					"                                \"nom_usuario_fotografo\",\r\n",
+					"                                \"dtc_data_fotografia\"\r\n",
+					"                                )"
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(dfNoSelected)"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"dfFinal.count()"
+				],
+				"execution_count": 35
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(dfFinal)"
+				],
+				"execution_count": 36
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# // Write to CosmosDb in Photographs Container \"ItemAppend\" write strategy mode\r\n",
+					"(dfNoSelected\r\n",
+					"    .write\r\n",
+					"    .format(\"cosmos.oltp\")\r\n",
+					"    .option(\"spark.synapse.linkedService\", linkedService)\r\n",
+					"    .option(\"spark.cosmos.container\", containerTarget)\r\n",
+					"    .option(\"spark.cosmos.write.strategy\", \"ItemAppend\")\r\n",
+					"    .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"    .mode(\"append\")\r\n",
+					"    .save()\r\n",
+					")\r\n",
+					"\r\n",
+					"# // Write to CosmosDb in Photographs Container \"ItemPatch\" write strategy mode\r\n",
+					"(dfFinal\r\n",
+					"    .select(\r\n",
+					"            \"id\",\r\n",
+					"            \"newstatus\"\r\n",
+					"           )\r\n",
+					"            .write\r\n",
+					"            .format(\"cosmos.oltp\")\r\n",
+					"            .option(\"spark.synapse.linkedService\", linkedService)\r\n",
+					"            .option(\"spark.cosmos.container\", containerTarget)\r\n",
+					"            .option(\"spark.cosmos.write.strategy\", \"ItemPatch\")\r\n",
+					"            .option(\"spark.cosmos.write.bulk.enabled\", \"false\")\r\n",
+					"            .option(\"spark.cosmos.write.patch.columnConfigs\", \"[col(newstatus).path(/status).op(set)]\")\r\n",
+					"            .mode(\"append\")\r\n",
+					"            .save()\r\n",
+					")"
+				],
+				"execution_count": 29
+			}
+		]
+	}
+}

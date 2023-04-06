@@ -1,0 +1,24 @@
+{
+	"name": "CosmosDB_app1241",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDbAppDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"cotainer_name": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {},
+		"typeProperties": {
+			"collectionName": {
+				"value": "@dataset().cotainer_name",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

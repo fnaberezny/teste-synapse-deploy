@@ -1,0 +1,2227 @@
+{
+	"name": "Insert_manual_param",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "9553d9bc-a880-4b56-a701-e421f4a6ee39"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"from datetime import datetime, timezone\r\n",
+					"str(datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))"
+				],
+				"execution_count": 108
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"# %%sql  insert  into silver.param_fotografia_evh        \n",
+					"#VALUES (\"I\",\"2023-03-23 01:00:00.0000000\",\"517a907a-b9e3-4075-b5e8-d4bfe4f923d7\",\n",
+					"#306054,\"SBAD\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-23 21:46:30.0400000\"\n",
+					"#,\"2023-03-23 21:46:30.0400000\",\"p3\",\"p3\") \n",
+					""
+				],
+				"execution_count": 109
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# %%sql  %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-23 01:00:00.0000000\",\"517a907a-b9e3-4075-b5e8-d4bfe4f923d7\",306054,\"SBAD\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-23 21:46:30.0400000\",\"2023-03-23 21:46:30.0400000\",\"p3\",\"p3\") \n",
+					""
+				],
+				"execution_count": 110
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# %%sql  %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:26:40-03:00\",\"acf0514f-e34e-431d-af8d-80ca82158be1\",306294,\"REK\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 13:26:50.0050000\",\"2023-03-26 13:26:50.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 111
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#  %%sql  %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T11:59:31-03:00\",\"83d3a115-0b99-482c-9d0d-49100df2013e\",304815,\"J\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 14:59:40.0190000\",\"2023-03-26 14:59:40.0190000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 112
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#   %%sql %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:20:06-03:00\",\"33a881f1-982a-4027-921a-a985b7b6290d\",305115,\"REK\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:20:10.0050000\",\"2023-03-26 22:20:10.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 113
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" #  %%sql %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:20:08-03:00\",\"729f5fea-7bc9-43b3-a60a-a553fa4445fe\",305475,\"ABI\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:20:10.0050000\",\"2023-03-26 22:20:10.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 114
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" # %%sql %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:20:01-03:00\",\"b0f75335-d181-449e-ab96-2c73afec2c91\",304755,\"EEDD\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:20:10.0050000\",\"2023-03-26 22:20:10.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 115
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#  %%sql %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T12:33:29-03:00\",\"f2e160a9-c58b-424d-abfb-229c994e5a6b\",305955,\"OEC\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 15:33:30.0040000\",\"2023-03-26 15:33:30.0040000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 116
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" #  %%sql %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:14:37-03:00\",\"b1c8efc7-0108-486b-805f-c06214417520\",304893,\"MA\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:14:40.0050000\",\"2023-03-26 18:14:40.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 117
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" #  %%sql %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T09:40:46-03:00\",\"7590a5c1-1171-472f-b525-f54d4cf670a1\",306114,\"EBA0\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 12:40:50.0050000\",\"2023-03-26 12:40:50.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 118
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"   %%sql %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26 19:27:47.0000000\",\"42372475-2a2f-439e-9e25-336258d8a39e\",154660,\"CDS\",\"6\",\"165\",\"Telefonica\",\"A0152581\",\"2022-01-01 00:00:00\",\"2023-03-23 21:34:37.1930000\",\"2023-03-23 21:34:37.1930000\",\"p3\",\"p3\") \n",
+					""
+				],
+				"execution_count": 119
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					" #  %%sql %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T09:40:37-03:00\",\"1139fbdf-c668-4cd8-b5ee-5ace0a6c9f0d\",304915,\"T\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 12:40:40.0050000\",\"2023-03-26 12:40:40.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 120
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#   %%sql %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T14:11:54-03:00\",\"bf3ced38-e29b-45df-8548-87350d920862\",306075,\"SCAV\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 17:12:00.0060000\",\"2023-03-26 17:12:00.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 121
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"\n",
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T12:33:34-03:00\",\"5a12781e-bc04-41b6-962d-a3c572ed9667\",304935,\"AFSA\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 15:33:40.0110000\",\"2023-03-26 15:33:40.0110000\",\"p1\",\"p1\") \n",
+					"\n",
+					"\n",
+					""
+				],
+				"execution_count": 122
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T12:33:38-03:00\",\"d8799e7a-d50f-4e47-b48c-e3288388d4b0\",305055,\"BFBM\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 15:33:40.0110000\",\"2023-03-26 15:33:40.0110000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 123
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T14:59:03-03:00\",\"67a6c40b-fb4f-4969-8ba9-8c6481c5bc42\",306654,\"MALM\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 17:59:10.0060000\",\"2023-03-26 17:59:10.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 124
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T09:13:37-03:00\",\"a050a020-80b3-4092-bb8c-702a64ee36d0\",306594,\"LRI\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 12:13:40.0050000\",\"2023-03-26 12:13:40.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 125
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T09:13:48-03:00\",\"425fe5a6-99c5-4aac-9812-34acf5565936\",304854,\"MA01\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 12:13:50.0090000\",\"2023-03-26 12:13:50.0090000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 126
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:21:41-03:00\",\"248ad732-e865-4b95-ad05-868321c55b77\",304777,\"CML\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:21:50.0140000\",\"2023-03-26 22:21:50.0140000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 127
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:21:45-03:00\",\"08c26ee4-1be4-4a38-9397-8ebf2ddf1a2d\",304995,\"PCSD\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:21:50.0140000\",\"2023-03-26 22:21:50.0140000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 128
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:21:50-03:00\",\"25cfe99e-0ebe-4e2f-9955-5af00832b3d8\",305535,\"SIL\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:22:00.0140000\",\"2023-03-26 22:22:00.0140000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 129
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:21:36-03:00\",\"a1a17e01-8321-440e-87bf-b0df56f70be7\",304837,\"LIMO\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:21:40.0050000\",\"2023-03-26 22:21:40.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 130
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T16:31:16-03:00\",\"517a907a-b9e3-4075-b5e8-d4bfe4f923d7\",306054,\"SBAD\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 19:31:20.0180000\",\"2023-03-26 19:31:20.0180000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 131
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-25T17:59:15-03:00\",\"c6bb8ba0-aad4-4acd-abeb-5b8d0baa7ae7\",305415,\"MA\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 16:57:00.0050000\",\"2023-03-26 16:57:00.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 132
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T11:59:22-03:00\",\"056963e1-8a44-4d7f-8094-ba63fe46f219\",305595,\"KNMR\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 14:59:30.0040000\",\"2023-03-26 14:59:30.0040000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 133
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T11:59:27-03:00\",\"a3e68cc3-b067-409a-a295-0a52b0b14740\",305193,\"JUR\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 14:59:30.0040000\",\"2023-03-26 14:59:30.0040000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 134
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:19:58-03:00\",\"e12dfacd-c287-4597-80e0-a780ffe1ab51\",305715,\"CDC\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:20:00.0050000\",\"2023-03-26 22:20:00.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 135
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T09:13:00-03:00\",\"caa08df0-c939-4480-8c64-e57f724ab08a\",306234,\"PCPC\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 12:13:10.0050000\",\"2023-03-26 12:13:10.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 136
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T09:13:20-03:00\",\"1f472274-d584-4658-b1d5-53afa35f35a0\",305334,\"BMEM\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 12:13:30.0060000\",\"2023-03-26 12:13:30.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 137
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T09:13:27-03:00\",\"a34c0ccd-4b15-4cc8-a5b5-77050eb8cce6\",304794,\"BETS\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 12:13:30.0060000\",\"2023-03-26 12:13:30.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 138
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:23:01-03:00\",\"6bfa68af-3f14-4943-88f3-8aaf41187482\",304914,\"MA02\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 13:23:10.0130000\",\"2023-03-26 13:23:10.0130000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 139
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:23:05-03:00\",\"dc523537-9a6d-4388-a039-c1001b69be0d\",305634,\"MMCO\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 13:23:10.0130000\",\"2023-03-26 13:23:10.0130000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 140
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:22:53-03:00\",\"d79a4fff-06d5-44f9-b56b-683dfeacbc2a\",305094,\"AFDB\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 13:23:00.0130000\",\"2023-03-26 13:23:00.0130000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 141
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:22:58-03:00\",\"360adfa5-340a-4083-b354-4bc2bf17c0c1\",305754,\"ALAM\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 13:23:00.0130000\",\"2023-03-26 13:23:00.0130000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 142
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-20T18:33:13-03:00\",\"eb932711-7fe2-44fd-97a0-7af441c0deeb\",304830,\"VDEP\",\"8\",\"165\",\"Telefonica\",\"A0098692\",\"2022-01-01 00:00:00\",\"2023-03-20 21:33:20.0140000\",\"2023-03-20 21:33:20.0140000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 143
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-20T18:31:38-03:00\",\"2f36be93-8613-4540-9af7-e6b730e108be\",304803,\"I01\",\"7\",\"165\",\"Telefonica\",\"A0098692\",\"2022-01-01 00:00:00\",\"2023-03-20 21:31:40.0170000\",\"2023-03-20 21:31:40.0170000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 144
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:40:17-03:00\",\"9bc7a765-9af7-4f5d-8084-962f61b7e6b0\",304803,\"I01\",\"7\",\"165\",\"Telefonica\",\"A0098692\",\"2022-01-01 00:00:00\",\"2023-03-26 13:40:20.0150000\",\"2023-03-26 13:40:20.0150000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 145
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T13:59:17-03:00\",\"d8c0df0c-d446-49de-b1de-1c0c448db73b\",304803,\"I01\",\"7\",\"165\",\"Telefonica\",\"A0098692\",\"2022-01-01 00:00:00\",\"2023-03-26 16:59:20.0050000\",\"2023-03-26 16:59:20.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 146
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-20T17:58:07-03:00\",\"6e858959-94cd-466f-b628-98f65ec65a3c\",304803,\"I01\",\"7\",\"165\",\"Telefonica\",\"A0098692\",\"2022-01-01 00:00:00\",\"2023-03-20 20:58:10.0210000\",\"2023-03-20 20:58:10.0210000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 147
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:50:00-03:00\",\"3db203ca-e2df-42c1-88d4-fc1691a4d7b4\",306174,\"GCA\",\"4\",\"165\",\"Telefonica\",\"A0098692\",\"2022-01-01 00:00:00\",\"2023-03-26 13:50:10.0220000\",\"2023-03-26 13:50:10.0220000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 148
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:13:18-03:00\",\"46dea383-c71e-411f-b92b-f5b8534208f1\",305034,\"DNCE\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 13:13:30.0140000\",\"2023-03-26 13:13:30.0140000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 149
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:24:29-03:00\",\"a5fcc8eb-0776-4267-93a2-ade0bab63226\",305034,\"DNCE\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 13:24:30.0180000\",\"2023-03-26 13:24:30.0180000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 150
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T14:22:50-03:00\",\"d481220d-d800-49c9-b7c2-ae059f869011\",305415,\"MA\",\"6\",\"165\",\"Telefonica\",\"80514346\",\"2022-01-01 00:00:00\",\"2023-03-26 17:23:00.0080000\",\"2023-03-26 17:23:00.0080000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 151
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T10:16:48-03:00\",\"c80dd97d-d28b-44b8-8dc5-2afdfcf847f2\",305034,\"DNCE\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 13:16:50.0490000\",\"2023-03-26 13:16:50.0490000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 152
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T11:20:27-03:00\",\"28085d56-e292-45fc-9702-edebc32f50f1\",305415,\"MA\",\"6\",\"165\",\"Telefonica\",\"80514346\",\"2022-01-01 00:00:00\",\"2023-03-26 14:20:30.0180000\",\"2023-03-26 14:20:30.0180000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 153
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:18:12-03:00\",\"905faf82-9a1d-49ea-a667-f1ad8bab9426\",304773,\"LBCA\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:18:20.0050000\",\"2023-03-26 22:18:20.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 154
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:18:15-03:00\",\"b509a7d7-3570-4665-b12a-27f06e101ed9\",305493,\"REK\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:18:20.0050000\",\"2023-03-26 22:18:20.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 155
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:18:10-03:00\",\"a77574eb-02be-46b0-90a2-03c5c5c623ec\",305133,\"UVA\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:18:20.0050000\",\"2023-03-26 22:18:20.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 156
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"\n",
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T14:53:16-03:00\",\"a1488182-a009-41a0-b03b-9833e595b277\",304830,\"VDEP\",\"8\",\"165\",\"Telefonica\",\"A0098692\",\"2022-01-01 00:00:00\",\"2023-03-26 17:53:20.0100000\",\"2023-03-26 17:53:20.0100000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 157
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T14:53:18-03:00\",\"c7d606b3-c295-4591-b109-27a3058b1741\",304770,\"MOPI\",\"8\",\"165\",\"Telefonica\",\"A0098692\",\"2022-01-01 00:00:00\",\"2023-03-26 17:53:20.0100000\",\"2023-03-26 17:53:20.0100000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 158
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T17:40:46-03:00\",\"91c0b9c1-8d7d-4281-a098-eef22707a2fd\",304713,\"KNMR\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 20:40:50.0050000\",\"2023-03-26 20:40:50.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 159
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:22:08-03:00\",\"38dcde39-463e-41fc-be2e-be5e2b698026\",304953,\"MA01\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:22:10.0160000\",\"2023-03-26 18:22:10.0160000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 160
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:18:15-03:00\",\"f72773a8-d9ca-485c-83eb-d0b8d5243dd4\",305775,\"CMAR\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:18:20.0050000\",\"2023-03-26 18:18:20.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 161
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T19:19:48-03:00\",\"5d4f702d-2d31-49b2-87ce-8428facdad9f\",306015,\"SBAD\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 22:19:50.0140000\",\"2023-03-26 22:19:50.0140000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 162
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T14:53:09-03:00\",\"a45c27e4-cb44-40ca-b30c-2fb4e9358a85\",304710,\"BFBM\",\"8\",\"165\",\"Telefonica\",\"A0098692\",\"2022-01-01 00:00:00\",\"2023-03-26 17:53:10.0050000\",\"2023-03-26 17:53:10.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 163
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:22:42-03:00\",\"415ee02b-4274-4fdf-b9e4-78779cddfa30\",305373,\"SCAV\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:22:50.0150000\",\"2023-03-26 18:22:50.0150000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 164
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:30:56-03:00\",\"753f36b7-ed8e-40a9-9119-e909a859eac1\",304953,\"MA01\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:31:00.0050000\",\"2023-03-26 18:31:00.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 165
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:22:27-03:00\",\"bce5a568-7466-4020-88d1-b8dbe04bcdf2\",305013,\"PESS\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:22:30.0060000\",\"2023-03-26 18:22:30.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 166
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:21:15-03:00\",\"ce92e826-88b1-4849-b378-dca0c631f493\",304729,\"BFBM\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:21:20.0060000\",\"2023-03-26 18:21:20.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 167
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:20:38-03:00\",\"effe6db9-fc98-47c9-bc13-cf0d3c7c4da5\",305895,\"RBMD\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:20:40.0060000\",\"2023-03-26 18:20:40.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 168
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:18:48-03:00\",\"b36d3760-be5c-41f3-956b-9f354509a6e3\",305355,\"M-ML\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:18:50.0120000\",\"2023-03-26 18:18:50.0120000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 169
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:21:02-03:00\",\"649c9875-ac3b-415f-a102-d84fc88eaa62\",305253,\"AeAA\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:21:10.0050000\",\"2023-03-26 18:21:10.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 170
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:19:04-03:00\",\"6e228e6b-e233-419d-9d97-3f2bdd8ea6cf\",304920,\"PCPC\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:19:10.0060000\",\"2023-03-26 18:19:10.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 171
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:21:56-03:00\",\"48b01d11-159d-4676-910c-73fd1b6e3991\",304793,\"MM0\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:22:00.4060000\",\"2023-03-26 18:22:00.4060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 172
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:21:41-03:00\",\"fb2a8106-4509-4e49-a3d9-83e3b4354a7f\",304833,\"DNT\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:21:50.0050000\",\"2023-03-26 18:21:50.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 173
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:18:32-03:00\",\"718d69fe-51d2-4505-ad5b-3a4e0dd26a44\",305175,\"DCN\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:18:40.0060000\",\"2023-03-26 18:18:40.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 174
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T17:53:06-03:00\",\"2cf29485-47e3-4066-9207-803dfec9952d\",305655,\"CA0\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 20:53:10.0050000\",\"2023-03-26 20:53:10.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 175
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:21:24-03:00\",\"b42c3a98-79f1-4f87-9450-4b22b8ee92cf\",305313,\"CNA\",\"3\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 18:21:30.0130000\",\"2023-03-26 18:21:30.0130000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 176
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:56:31-03:00\",\"43e84da6-2cc0-49c3-928a-20c76569cf98\",306714,\"OBAA\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:56:40.0060000\",\"2023-03-26 18:56:40.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 177
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T16:30:26-03:00\",\"696126bd-ed95-4914-8cd5-3eaeab0b1f1e\",306534,\"LIMO\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 19:30:30.0100000\",\"2023-03-26 19:30:30.0100000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 178
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:58:39-03:00\",\"e6a7cdaa-8505-49e6-aaad-6d842857d804\",305394,\"AA40\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:58:40.0140000\",\"2023-03-26 18:58:40.0140000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 179
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:48:13-03:00\",\"4157a853-63f2-4531-a38f-1afbde1a5a8f\",305094,\"AFDB\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:48:20.0080000\",\"2023-03-26 18:48:20.0080000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 180
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"\n",
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:55:26-03:00\",\"794d31aa-e7bc-4ca1-a6d8-51dccd29f9aa\",305050,\"LDOR\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:55:30.0060000\",\"2023-03-26 18:55:30.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 181
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T16:14:16-03:00\",\"8aa3e475-5da2-4b93-83bb-32911bf7ca94\",305274,\"BFBM\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 19:14:20.0050000\",\"2023-03-26 19:14:20.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 182
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:26:17-03:00\",\"5456dec7-2bb0-42a4-880e-add32eb81a53\",305034,\"DNCE\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:26:20.0050000\",\"2023-03-26 18:26:20.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 183
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:26:51-03:00\",\"dda6046f-d725-4444-94a9-8cb6a42b0a47\",305754,\"ALAM\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:27:00.0050000\",\"2023-03-26 18:27:00.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 184
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T17:53:27-03:00\",\"44661e76-64a3-472a-b0fe-b81de1b21ce9\",305295,\"HA\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 20:53:30.0140000\",\"2023-03-26 20:53:30.0140000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 185
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:26:27-03:00\",\"bc966bc6-d89a-4dec-9980-43712ad87f5a\",305634,\"MMCO\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:26:30.0050000\",\"2023-03-26 18:26:30.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 186
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:57:44-03:00\",\"03e7fee4-e129-4869-83e3-e037c907d2f4\",304787,\"SCAV\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:57:50.0170000\",\"2023-03-26 18:57:50.0170000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 187
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:56:42-03:00\",\"66b0b951-3913-4623-9004-c0dde8e9f7f5\",304735,\"RALV\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:56:50.0160000\",\"2023-03-26 18:56:50.0160000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 188
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T16:13:48-03:00\",\"5ca1c605-97cf-40de-85b7-63b5d0de7502\",305514,\"AFSA\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 19:13:50.0050000\",\"2023-03-26 19:13:50.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 189
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:56:51-03:00\",\"f4b35a5c-172e-47ff-aa40-833b864636b1\",304795,\"RBMD\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:57:00.0060000\",\"2023-03-26 18:57:00.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 190
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:50:53-03:00\",\"46d1a6f9-1134-4fde-8269-c85f117eb46f\",305814,\"DAMA\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:51:00.0050000\",\"2023-03-26 18:51:00.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 191
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:51:47-03:00\",\"3ec6551a-a9ef-4d5c-bc74-9102185c0a0e\",305934,\"DEAA\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:51:50.0060000\",\"2023-03-26 18:51:50.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 192
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:26:36-03:00\",\"09fa8458-314f-43c9-b3df-5ab473a2bfb8\",304914,\"MA02\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:26:40.0220000\",\"2023-03-26 18:26:40.0220000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 193
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T16:30:06-03:00\",\"7222ce5b-9a50-4e6d-ba4a-1fdf909a55e3\",306354,\"SIL\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 19:30:10.0060000\",\"2023-03-26 19:30:10.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 194
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:49:39-03:00\",\"aa7d6ea9-e9f8-4a7c-80a2-b60cce57b038\",304974,\"CAB\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:49:40.0050000\",\"2023-03-26 18:49:40.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 195
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T16:49:53-03:00\",\"d5fff115-e588-4dd9-a910-438f2c9263f8\",305574,\"CDS\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 19:50:00.0060000\",\"2023-03-26 19:50:00.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 196
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T17:52:09-03:00\",\"0ed79ccb-f7fb-4646-b500-06d6dbf91112\",305235,\"C\",\"6\",\"165\",\"Telefonica\",\"A0015817\",\"2022-01-01 00:00:00\",\"2023-03-26 20:52:10.0050000\",\"2023-03-26 20:52:10.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 197
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:53:41-03:00\",\"dcb4b28a-e33c-4584-a015-9a8e47a89389\",306174,\"GCA\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:53:50.0170000\",\"2023-03-26 18:53:50.0170000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 198
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:55:58-03:00\",\"981e83f5-781a-43e4-add4-7e16e20c8ba0\",305454,\"MAA\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:56:00.0060000\",\"2023-03-26 18:56:00.0060000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 199
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:58:56-03:00\",\"4f3dbf0e-ab07-4df3-8ba3-b73fe2446725\",306414,\"TT\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:59:00.0050000\",\"2023-03-26 18:59:00.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 200
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T16:29:55-03:00\",\"2df0e455-024d-43c1-9894-c91dabf5d160\",305694,\"CG\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 19:30:00.0070000\",\"2023-03-26 19:30:00.0070000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 201
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:52:09-03:00\",\"36aeff1b-884e-4a97-a1c0-73b909c51dd1\",304748,\"EF\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:52:20.0140000\",\"2023-03-26 18:52:20.0140000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 202
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:49:23-03:00\",\"3ef71a5c-ec77-4a9d-8e45-2e6fd560bde9\",305214,\"AA\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:49:30.0150000\",\"2023-03-26 18:49:30.0150000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 203
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					" %%sql  insert  into silver.param_fotografia_evh        VALUES (\"I\",\"2023-03-26T15:57:03-03:00\",\"24305fab-fa0f-459c-b292-85228b8218cc\",304855,\"SA\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:57:10.0050000\",\"2023-03-26 18:57:10.0050000\",\"p1\",\"p1\") \n",
+					""
+				],
+				"execution_count": 204
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"\r\n",
+					" %%sql  insert  into silver.param_fotografia_evh VALUES (\"I\",\"2023-03-26T15:54:03-03:00\",\"83e8c8be-3f3c-48ab-8eb7-497f76326d36\",305994,\"H\",\"4\",\"165\",\"Telefonica\",\"R11746\",\"2022-01-01 00:00:00\",\"2023-03-26 18:54:10.0060000\",\"2023-03-26 18:54:10.0060000\",\"p1\",\"p1\") \r\n",
+					""
+				],
+				"execution_count": 205
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				]
+			}
+		]
+	}
+}

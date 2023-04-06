@@ -1,0 +1,169 @@
+{
+	"name": "fotografia_projecao_aef03bd9-11bd-466c-a112-3450e3a3a6fd",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "7832103e-f477-4ae8-8f3e-b3634e4c3559"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"pipe_id = 'carga_full_pedidos'\r\n",
+					"cod_calendario_monetario = 159"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"tags": [
+						"parameters_overwritten"
+					]
+				},
+				"source": [
+					"# This cell is generated from runtime parameters. Learn more: https://go.microsoft.com/fwlink/?linkid=2161015\n",
+					"pipe_id = \"7357c4c6-e36c-4848-b4cd-b5f16e24dbf0\"\n",
+					"cod_calendario_monetario = 166\n",
+					""
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import com.microsoft.spark.sqlanalytics\r\n",
+					"from com.microsoft.spark.sqlanalytics.Constants import Constants\r\n",
+					"from pyspark.sql.functions import col\r\n",
+					"\r\n",
+					"\r\n",
+					"env = mssparkutils.env.getWorkspaceName()\r\n",
+					"if(env == 'syn-tlf-jarvis-prod'):\r\n",
+					"    sqlWorkspaceName = \"syndpjarvisprod\"\r\n",
+					"elif(env == 'syn-tlf-jarvis-test'):\r\n",
+					"    sqlWorkspaceName = 'syndpjarvistest'\r\n",
+					"else:\r\n",
+					"    sqlWorkspaceName = 'syndpjarvisdev'\r\n",
+					"\r\n",
+					"\r\n",
+					"# // Cosmos Variables\r\n",
+					"linkedService = 'CosmosDb'\r\n",
+					"containerTarget = 'fotografia_projecao'\r\n",
+					"\r\n",
+					"# // SQL Dedicated Variables\r\n",
+					"\r\n",
+					"\r\n",
+					"# // SQL Tables Variables\r\n",
+					"view = \"vw_carga_projecao\"\r\n",
+					"\r\n",
+					"\r\n",
+					"# // Read Tables SQL Dedicated Pool\r\n",
+					"vw_foto_projecao = spark.read.synapsesql(f'{sqlWorkspaceName}.rl3.{view}' ).where(f'cod_calendario_monetario = {cod_calendario_monetario} and pipeline_id = \"{pipe_id}\"' )\r\n",
+					"\r\n",
+					"\r\n",
+					"columnRenamed = vw_foto_projecao.withColumnRenamed(\"carta_fiança\", \"carta_fianca\")\r\n",
+					"columnRenamed.createOrReplaceTempView(\"view\")"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df_query = spark.read.table(f'''view''')"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"#### Cast timestamp and date to string to avoid epoch in cosmos\r\n",
+					"df_final = df_query.selectExpr([f'CAST({coluna} as string)' if tipo in ('timestamp', 'date') else coluna for coluna, tipo in df_query.dtypes])"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"### df_final.count() #Total de linhas upsert;  --1"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"#display(df_final)"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Write to Cosmos Container\r\n",
+					"(df_final\r\n",
+					"    .write\r\n",
+					"    .format(\"cosmos.oltp\")\r\n",
+					"    .option(\"spark.synapse.linkedService\", linkedService)\r\n",
+					"    .option(\"spark.cosmos.container\", containerTarget)\r\n",
+					"    .option(\"spark.cosmos.write.strategy\", \"ItemOverwrite\")\r\n",
+					"    .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"    .mode(\"append\")\r\n",
+					"    .save()\r\n",
+					")"
+				],
+				"execution_count": 8
+			}
+		]
+	}
+}

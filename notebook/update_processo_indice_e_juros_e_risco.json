@@ -1,0 +1,304 @@
+{
+	"name": "update_processo_indice_e_juros_e_risco",
+	"properties": {
+		"folder": {
+			"name": "cargas_cosmos/Carga manual"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "6",
+				"spark.autotune.trackingId": "e5b7b329-b354-4b29-8903-660131feb37c"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1",
+				"state": {
+					"2491f6f0-c88c-4170-86fb-9c5d8ea6091d": {
+						"type": "Synapse.DataFrame",
+						"sync_state": {
+							"table": {
+								"rows": [
+									{
+										"0": "100133-2005--127",
+										"1": "false",
+										"2": "TR",
+										"3": "true"
+									}
+								],
+								"schema": [
+									{
+										"key": "0",
+										"name": "id",
+										"type": "string"
+									},
+									{
+										"key": "1",
+										"name": "indice_correcao_monetaria_padrao",
+										"type": "boolean"
+									},
+									{
+										"key": "2",
+										"name": "index_custom_name",
+										"type": "string"
+									},
+									{
+										"key": "3",
+										"name": "taxa_juros_padrao",
+										"type": "boolean"
+									},
+									{
+										"key": "4",
+										"name": "index_custom_fees",
+										"type": "void"
+									}
+								],
+								"truncated": false
+							},
+							"isSummary": false,
+							"language": "scala"
+						},
+						"persist_state": {
+							"view": {
+								"type": "details",
+								"chartOptions": {
+									"chartType": "bar",
+									"aggregationType": "count",
+									"categoryFieldKeys": [
+										"0"
+									],
+									"seriesFieldKeys": [
+										"0"
+									],
+									"isStacked": false
+								}
+							}
+						}
+					}
+				}
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"CREATE OR REPLACE TEMP VIEW indices_juros AS\r\n",
+					"select\r\n",
+					"    CAST(replace(p.newpk, \"/\", \"-\") as string) as id\r\n",
+					"    -- , 'NENHUM' as avaliacao_risco --removido, carga inicial da processo já o faz\r\n",
+					"    , CASE \r\n",
+					"        WHEN upper(ti.nom_tipo_indice_atualizacao) IN ('SELIC', 'INPC') THEN True\r\n",
+					"        WHEN upper(ti.nom_tipo_indice_atualizacao) IN ('TR') THEN False\r\n",
+					"        ELSE null\r\n",
+					"    END as indice_correcao_monetaria_padrao\r\n",
+					"    , CASE \r\n",
+					"        WHEN upper(ti.nom_tipo_indice_atualizacao) IN ('SELIC', 'INPC') THEN null\r\n",
+					"        WHEN upper(ti.nom_tipo_indice_atualizacao) IN ('TR') THEN 'TR'\r\n",
+					"        ELSE 'ERRO'\r\n",
+					"    END as index_custom_name\r\n",
+					"    , True as taxa_juros_padrao\r\n",
+					"    , null index_custom_fees\r\n",
+					"from silver.processo p\r\n",
+					"INNER JOIN silver.tipo_indice_atualizacao ti on ti.cod_tipo_indice_atualizacao = p.cod_tipo_indice_atualizacao\r\n",
+					"WHERE upper(ti.nom_tipo_indice_atualizacao) IN ('TR') "
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"----Verificar se teve erros\r\n",
+					"SELECT count(*)\r\n",
+					"FROM indices_juros\r\n",
+					"WHERE\r\n",
+					"(\r\n",
+					"    indice_correcao_monetaria_padrao IS NULL\r\n",
+					"    OR\r\n",
+					"    index_custom_name = \"ERRO\"\r\n",
+					")"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_final = spark.sql(\"\"\"select * from indices_juros\"\"\")\r\n",
+					"## 1200713\r\n",
+					"\r\n",
+					"df_final.printSchema()"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_final.count()"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(df_final)"
+				],
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"(\r\n",
+					"    df_final.write\r\n",
+					"    .format(\"cosmos.oltp\")\r\n",
+					"    .option(\"spark.synapse.linkedService\", 'CosmosDb')\r\n",
+					"    .option(\"spark.cosmos.container\", 'processo')\r\n",
+					"    .option(\"spark.cosmos.write.strategy\", \"ItemPatch\")\r\n",
+					"    .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"    .option(\"spark.cosmos.write.patch.columnConfigs\", \"\"\"[col(indice_correcao_monetaria_padrao).op(set), \r\n",
+					"                                                        col(index_custom_name).op(set),\r\n",
+					"                                                        col(taxa_juros_padrao).op(set),\r\n",
+					"                                                        col(index_custom_fees).op(set)\r\n",
+					"                                                        ]\"\"\")\r\n",
+					"    .mode(\"append\")\r\n",
+					"    .save()\r\n",
+					")"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				]
+			}
+		]
+	}
+}

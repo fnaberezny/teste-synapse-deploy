@@ -1,0 +1,59 @@
+{
+	"name": "FileGen_Relatorio_Fotografia_2",
+	"properties": {
+		"description": "Job para criação do relatório de fotografia por divisão e escritório.\nO relatório é gerado através da ação do botão \"GERAR RELATÓRIO\"\nEste job é executado em streaming, e recebe o csv criado em um pipeline para iniciar sua execução. ",
+		"folder": {
+			"name": "FileGeneration_P3/Gerar Relatório Fotografia"
+		},
+		"targetBigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "3.2",
+		"language": "python",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "FileGen_Relatorio_Fotografia_2",
+			"file": "abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/main.py",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "1",
+				"spark.autotune.trackingId": "7c27ec03-f58e-4d40-8ba1-5258ec0548c6"
+			},
+			"args": [
+				"--env",
+				"prod",
+				"--akv",
+				"kv-tlf-jarvis-prod",
+				"--job",
+				"shoot_alternative",
+				"-p",
+				"2"
+			],
+			"jars": [],
+			"pyFiles": [
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/config_jobs.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/filter_file.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/shoot_p3.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/automatic_p3.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/consolidate_p1.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/filter_file_p3.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/job_trait.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/AKVConfig.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/EHSMessageResponse.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/ExcelFileGen.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/FormatSelect.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/SetupSession.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/LoggerProvider.py",
+				"abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/refactoring/shoot_p3_alternative.py"
+			],
+			"files": [],
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 1
+		}
+	}
+}

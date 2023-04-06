@@ -1,0 +1,266 @@
+{
+	"name": "collection_fotografia_pedidos_trabalhistas",
+	"properties": {
+		"description": "Carga da collection pedido trabalhistas no Cosmos. Esse dado",
+		"folder": {
+			"name": "cargas_cosmos"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": true,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "65edb687-d00d-4f09-9566-2c8d684e28b9"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"cod_calendario_monetario = 158"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"##Pegar calendario anterior\r\n",
+					"\r\n",
+					"df = spark.sql('''SELECT MAX(cod_calendario_monetario) as cod_calendario from silver.calendario_monetario_p3\r\n",
+					"                                    WHERE cod_calendario_monetario < (SELECT cod_calendario_monetario \r\n",
+					"                                                                        from silver.calendario_monetario_p3 \r\n",
+					"                                                                        where sts_ativo = 1)''')\r\n",
+					"\r\n",
+					"cod_calendario_monetario = df.collect()[0].cod_calendario"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import com.microsoft.spark.sqlanalytics\r\n",
+					"from com.microsoft.spark.sqlanalytics.Constants import Constants\r\n",
+					"from pyspark.sql.functions import col\r\n",
+					"\r\n",
+					"env = mssparkutils.env.getWorkspaceName()\r\n",
+					"if(env == 'syn-tlf-jarvis-prod'):\r\n",
+					"    sqlWorkspaceName = \"syndpjarvisprod\"\r\n",
+					"elif(env == 'syn-tlf-jarvis-test'):\r\n",
+					"    sqlWorkspaceName = 'syndpjarvistest'\r\n",
+					"else:\r\n",
+					"    sqlWorkspaceName = 'syndpjarvisdev'\r\n",
+					"\r\n",
+					"\r\n",
+					"# // Cosmos Variables\r\n",
+					"linkedService = 'CosmosDb'\r\n",
+					"containerTarget = 'fotografia_pedidos_trabalhistas'\r\n",
+					"\r\n",
+					"# // SQL Dedicated Variables\r\n",
+					"schema0 = \"rl3\"\r\n",
+					"schema1 = \"dbo\"\r\n",
+					"\r\n",
+					"# // SQL Tables Variables\r\n",
+					"fotografia_item_pedidos_trabalhistas = \"fotografia_item_pedidos_trabalhistas\"\r\n",
+					"fotografia_item = \"fotografia_item\"\r\n",
+					"fotografia = \"fotografia\"\r\n",
+					"\r\n",
+					"# // Read Tables SQL Dedicated Pool\r\n",
+					"df_fotografia_item_pedidos_trabalhistas = spark.read.synapsesql(f'{sqlWorkspaceName}.dbo.{fotografia_item_pedidos_trabalhistas}')\r\n",
+					"df_fotografia_item = spark.read.synapsesql(f'{sqlWorkspaceName}.dbo.{fotografia_item}').withColumnRenamed(\"carta_fiança\", \"carta_fianca\")\r\n",
+					"df_fotografia = spark.read.synapsesql(f'{sqlWorkspaceName}.rl3.{fotografia}')\r\n",
+					"\r\n",
+					"# //Create temp view\r\n",
+					"df_fotografia_item_pedidos_trabalhistas.createOrReplaceTempView(\"fotografia_item_pedidos_trabalhistas\")\r\n",
+					"df_fotografia_item.createOrReplaceTempView(\"fotografia_item\")\r\n",
+					"df_fotografia.createOrReplaceTempView(\"fotografia\")\r\n",
+					""
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"queryProcesso = spark.sql(f\"\"\"\r\n",
+					"SELECT\r\n",
+					"    nvl(concat(replace(fipt.num_processo, '/','-'),'-',fipt.tipo_pedido_id,'-',fipt.cod_calendario_monetario),0) as id\r\n",
+					"    ,fipt.num_processo\r\n",
+					"\t,fipt.cod_calendario_monetario\r\n",
+					"\t,CAST(fipt.cod_fotografia as STRING) as cod_fotografia\r\n",
+					"\t,fipt.tipo_pedido_id\r\n",
+					"\t,fi.tipo_contingencia\r\n",
+					"\t,fi.esp_contingencia\r\n",
+					"\t,fipt.prov_cp_op_final + fipt.prov_lp_op_final as prov_cp_lp_op_final\r\n",
+					"\t,fipt.prov_cp_fi_final + fipt.prov_lp_fi_final as prov_cp_lp_fi_final\r\n",
+					"\t,fipt.prov_cp_op_fi_final + fipt.prov_lp_op_fi_final as prov_cp_lp_op_fi_final\r\n",
+					"\t,fipt.possivel_op_final\r\n",
+					"\t,fipt.possivel_fi_final\r\n",
+					"\t,fipt.possivel_op_fi_final\r\n",
+					"\t,fipt.remoto_op_final\r\n",
+					"\t,fipt.remoto_fi_final\r\n",
+					"\t,fipt.remoto_op_fi_final\r\n",
+					"\t,fi.indice\r\n",
+					"\t,fi.percentual_indice\r\n",
+					"\t,fi.taxa_de_juros\r\n",
+					"from fotografia_item fi\r\n",
+					"\tINNER JOIN fotografia_item_pedidos_trabalhistas fipt\r\n",
+					"\t    on fi.sequencial = fipt.num_processo\r\n",
+					"\t\t\tand fi.cod_calendario_monetario = fipt.cod_calendario_monetario\r\n",
+					"\tINNER JOIN (SELECT cod_fotografia, MAX(cod_ver_fotografia) as max_version\r\n",
+					"\t                FROM fotografia\r\n",
+					"\t                    WHERE status = 4\r\n",
+					"\t\t\t\t\t\t\tAND cod_calendario_monetario in ({cod_calendario_monetario})\r\n",
+					"\t                GROUP BY cod_fotografia) ft_version \r\n",
+					"\t                    ON ft_version.cod_fotografia = fi.cod_fotografia\r\n",
+					"\t                        AND ft_version.max_version = fi.cod_ver_fotografia\r\n",
+					"where fipt.cod_calendario_monetario in ({cod_calendario_monetario})\r\n",
+					"\tAND fipt.flag_remove = 0\r\n",
+					"\"\"\")"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"queryProcesso.count()"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Write to Cosmos Container\r\n",
+					"(queryProcesso\r\n",
+					"    .write\r\n",
+					"    .format(\"cosmos.oltp\")\r\n",
+					"    .option(\"spark.synapse.linkedService\", linkedService)\r\n",
+					"    .option(\"spark.cosmos.container\", containerTarget)\r\n",
+					"    .option(\"spark.cosmos.write.strategy\", \"ItemOverwrite\")\r\n",
+					"    .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"    .mode(\"append\")\r\n",
+					"    .save()\r\n",
+					")"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# queryProcesso.count() #Total de linhas upserted;"
+				]
+			}
+		]
+	}
+}

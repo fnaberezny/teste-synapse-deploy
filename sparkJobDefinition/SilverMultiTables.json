@@ -1,0 +1,51 @@
+{
+	"name": "SilverMultiTables",
+	"properties": {
+		"folder": {
+			"name": "StreamMultiTables"
+		},
+		"targetBigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"targetSparkConfiguration": {
+			"referenceName": "optimizedTransactions",
+			"type": "SparkConfigurationReference"
+		},
+		"requiredSparkVersion": "3.2",
+		"language": "scala",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "SilverMultiTables",
+			"file": "abfss://src@dlstlfjarvisprod.dfs.core.windows.net/scala/spark3.2/jarvisstreaming_2.12-Spark3.2.1.jar",
+			"className": "br.com.telefonica.MainHandler",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "1",
+				"spark.autotune.trackingId": "48074dd8-c898-4665-9158-12e2f2248525",
+				"spark.__artifact__.spark.sql.parquet.int96RebaseModeInWrite": "CORRECTED",
+				"spark.__artifact__.spark.python.worker.memory": "4g",
+				"spark.__artifact__.spark.kryoserializer.buffer.max": "512m"
+			},
+			"args": [
+				"--job",
+				"silver",
+				"--env",
+				"prod",
+				"--akv",
+				"kv-tlf-jarvis-prod"
+			],
+			"jars": [],
+			"pyFiles": [
+				""
+			],
+			"files": [],
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 1
+		}
+	}
+}

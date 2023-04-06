@@ -1,0 +1,33 @@
+{
+	"name": "Arquivo_Query",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"file_url": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().file_url",
+					"type": "Expression"
+				},
+				"folderPath": "gold/queries_gold",
+				"container": "datalake"
+			},
+			"columnDelimiter": "§",
+			"rowDelimiter": "§",
+			"escapeChar": "",
+			"quoteChar": ""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

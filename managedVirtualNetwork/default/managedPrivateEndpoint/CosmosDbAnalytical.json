@@ -1,0 +1,10 @@
+{
+	"name": "CosmosDbAnalytical",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-api-tlf-jarvis-prod",
+		"groupId": "Analytical",
+		"fqdns": [
+			"cosmos-api-tlf-jarvis-prod.analytics.cosmos.azure.com"
+		]
+	}
+}

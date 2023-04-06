@@ -1,0 +1,324 @@
+{
+	"name": "SILVER_INGESTION_COSMOS_DB_BKP_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Busca Tabela Cosmos",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "CosmosDbSqlApiSource",
+						"preferredRegions": [],
+						"detectDatetime": false
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"writeBehavior": "Upsert",
+						"upsertSettings": {
+							"keys": [
+								"Id"
+							],
+							"interimSchemaName": "Silver"
+						},
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['id']"
+								},
+								"sink": {
+									"name": "id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['divisao']['cod_divisao_processo']"
+								},
+								"sink": {
+									"name": "cod_divisao_processo",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['divisao']['sig_divisao']"
+								},
+								"sink": {
+									"name": "sig_divisao",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['divisao']['nom_divisao']"
+								},
+								"sink": {
+									"name": "nom_divisao",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['escritorio']['sig_escritorio_contratado']"
+								},
+								"sink": {
+									"name": "sig_escritorio_contratado",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['escritorio']['nom_escritorio_contratado']"
+								},
+								"sink": {
+									"name": "nom_escritorio_contratado",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['escritorio']['nom_escritorio_sap']"
+								},
+								"sink": {
+									"name": "nom_escritorio_sap",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['calendario_monetario']['cod_calendario_monetario']"
+								},
+								"sink": {
+									"name": "cod_calendario_monetario",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['calendario_monetario']['dtc_inicial']"
+								},
+								"sink": {
+									"name": "dtc_inicial",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['calendario_monetario']['dtc_final']"
+								},
+								"sink": {
+									"name": "dtc_final",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['calendario_monetario']['sts_ativo']"
+								},
+								"sink": {
+									"name": "sts_ativo",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['calendario_monetario']['desc_calendario']"
+								},
+								"sink": {
+									"name": "desc_calendario",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['calendario_monetario']['dtc_limite_foto']"
+								},
+								"sink": {
+									"name": "dtc_limite_foto",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['table']"
+								},
+								"sink": {
+									"name": "table",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['status']"
+								},
+								"sink": {
+									"name": "status",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['op_type']"
+								},
+								"sink": {
+									"name": "op_type",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['op_ts']"
+								},
+								"sink": {
+									"name": "op_ts",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['current_ts']"
+								},
+								"sink": {
+									"name": "current_ts",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dtc_cadastro']"
+								},
+								"sink": {
+									"name": "dtc_cadastro",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['pos']"
+								},
+								"sink": {
+									"name": "pos",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dtc_cadastro']"
+								},
+								"sink": {
+									"name": "dtc_cadastro",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['cod_fotografia']"
+								},
+								"sink": {
+									"name": "cod_fotografia",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['nom_usuario_responsavel']"
+								},
+								"sink": {
+									"name": "nom_usuario_responsavel",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['nom_usuario_fotografo']"
+								},
+								"sink": {
+									"name": "nom_usuario_fotografo",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dtc_data_fotografia']"
+								},
+								"sink": {
+									"name": "dtc_data_fotografia",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "CosmosDB_app",
+						"type": "DatasetReference",
+						"parameters": {
+							"cotainer_name": "photographs"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SynapseDedicado_SelfHosted",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": "status_fotografia"
+						}
+					}
+				]
+			},
+			{
+				"name": "atualizacao_status_fotografia_item",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Busca Tabela Cosmos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[atualizacao_status_fotografia_item]"
+				},
+				"linkedServiceName": {
+					"referenceName": "Pool Dedicated",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "SILVER"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-04T14:59:45Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

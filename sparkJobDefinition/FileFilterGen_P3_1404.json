@@ -1,0 +1,42 @@
+{
+	"name": "FileFilterGen_P3_1404",
+	"properties": {
+		"description": "A test to check the behavior of egress ",
+		"folder": {
+			"name": "FileGen_OLD"
+		},
+		"targetBigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "3.2",
+		"language": "python",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "FileFilterGen_P3_1404",
+			"file": "abfss://src@dlstlfjarvisprod.dfs.core.windows.net/python/file_gen_filter_p3_1404.py",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "2746db7c-07a0-4ba5-bcb2-dbd029e8135a"
+			},
+			"args": [
+				"-env",
+				"prod",
+				"--akv",
+				"kv-tlf-jarvis-prod"
+			],
+			"jars": [],
+			"pyFiles": [
+				""
+			],
+			"files": [],
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2
+		}
+	}
+}

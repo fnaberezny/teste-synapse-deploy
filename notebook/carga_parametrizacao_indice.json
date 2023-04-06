@@ -1,0 +1,302 @@
+{
+	"name": "carga_parametrizacao_indice",
+	"properties": {
+		"folder": {
+			"name": "cargas_cosmos/Carga manual"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "b8142711-1780-4228-bddc-b0374c2f0e99"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"CREATE OR REPLACE TEMP VIEW indices\r\n",
+					"as\r\n",
+					"  SELECT 'INPC' as name,\r\n",
+					"          '1.00' as fees,\r\n",
+					"          null as capitalization_type\r\n",
+					"        UNION ALL\r\n",
+					"  SELECT 'TR' as name, \r\n",
+					"          '1.00' as fees,\r\n",
+					"          null as capitalization_type\r\n",
+					"        UNION ALL\r\n",
+					"  SELECT 'SELIC' as name,\r\n",
+					"          null as fees,\r\n",
+					"          'Simples' as capitalization_type"
+				],
+				"execution_count": 77
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"CREATE OR REPLACE TEMP VIEW modulo_natureza as\r\n",
+					"SELECT DISTINCT\r\n",
+					"    m.cod_modulo, m.nom_modulo, \r\n",
+					"    en.cod_especificacao_natureza, en.des_especificacao_natureza\r\n",
+					"FROM silver.modulo_natureza mn\r\n",
+					"JOIN silver.modulo AS m ON m.cod_modulo = mn.cod_modulo\r\n",
+					"JOIN silver.especificacao_natureza en ON mn.cod_natureza = en.cod_natureza and mn.cod_especificacao_natureza = en.cod_especificacao_natureza \r\n",
+					""
+				],
+				"execution_count": 78
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"-- check modulo\r\n",
+					"SELECT row_number() over (partition by 1 order by nom_modulo, des_especificacao_natureza ) as rn, *\r\n",
+					"FROM modulo_natureza order by rn"
+				],
+				"execution_count": 79
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"CREATE OR REPLACE TEMP VIEW exploded_paramnetrizacao as \r\n",
+					"SELECT \r\n",
+					"  mn.cod_modulo, mn.nom_modulo, \r\n",
+					"  mn.cod_especificacao_natureza, mn.des_especificacao_natureza,\r\n",
+					"  name,\r\n",
+					"  CASE \r\n",
+					"    WHEN mn.nom_modulo <> 'TRABALHISTA' AND name = 'INPC' THEN True\r\n",
+					"    WHEN mn.nom_modulo = 'TRABALHISTA' AND name = 'SELIC' THEN True\r\n",
+					"    ELSE False\r\n",
+					"  END as isDefault,\r\n",
+					"  fees,\r\n",
+					"  capitalization_type      \r\n",
+					"FROM modulo_natureza mn\r\n",
+					"cross join indices i"
+				],
+				"execution_count": 80
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql \r\n",
+					"--check exploded parametrização\r\n",
+					"SELECT * FROM exploded_paramnetrizacao order by 2,4"
+				],
+				"execution_count": 81
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"---check pré final\r\n",
+					"SELECT cod_modulo, nom_modulo, cod_especificacao_natureza, des_especificacao_natureza,\r\n",
+					"    collect_list(struct(name, isDefault, fees, capitalization_type)) as indexes\r\n",
+					"FROM \r\n",
+					"exploded_paramnetrizacao\r\n",
+					"GROUP BY 1,2,3,4"
+				],
+				"execution_count": 87
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"CREATE OR REPLACE TEMP VIEW index_module\r\n",
+					"as \r\n",
+					"SELECT \r\n",
+					"    concat(cod_modulo, '-', cod_especificacao_natureza) as id\r\n",
+					"    ,cod_modulo\r\n",
+					"    ,cod_especificacao_natureza\r\n",
+					"    ,cast(current_timestamp()  as string) as created_at\r\n",
+					"    ,'p3' as created_by\r\n",
+					"    ,cast(current_timestamp() as string) as updated_at\r\n",
+					"    ,'p3' as updated_by\r\n",
+					"    ,collect_list(struct(name, isDefault, fees, capitalization_type)) as indexes\r\n",
+					"FROM \r\n",
+					"exploded_paramnetrizacao\r\n",
+					"GROUP BY 1,2,3,4,5,6"
+				],
+				"execution_count": 91
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"df = spark.read.table('index_module')\r\n",
+					"display(df)"
+				],
+				"execution_count": 92
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Write to Cosmos Container\r\n",
+					"(df.write\r\n",
+					"    .format(\"cosmos.oltp\")\r\n",
+					"    .option(\"spark.synapse.linkedService\", 'CosmosDb')\r\n",
+					"    .option(\"spark.cosmos.container\", 'index_module')\r\n",
+					"    .option(\"spark.cosmos.write.strategy\", \"ItemOverwrite\")\r\n",
+					"    .option(\"spark.cosmos.write.bulk.enabled\", \"true\")\r\n",
+					"    .mode(\"append\")\r\n",
+					"    .save()\r\n",
+					")"
+				],
+				"execution_count": 93
+			}
+		]
+	}
+}

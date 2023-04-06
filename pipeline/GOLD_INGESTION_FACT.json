@@ -1,0 +1,658 @@
+{
+	"name": "GOLD_INGESTION_FACT",
+	"properties": {
+		"activities": [
+			{
+				"name": "ConsultaTabelas",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Registra Inicio Operacao",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": "SELECT\n*\nFROM\njarvis_ctrl_ingestion_goldtables\nWHERE\nACTIVE  = 1\nAND\ntable_name = 'FT_FOTOGRAFIA'\nand \nlast_update < (select last_update from Silver.jarvis_ctrl_ingestion_silvertables where table_name = 'FOTOGRAFIA_ITEM_STG')\n\nUNION\n\nSELECT\n*\nFROM\njarvis_ctrl_ingestion_goldtables\nWHERE\nACTIVE  = 1\nAND\nTP_TABLE = 'FAT'\nAND\ntable_name NOT IN ('FT_FOTOGRAFIA','FT_AGG_PRE_FOTOGRAFIA')\n--and \n--last_update < (select max(created_at) from ft_fotografia))\nor\n( TP_TABLE = 'FAT'AND ACTIVE  = 1 AND full_processing = 1)\nORDER BY\ntable_name DESC;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Jarvis_Pool_Dedicado16197",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "dbo",
+							"Table": "jarvis_ctrl_ingestion_goldtables"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ProcessaTabelas",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ConsultaTabelas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('ConsultaTabelas').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Ler query",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "Arquivo_Query13558",
+									"type": "DatasetReference",
+									"parameters": {
+										"file_url": {
+											"value": "@split(toLower(item().query_path),'/' )[6]",
+											"type": "Expression"
+										},
+										"file_path": "gold/queries_gold/"
+									}
+								},
+								"firstRowOnly": true
+							}
+						},
+						{
+							"name": "Controla tipo de carga",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Ler query",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@item().full_processing",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Insere Dados Com Condicional_copy1",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "Registra Inicio_op_copy1",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlDWSource",
+												"sqlReaderQuery": {
+													"value": "@concat(replace(replace(activity('Ler query').output.firstRow.Prop_0,'\\r\\n\\t',''),';' ,' ' ),item().conditional_clause)",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "SqlDWSink",
+												"preCopyScript": {
+													"value": "@{item().pre_script}",
+													"type": "Expression"
+												},
+												"writeBehavior": "Upsert",
+												"upsertSettings": {
+													"keys": {
+														"value": "@array(item().primary_key)",
+														"type": "Expression"
+													},
+													"interimSchemaName": "dbo"
+												},
+												"sqlWriterUseTableLock": false,
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"parallelCopies": 16,
+											"dataIntegrationUnits": 8,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "Jarvis_Pool_Dedicado16197",
+												"type": "DatasetReference",
+												"parameters": {
+													"Schema": "dbo",
+													"Table": {
+														"value": "@toLower(item().table_name)",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "Jarvis_Pool_Dedicado16197",
+												"type": "DatasetReference",
+												"parameters": {
+													"Schema": "dbo",
+													"Table": {
+														"value": "@toLower(item().table_name)",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Registra Inicio_op_copy1",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "start_process_time",
+											"value": {
+												"value": "@utcnow()",
+												"type": "Expression"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Insere Dados sem condicional_copy1",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "Registra Inicio_copy1",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlDWSource",
+												"sqlReaderQuery": {
+													"value": "@replace(replace(activity('Ler query').output.firstRow.Prop_0,'\\r\\n\\t',''),';' ,' ' )\n",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "SqlDWSink",
+												"writeBehavior": "Insert",
+												"sqlWriterUseTableLock": false,
+												"tableOption": "autoCreate",
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"parallelCopies": 16,
+											"dataIntegrationUnits": 8,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "Jarvis_Pool_Dedicado16197",
+												"type": "DatasetReference",
+												"parameters": {
+													"Schema": "dbo",
+													"Table": {
+														"value": "@toLower(item().table_name)",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "Jarvis_Pool_Dedicado16197",
+												"type": "DatasetReference",
+												"parameters": {
+													"Schema": "dbo",
+													"Table": "@toLower(item().table_name)"
+												}
+											}
+										]
+									},
+									{
+										"name": "Registra Inicio_copy1",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "start_process_time",
+											"value": {
+												"value": "@utcnow()",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Atualiza Registros de carga",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Controla tipo de carga",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[update_status_jarvis_ctrl_ingestion_goldtables]",
+								"storedProcedureParameters": {
+									"full_processing": {
+										"value": "FALSE",
+										"type": "Boolean"
+									},
+									"last_process_start": {
+										"value": {
+											"value": "@variables('start_process_time')",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"last_update": {
+										"value": {
+											"value": "@utcnow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"message_last_up": {
+										"value": "CARGA PROCESSADA COM SUCESSO",
+										"type": "String"
+									},
+									"status_last_up": {
+										"value": "SUCCESS",
+										"type": "String"
+									},
+									"table_name": {
+										"value": {
+											"value": "@item().table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "SelfHosted Lake",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Atualiza Registros com falha",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Controla tipo de carga",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[update_status_jarvis_ctrl_ingestion_goldtables]",
+								"storedProcedureParameters": {
+									"full_processing": {
+										"value": {
+											"value": "@variables('tipo_carga')",
+											"type": "Expression"
+										},
+										"type": "Boolean"
+									},
+									"last_process_start": {
+										"value": {
+											"value": "@pipeline().TriggerTime",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"last_update": {
+										"value": {
+											"value": "@utcnow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"message_last_up": {
+										"value": {
+											"value": "@concat('falha ao processar a tabela ',variables('table_name'))",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"status_last_up": {
+										"value": "FAIL",
+										"type": "String"
+									},
+									"table_name": {
+										"value": {
+											"value": "@item().table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "SelfHosted Lake",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Registra Inicio Operacao",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "inicio_carga",
+					"value": {
+						"value": "@utcNow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Atualiza Pending Processing",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "ProcessaTabelas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@if(greaterOrEquals(activity('ConsultaTabelas').output.count,1),'TRUE','FALSE')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Remove Pending Processing",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "SelfHosted Lake",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('UPDATE ft_fotografia SET pending_processing = ''FALSE'' WHERE pending_processing = ''TRUE'' AND CREATED_AT < ''',variables('inicio_carga'),''';')",
+											"type": "Expression"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Atualiza Registros de carga pf",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ConsultaTabelas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[update_status_jarvis_ctrl_ingestion_goldtables]",
+					"storedProcedureParameters": {
+						"full_processing": {
+							"value": "FALSE",
+							"type": "Boolean"
+						},
+						"last_process_start": {
+							"value": {
+								"value": "@variables('inicio_carga')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"last_update": {
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"message_last_up": {
+							"value": "CARGA PROCESSADA COM SUCESSO",
+							"type": "String"
+						},
+						"status_last_up": {
+							"value": "SUCCESS",
+							"type": "String"
+						},
+						"table_name": {
+							"value": {
+								"value": "'FT_AGG_PRE_FOTOGRAFIA'",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Atualiza Registros com falha pf",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ConsultaTabelas",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[update_status_jarvis_ctrl_ingestion_goldtables]",
+					"storedProcedureParameters": {
+						"full_processing": {
+							"value": {
+								"value": "0",
+								"type": "Expression"
+							},
+							"type": "Boolean"
+						},
+						"last_process_start": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"last_update": {
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"message_last_up": {
+							"value": {
+								"value": "@concat('falha ao processar a tabela ',variables('table_name'))",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"status_last_up": {
+							"value": "FAIL",
+							"type": "String"
+						},
+						"table_name": {
+							"value": {
+								"value": "'FT_AGG_PRE_FOTOGRAFIA'",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"table_name": {
+				"type": "String"
+			},
+			"tipo_carga": {
+				"type": "Boolean"
+			},
+			"condional": {
+				"type": "String"
+			},
+			"chave": {
+				"type": "String"
+			},
+			"start_process_time": {
+				"type": "String"
+			},
+			"inicio_carga": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "GOLD"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-16T22:15:17Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

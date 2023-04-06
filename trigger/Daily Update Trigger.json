@@ -1,0 +1,34 @@
+{
+	"name": "Daily Update Trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "SILVER_HARD_JOBS_ORCHESTRATOR",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "GOLD_INGESTION_DIMS",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"table_name": null,
+					"query_path": null
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2022-09-05T00:00:00",
+				"timeZone": "E. South America Standard Time"
+			}
+		}
+	}
+}

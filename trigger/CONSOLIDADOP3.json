@@ -1,0 +1,32 @@
+{
+	"name": "CONSOLIDADOP3",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "P3_CONSOLIDADO",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-11-11T11:27:00",
+				"timeZone": "E. South America Standard Time",
+				"schedule": {
+					"minutes": [
+						5
+					],
+					"hours": [
+						1
+					]
+				}
+			}
+		}
+	}
+}

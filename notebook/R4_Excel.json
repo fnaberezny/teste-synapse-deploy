@@ -1,0 +1,616 @@
+{
+	"name": "R4_Excel",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "f5f29493-a664-4b9c-9536-20af14c99e92"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Bibliotecas\r\n",
+					"import pyspark.sql.functions as f\r\n",
+					"from datetime import datetime, timezone, date\r\n",
+					"import pandas as pd\r\n",
+					"import com.microsoft.spark.sqlanalytics\r\n",
+					"from azure.eventhub import EventData\r\n",
+					"from azure.eventhub import EventHubProducerClient\r\n",
+					"import json\r\n",
+					"from pyspark.sql.types import NullType, DoubleType"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"# Criacao de variaveis genericas para poderem receber os valores passados no pipeline\r\n",
+					"current_ts_new = \"2023-03-23T14:52:33.705\"\r\n",
+					"num_processo_new = \"11993/2021--5\"\r\n",
+					"cod_calendars_new = \"[157, 158]\"\r\n",
+					"idProcess_new = \"10003\"\r\n",
+					"is_process_new = True\r\n",
+					"idUser_new = \"a000926\""
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Declaracao de variaveis de processo e condicoes\r\n",
+					"current_ts = current_ts_new.replace(\"\\\"\",\"\")\r\n",
+					"cod_calendars = cod_calendars_new.replace(\"[\",\"\")\\\r\n",
+					"                                 .replace(\"]\",\"\")\r\n",
+					"idProcess = idProcess_new.replace(\"\\\"\",\"\")\r\n",
+					"is_process = is_process_new\r\n",
+					"idUser = idUser_new.replace(\"\\\"\",\"\")\r\n",
+					"num_processo = num_processo_new.replace(\"\\\"\",\"\")"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": []
+				},
+				"source": [
+					"# Declaracao de variaveis de ambiente e recursos\r\n",
+					"env = mssparkutils.env.getWorkspaceName()\r\n",
+					"if(env == 'syn-tlf-jarvis-prod'):\r\n",
+					"    sqlWorkspaceName = \"syndpjarvisprod\"\r\n",
+					"    akv_name = \"kv-tlf-jarvis-prod\"\r\n",
+					"elif(env == 'syn-tlf-jarvis-test'):\r\n",
+					"    sqlWorkspaceName = 'syndpjarvistest'\r\n",
+					"    akv_name = \"kv-tlf-jarvis-test\"\r\n",
+					"else:\r\n",
+					"    sqlWorkspaceName = 'syndpjarvisdev'\r\n",
+					"    akv_name = \"kv-tlf-jarvis-dev\"\r\n",
+					""
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"database = \"silver\"\r\n",
+					"table = \"param_processo_excel_p3\"\r\n",
+					"\r\n",
+					"linked_service_akv = \"AzureKeyVault\"\r\n",
+					"\r\n",
+					"eventhub_connection = TokenLibrary.getSecret(akv_name, \"eventhubfile\", linked_service_akv)\r\n",
+					"eventhub_output = TokenLibrary.getSecret(akv_name, \"ehoutput\", linked_service_akv)\r\n",
+					"path_response_base = TokenLibrary.getSecret(akv_name, \"evhpathresponse\", linked_service_akv) + \"_r4\"\r\n",
+					"path_write_base = TokenLibrary.getSecret(akv_name, \"bloburl\", linked_service_akv) + \"_r4\"\r\n",
+					"\r\n",
+					"\r\n",
+					"# Define Variables\r\n",
+					"fotografia_item = \"fotografia_item\"\r\n",
+					"fotografia = \"fotografia\"\r\n",
+					"fotografia_item_pedidos_trabalhistas = \"fotografia_item_pedidos_trabalhistas\"\r\n",
+					"schema_dbo = \"dbo\"\r\n",
+					"schema_rl3 = \"rl3\"\r\n",
+					"schema_silver = \"silver\"\r\n",
+					"\r\n",
+					"generated = str(datetime.now(timezone.utc).strftime('%Y-%m-%d_%H-%M-%S'))\r\n",
+					"generated2 = str(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S-03:00'))\r\n",
+					"path_response = f\"{path_response_base}/{idUser}/{idProcess}_{generated}\"\r\n",
+					"\r\n",
+					"if is_process == False:\r\n",
+					"    path_response = path_response + \"_pedido.xlsx\"\r\n",
+					"    path_write_final = f\"{path_write_base}/{idUser}/{idProcess}_{generated}\"  + \"_pedido.xlsx\"\r\n",
+					"else:\r\n",
+					"    path_response = path_response + \"_processo.xlsx\"\r\n",
+					"    path_write_final = f\"{path_write_base}/{idUser}/{idProcess}_{generated}\" + \"_processo.xlsx\"\r\n",
+					"\r\n",
+					"\r\n",
+					"\r\n",
+					"print(path_response)\r\n",
+					"print(path_write_final)"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"\r\n",
+					"def export_excel(df, path_write):\r\n",
+					"\r\n",
+					"\r\n",
+					"    ##Convert timestamp to String\r\n",
+					"    df_time = df.select(*[f.col(c).cast(\"string\").alias(c) if t == \"timestamp\" else f.col(c) for c, t in df.dtypes])\r\n",
+					"\r\n",
+					"    ##Convert decimal to double\r\n",
+					"    df_final = df_time.select(*[f.col(c).cast(\"double\").alias(c) if t.startswith('decimal') else f.col(c) for c, t in df_time.dtypes])\r\n",
+					"\r\n",
+					"    df_pd = df_final.toPandas()\r\n",
+					"\r\n",
+					"    excel_options = {\r\n",
+					"        'strings_to_formulas': False,\r\n",
+					"        'strings_to_urls': False\r\n",
+					"    }\r\n",
+					"    \r\n",
+					"\r\n",
+					"    # no support for column specific datatime format, see https://xlsxwriter.readthedocs.io/working_with_pandas.html\r\n",
+					"\r\n",
+					"    with pd.ExcelWriter(path_write, engine=\"xlsxwriter\", datetime_format='dd/MM/yyyy hh:mm:ss',\r\n",
+					"                        options=excel_options) as writer:\r\n",
+					"        df_pd.to_excel(writer, sheet_name='Sheet1', header=True, index=False, encoding='cp1252',\r\n",
+					"                        engine='io.excel.xlsx.writer')\r\n",
+					"\r\n",
+					"        writer.book.use_zip64()\r\n",
+					"\r\n",
+					"        workbook = writer.book\r\n",
+					"        worksheet = writer.sheets['Sheet1']\r\n",
+					"\r\n",
+					"        format_2 = workbook.add_format({'num_format': '#,##0.00'})\r\n",
+					"        format_4 = workbook.add_format({'num_format': '#,##0.0000'})\r\n",
+					"\r\n",
+					"        for i, col in enumerate(df_final.schema):\r\n",
+					"            if isinstance(col.dataType, DoubleType):\r\n",
+					"                if col.name == 'PERCENTUAL INDICE':\r\n",
+					"                    worksheet.set_column(i, i, None, format_4)\r\n",
+					"                else:\r\n",
+					"                    worksheet.set_column(i, i, None, format_2)\r\n",
+					""
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def generateExcel(sqlWorkspaceName,\r\n",
+					"                  schema_dbo,\r\n",
+					"                  schema_rl3,\r\n",
+					"                  schema_silver,\r\n",
+					"                  fotografia_item,\r\n",
+					"                  fotografia,\r\n",
+					"                  fotografia_item_pedidos_trabalhistas,\r\n",
+					"                  num_processo,\r\n",
+					"                  cod_calendars,\r\n",
+					"                  path_write_final\r\n",
+					"                  ):\r\n",
+					"\r\n",
+					"    try:\r\n",
+					"        # Read Fotografias Possiveis From SQL Dedicated\r\n",
+					"        dfTbFotografiaItem = spark\\\r\n",
+					"                                .read\\\r\n",
+					"                                .synapsesql(\r\n",
+					"                                            f\"{sqlWorkspaceName}.{schema_dbo}.{fotografia_item}\"\r\n",
+					"                                            )\r\n",
+					"\r\n",
+					"        dfTbFotografia = spark\\\r\n",
+					"                            .read\\\r\n",
+					"                            .synapsesql(\r\n",
+					"                                        f\"{sqlWorkspaceName}.{schema_rl3}.{fotografia}\"\r\n",
+					"                                        )\r\n",
+					"\r\n",
+					"        dfTbFotItPed = spark\\\r\n",
+					"                        .read\\\r\n",
+					"                        .synapsesql(\r\n",
+					"                                    f\"{sqlWorkspaceName}.{schema_dbo}.{fotografia_item_pedidos_trabalhistas}\"\r\n",
+					"                                    )\r\n",
+					"\r\n",
+					"        dfTbFotografiaItem.createOrReplaceTempView(\"fotografia_item\")\r\n",
+					"        dfTbFotografia.createOrReplaceTempView(\"fotografia\")\r\n",
+					"        dfTbFotItPed.createOrReplaceTempView(\"fotografia_item_pedidos_trabalhistas\")\r\n",
+					"    \r\n",
+					"        if is_process == False:\r\n",
+					"            print(\"Query Pedido\")\r\n",
+					"            query_relatorio = spark.sql(f\"\"\" \r\n",
+					"                                    Select\r\n",
+					"                                        fipt.foto AS `FOTO`\r\n",
+					"                                        ,fipt.nom_pedido_processo AS `TIPO DO PEDIDO`\r\n",
+					"                                        ,fipt.num_processo AS `SEQUENCIAL`\r\n",
+					"                                        ,fi.empresa AS `EMPRESA`\r\n",
+					"                                        ,fi.escritorio_contratado AS `ESCRITORIO CONTRATADO`\r\n",
+					"                                        ,fi.advogado_responsavel AS `ADVOGADO RESPONSAVEL`\r\n",
+					"                                        ,fi.polo_ativo AS `POLO ATIVO`\r\n",
+					"                                        ,fi.polo_passivo AS `POLO PASSIVO`\r\n",
+					"                                        ,fi.data_encerramento AS `DATA ENCERRAMENTO`\r\n",
+					"                                        ,fi.data_arquivamento AS `DATA ARQUIVAMENTO`\r\n",
+					"                                        ,fi.modulo AS `MODULO`\r\n",
+					"                                        ,fi.obj_da_acao  AS `OBJ DA ACAO`\r\n",
+					"                                        ,fi.esp_obj_da_acao AS `ESP OBJ DA ACAO`\r\n",
+					"                                        ,fi.detalhe_esp_obj_da_acao AS `DETALHE ESP OBJ DA ACAO`\r\n",
+					"                                        ,fi.tipo_da_acao AS `TIPO DA ACAO`\r\n",
+					"                                        ,fi.estado AS `ESTADO`\r\n",
+					"                                        ,fi.processo_primeira_instancia AS `PROCESSO PRIMEIRA INSTANCIA`\r\n",
+					"                                        ,fi.situacao AS `SITUACAO`\r\n",
+					"                                        ,fi.motivo_arquivamento AS `MOTIVO ARQUIVAMENTO`\r\n",
+					"                                        ,fi.divisao_responsavel AS `DIVISAO RESPONSAVEL`\r\n",
+					"                                        ,fi.classificacao_solvencia AS `CLASSIFICACAO SOLVENCIA`\r\n",
+					"                                        ,fi.insolvente AS `INSOLVENTE`\r\n",
+					"                                        ,fi.fase_processual AS `FASE PROCESSUAL`\r\n",
+					"                                        ,fi.tipo_contingencia AS `TIPO CONTINGENCIA`\r\n",
+					"                                        ,fi.esp_contingencia AS `ESP CONTINGENCIA`\r\n",
+					"                                        ,fi.avaliacao_risco_processo AS `AVALIACAO RISCO PROCESSO`\r\n",
+					"                                        --,fipt.total_reversao_prov_cp_lp_op AS `TOTAL REVERSAO PROV CP e LP OP`\r\n",
+					"                                        --,fipt.total_reversao_prov_cp_lp_cm AS `TOTAL REVERSAO PROV CP e LP CM`\r\n",
+					"                                        --,fipt.total_reversao_prov_cp_lp_juros AS `TOTAL REVERSAO PROV CP e LP JUROS`\r\n",
+					"                                        --,fipt.total_reversao_prov_cp_lp_fi AS `TOTAL REVERSAO PROV CP e LP FI`\r\n",
+					"                                        --,fipt.total_reversao_prov_cp_lp_op_fi AS `TOTAL REVERSAO PROV CP e LP OP e FI`\r\n",
+					"                                        --,fipt.total_reversao_possivel_op AS `TOTAL REVERSAO POSSIVEL OP`\r\n",
+					"                                        --,fipt.total_reversao_possivel_cm AS `TOTAL REVERSAO POSSIVEL CM`\r\n",
+					"                                        --,fipt.total_reversao_possivel_juros AS `TOTAL REVERSAO POSSIVEL JUROS`\r\n",
+					"                                        --,fipt.total_reversao_possivel_fi AS `TOTAL REVERSAO POSSIVEL FI`\r\n",
+					"                                        --,fipt.total_reversao_possivel_op_fi AS `TOTAL REVERSAO POSSIVEL OP e FI`\r\n",
+					"                                        --,fipt.total_reversao_remoto_op AS `TOTAL REVERSAO REMOTO OP`\r\n",
+					"                                        --,fipt.total_reversao_remoto_cm AS `TOTAL REVERSAO REMOTO CM`\r\n",
+					"                                        --,fipt.total_reversao_remoto_juros AS `TOTAL REVERSAO REMOTO JUROS`\r\n",
+					"                                        --,fipt.total_reversao_remoto_fi AS `TOTAL REVERSAO REMOTO FI`\r\n",
+					"                                        --,fipt.total_reversao_remoto_op_fi AS `TOTAL REVERSAO REMOTO OP e FI`\r\n",
+					"                                        ,fi.indice_padrao AS `INDICE PADRAO`\r\n",
+					"                                        ,fi.juros_padrao AS `JUROS PADRAO`\r\n",
+					"                                        ,fi.indice AS `INDICE`\r\n",
+					"                                        ,fi.percentual_indice AS `PERCENTUAL INDICE`\r\n",
+					"                                        ,fi.taxa_de_juros AS `TAXA DE JUROS`\r\n",
+					"                                        ,fi.tipo_capitalizacao AS `TIPO CAPITALIZACAO`\r\n",
+					"                                        --,fipt.total_ingresso_prov_cp_lp_op AS `TOTAL INGRESSO PROV CP e LP OP`\r\n",
+					"                                        --,fipt.total_ingresso_prov_cp_lp_cm AS `TOTAL INGRESSO PROV CP e LP CM`\r\n",
+					"                                        --,fipt.total_ingresso_prov_cp_lp_juros AS `TOTAL INGRESSO PROV CP e LP JUROS`\r\n",
+					"                                        --,fipt.total_ingresso_por_reav_prov_cp_lp_fi AS `TOTAL INGRESSO REAV PROV CP e LP FI`\r\n",
+					"                                        --,fipt.total_ingresso_prov_cp_lp_op_fi AS TOTAL INGRESSO PROV CP e LP OP e fi``\r\n",
+					"                                        ,fipt.ingresso_por_reav_possivel_op AS `INGRESSO POR REAV POSSIVEL OP`\r\n",
+					"                                        ,fipt.ingresso_por_reav_possivel_cm AS `INGRESSO POR REAV POSSIVEL CM`\r\n",
+					"                                        ,fipt.ingresso_por_reav_possivel_juros AS `INGRESSO POR REAV POSSIVEL JUROS`\r\n",
+					"                                        ,fipt.ingresso_por_reav_possivel_fi AS `INGRESSO POR REAV POSSIVEL FI`\r\n",
+					"                                        ,fipt.ingresso_por_reav_possivel_op_fi AS `INGRESSO POR REAV POSSIVEL OP e FI`\r\n",
+					"                                        ,fipt.ingresso_por_reav_remoto_op AS `INGRESSO POR REAV REMOTO OP`\r\n",
+					"                                        ,fipt.ingresso_por_reav_remoto_cm AS `INGRESSO POR REAV REMOTO CM`\r\n",
+					"                                        ,fipt.ingresso_por_reav_remoto_juros AS `INGRESSO POR REAV REMOTO JUROS`\r\n",
+					"                                        ,fipt.ingresso_por_reav_remoto_fi AS `INGRESSO POR REAV REMOTO FI`\r\n",
+					"                                        ,fipt.ingresso_por_reav_remoto_op_fi AS `INGRESSO POR REAV REMOTO OP e FI`\r\n",
+					"                                        --,fipt.prov_cp_lp_op_final AS `PROV CP e LP OP FINAL`\r\n",
+					"                                        --,fipt.prov_cp_lp_cm_final AS `PROV CP e LP CM FINAL`\r\n",
+					"                                        --,fipt.prov_cp_lp_juros_final AS `PROV CP e LP JUROS FINAL`\r\n",
+					"                                        --,fipt.prov_cp_lp_fi_final AS `PROV CP e LP FI FINAL`\r\n",
+					"                                        ,fipt.possivel_op_final AS `POSSIVEL OP FINAL`\r\n",
+					"                                        ,fipt.possivel_cm_final AS `POSSIVEL CM FINAL`\r\n",
+					"                                        ,fipt.remoto_juros_final AS `REMOTO JUROS FINAL`\r\n",
+					"                                        ,fipt.remoto_fi_final AS `REMOTO FI FINAL`\r\n",
+					"                                        ,fipt.remoto_op_fi_final AS `REMOTO OP e FI FINAL`\r\n",
+					"                                        --,fipt.valor_total_risco_op AS `VALOR TOTAL RISCO OP`\r\n",
+					"                                        --,fipt.valor_total_risco_cm AS `VALOR TOTAL RISCO CM`\r\n",
+					"                                        --,fipt.valor_total_risco_juros AS `VALOR TOTAL RISCO JUROS`\r\n",
+					"                                        --,fipt.valor_total_risco_fi AS `VALOR TOTAL RISCO FI`\r\n",
+					"                                        --,fipt.valor_total_risco_op_fi AS `VALOR TOTAL RISCO OP e FI`\r\n",
+					"                                    FROM fotografia_item fi\r\n",
+					"                                        INNER JOIN fotografia_item_pedidos_trabalhistas fipt\r\n",
+					"                                            on fi.sequencial = fipt.num_processo \r\n",
+					"                                            AND fi.cod_calendario_monetario = fipt.cod_calendario_monetario\r\n",
+					"                                        INNER JOIN (SELECT cod_fotografia, MAX(cod_ver_fotografia) as max_version\r\n",
+					"                                                        FROM fotografia\r\n",
+					"                                                            WHERE status = 4\r\n",
+					"                                                        GROUP BY cod_fotografia) ft_version \r\n",
+					"                                                            ON ft_version.cod_fotografia = fi.cod_fotografia \r\n",
+					"                                                                AND ft_version.max_version = fi.cod_ver_fotografia\r\n",
+					"                                        where fi.sequencial = '{num_processo}' and fi.cod_calendario_monetario in ({cod_calendars})\r\n",
+					"                                            and fipt.flag_remove = 0\r\n",
+					"                                    \"\"\")\r\n",
+					"\r\n",
+					"            # queryPedido.to_excel(f\"{path_write_final}_pedido.xlsx\", sheet_name='Sheet_name_1', index=False)\r\n",
+					"            \r\n",
+					"\r\n",
+					"        else:\r\n",
+					"            print(\"Query Processo\")\r\n",
+					"            query_relatorio = spark.sql(f\"\"\"\r\n",
+					"                                    Select\r\n",
+					"                                        fi.foto AS `FOTO`\r\n",
+					"                                        ,fi.sequencial AS `SEQUENCIAL`\r\n",
+					"                                        ,fi.empresa AS `EMPRESA`\r\n",
+					"                                        ,fi.escritorio_contratado AS `ESCRITORIO CONTRATADO`\r\n",
+					"                                        ,fi.advogado_responsavel AS `ADVOGADO RESPONSAVEL`\r\n",
+					"                                        ,fi.polo_ativo AS `POLO ATIVO`\r\n",
+					"                                        ,fi.polo_passivo AS `POLO PASSIVO`\r\n",
+					"                                        ,fi.data_encerramento AS `DATA ENCERRAMENTO`\r\n",
+					"                                        ,fi.data_arquivamento AS `DATA ARQUIVAMENTO`\r\n",
+					"                                        ,fi.modulo AS `MODULO`\r\n",
+					"                                        ,fi.obj_da_acao AS `OBJ DA ACAO`\r\n",
+					"                                        ,fi.esp_obj_da_acao AS `ESP OBJ DA ACAO`\r\n",
+					"                                        ,fi.detalhe_esp_obj_da_acao AS `DETALHE ESP OBJ DA ACAO`\r\n",
+					"                                        ,fi.tipo_da_acao AS `TIPO DA ACAO`\r\n",
+					"                                        ,fi.estado AS `ESTADO`\r\n",
+					"                                        ,fi.processo_primeira_instancia AS `PROCESSO PRIMEIRA INSTANCIA`\r\n",
+					"                                        ,fi.situacao AS `SITUACAO`\r\n",
+					"                                        ,fi.motivo_arquivamento AS `MOTIVO ARQUIVAMENTO`\r\n",
+					"                                        ,fi.divisao_responsavel AS `DIVISAO RESPONSAVEL`\r\n",
+					"                                        ,fi.classificacao_solvencia AS `CLASSIFICACAO SOLVENCIA`\r\n",
+					"                                        ,fi.insolvente AS `INSOLVENTE`\r\n",
+					"                                        ,fi.fase_processual AS `FASE PROCESSUAL`\r\n",
+					"                                        ,fi.tipo_contingencia AS `TIPO CONTINGENCIA`\r\n",
+					"                                        ,fi.esp_contingencia AS `ESP CONTINGENCIA`\r\n",
+					"                                        ,fi.avaliacao_risco_processo AS `AVALIACAO RISCO PROCESSO`\r\n",
+					"                                        ,fi.deposito_em_juizo AS `DEPOSITO EM JUIZO`\r\n",
+					"                                        ,fi.seguro_garantia AS `SEGURO GARANTIA`\r\n",
+					"                                        ,fi.`carta_fiança` AS `CARTA FIANCA`\r\n",
+					"                                        ,fi.deposito_recursal AS `DEPOSITO RECURSAL`\r\n",
+					"                                        ,fi.penhora_online AS `PENHORA ONLINE`\r\n",
+					"                                        ,fi.bens_penhorados AS `BENS PENHORADOS`\r\n",
+					"                                        ,fi.valor_levantado_para_vivo AS `VALOR LEVANTADO PARA VIVO`\r\n",
+					"                                        ,fi.soma_pgto_cp_lp_op AS `SOMA PGTO CP e LP OP`\r\n",
+					"                                        ,fi.soma_pgto_cp_lp_cm AS `SOMA PGTO CP e LP CM`\r\n",
+					"                                        ,fi.soma_pgto_cp_lp_juros AS `SOMA PGTO CP e LP JUROS`\r\n",
+					"                                        ,fi.soma_pgto_cp_lp_fi AS `SOMA PGTO CP e LP FI`\r\n",
+					"                                        ,fi.soma_pgto_cp_lp_op_fi AS `SOMA PGTO CP e LP OP e FI`\r\n",
+					"                                        ,fi.total_reversao_prov_cp_lp_op AS `TOTAL REVERSAO PROV CP e LP OP`\r\n",
+					"                                        ,fi.total_reversao_prov_cp_lp_cm AS `TOTAL REVERSAO PROV CP e LP CM`\r\n",
+					"                                        ,fi.total_reversao_prov_cp_lp_juros AS `TOTAL REVERSAO PROV CP e LP JUROS`\r\n",
+					"                                        ,fi.total_reversao_prov_cp_lp_fi AS `TOTAL REVERSAO PROV CP e LP FI`\r\n",
+					"                                        ,fi.total_reversao_prov_cp_lp_op_fi AS `TOTAL REVERSAO PROV CP e LP OP e FI`\r\n",
+					"                                        ,fi.total_reversao_possivel_op AS `TOTAL REVERSAO POSSIVEL OP`\r\n",
+					"                                        ,fi.total_reversao_possivel_cm AS `TOTAL REVERSAO POSSIVEL CN`\r\n",
+					"                                        ,fi.total_reversao_possivel_juros AS `TOTAL REVERSAO POSSIVEL JUROS`\r\n",
+					"                                        ,fi.total_reversao_possivel_fi AS `TOTAL REVERSAO POSSIVEL FI`\r\n",
+					"                                        ,fi.total_reversao_possivel_op_fi AS `TOTAL REVERSAO POSSIVEL OP e FI`\r\n",
+					"                                        ,fi.total_reversao_remoto_op AS `TOTAL REVERSAO REMOTO OP`\r\n",
+					"                                        ,fi.total_reversao_remoto_cm AS `TOTAL REVERSAO REMOTO CM`\r\n",
+					"                                        ,fi.total_reversao_remoto_juros AS `TOTAL REVERSAO REMOTO JUROS`\r\n",
+					"                                        ,fi.total_reversao_remoto_fi AS `TOTAL REVERSAO REMOTO FI`\r\n",
+					"                                        ,fi.total_reversao_remoto_op_fi AS `TOTAL REVERSAO REMOTO OP e FI`\r\n",
+					"                                        ,fi.indice_padrao AS `INDICE PADRAO`\r\n",
+					"                                        ,fi.juros_padrao AS `JUROS PADRAO`\r\n",
+					"                                        ,fi.indice AS `INDICE`\r\n",
+					"                                        ,fi.percentual_indice AS `PERCENTUAL INDICE`\r\n",
+					"                                        ,fi.taxa_de_juros AS `TAXA DE JUROS`\r\n",
+					"                                        ,fi.tipo_capitalizacao AS `TIPO CAPITALIZACAO`\r\n",
+					"                                        ,fi.total_ingresso_prov_cp_lp_op AS `TOTAL INGRESSO PROV CP e LP OP`\r\n",
+					"                                        ,fi.total_ingresso_prov_cp_lp_cm AS `TOTAL INGRESSO PROV CP e LP CM`\r\n",
+					"                                        ,fi.total_ingresso_prov_cp_lp_juros AS `TOTAL INGRESSO PROV CP e LP JUROS`\r\n",
+					"                                        ,fi.total_ingresso_prov_cp_lp_fi AS `TOTAL INGRESSO PROV CP e LP FI`\r\n",
+					"                                        ,fi.total_ingresso_prov_cp_lp_op_fi AS `TOTAL INGRESSO PROV CP e LP OP e FI`\r\n",
+					"                                        ,fi.ingresso_por_reav_possivel_op AS `INGRESSO POR REAV POSSIVEL OP`\r\n",
+					"                                        ,fi.ingresso_por_reav_possivel_cm AS `INGRESSO POR REAV POSSIVEL CM`\r\n",
+					"                                        ,fi.ingresso_por_reav_possivel_juros AS `INGRESSO POR REAV POSSIVEL JUROS`\r\n",
+					"                                        ,fi.ingresso_por_reav_possivel_fi AS `INGRESSO POR REAV POSSIVEL FI`\r\n",
+					"                                        ,fi.ingresso_por_reav_possivel_op_fi AS `INGRESSO POR REAV POSSIVEL OP e FI`\r\n",
+					"                                        ,fi.ingresso_por_reav_remoto_op AS `INGRESSO POR REAV REMOTO OP`\r\n",
+					"                                        ,fi.ingresso_por_reav_remoto_cm AS `INGRESSO POR REAV REMOTO CM`\r\n",
+					"                                        ,fi.ingresso_por_reav_remoto_juros AS `INGRESSO POR REAV REMOTO JUROS`\r\n",
+					"                                        ,fi.ingresso_por_reav_remoto_fi AS `INGRESSO POR REAV REMOTO FI`\r\n",
+					"                                        ,fi.ingresso_por_reav_remoto_op_fi AS `INGRESSO POR REAV REMOTO OP e FI`\r\n",
+					"                                        ,fi.prov_cp_lp_op_final AS `PROV CP e LP OP FINAL`\r\n",
+					"                                        ,fi.prov_cp_lp_cm_final AS `PROV CP e LP CM FINAL`\r\n",
+					"                                        ,fi.prov_cp_lp_juros_final AS `PROV CP e LP JUROS FINAL`\r\n",
+					"                                        ,fi.prov_cp_lp_fi_final AS `PROV CP e LP FI FINAL`\r\n",
+					"                                        ,fi.prov_cp_lp_op_fi_final AS `PROV CP e LP OP e FI FINAL`\r\n",
+					"                                        ,fi.possivel_op_final AS `POSSIVEL OP FINAL`\r\n",
+					"                                        ,fi.possivel_cm_final AS `POSSIVEL CM FINAL`\r\n",
+					"                                        ,fi.possivel_juros_final AS `POSSIVEL JUROS FINAL`\r\n",
+					"                                        ,fi.possivel_fi_final AS `POSSIVEL FI FINAL`\r\n",
+					"                                        ,fi.remoto_op_final AS `REMOTO OP FINAL`\r\n",
+					"                                        ,fi.remoto_cm_final AS `REMOTO CM FINAL`\r\n",
+					"                                        ,fi.remoto_juros_final AS `REMOTO JUROS FINAL`\r\n",
+					"                                        ,fi.remoto_fi_final AS `REMOTO FI FINAL`\r\n",
+					"                                        ,fi.remoto_op_fi_final AS `REMOTO OP e FI FINAL`\r\n",
+					"                                        ,fi.valor_total_risco_op AS `VALOR TOTAL RISCO OP`\r\n",
+					"                                        ,fi.valor_total_risco_cm AS `VALOR TOTAL RISCO CM`\r\n",
+					"                                        ,fi.valor_total_risco_juros AS `VALOR TOTAL RISCO JUROS`\r\n",
+					"                                        ,fi.valor_total_risco_fi AS `VALOR TOTAL RISCO FI`\r\n",
+					"                                        ,fi.valor_total_risco_op_fi AS `VALOR TOTAL RISCO OP e FI`\r\n",
+					"                                        ,fi.valor_pago_acumulado_op AS `VALOR PAGO ACUMULADO OP`\r\n",
+					"                                        ,fi.valor_pago_acumulado_fi AS `VALOR PAGO ACUMULADO FI`\r\n",
+					"                                        ,fi.valor_pago_acumulado_op_fi AS `VALOR PAGO ACUMULADO OP e FI`\r\n",
+					"                                        ,fi.bx_prov_por_pgto_acumulada_op AS `BX PROV POR PGTO ACUMULADA OP`\r\n",
+					"                                        ,fi.bx_de_prov_por_pgto_acumulada_cm AS `BX DE PROV POR PGTO ACUMULADA CM`\r\n",
+					"                                        ,fi.bx_de_prov_por_pgto_acumulada_juros AS `BX DE PROV POR PGTO ACUMULADA JUROS`\r\n",
+					"                                        ,fi.bx_de_prov_por_pgto_acumulada_fi AS `BX DE PROV POR PGTO ACUMULADA FI`\r\n",
+					"                                        ,fi.bx_de_prov_por_pgto_acumulada_op_fi AS `BX DE PROV POR PGTO ACUMULADA OP e FI`\r\n",
+					"                                        ,fi.bx_por_reversao_acumulada_op AS `BX POR REVERSAO ACUMULADA OP`\r\n",
+					"                                        ,fi.bx_por_reversao_acumulada_cm AS `BX POR REVERSAO ACUMULADA CM`\r\n",
+					"                                        ,fi.bx_por_reversao_acumulada_juros AS `BX POR REVERSAO ACUMULADA JUROS`\r\n",
+					"                                        ,fi.bx_por_reversao_acumulada_fi AS `BX POR REVERSAO ACUMULADA FI`\r\n",
+					"                                        ,fi.bx_por_reversao_acumulada_op_fi AS `BX POR REVERSAO ACUMULADA OP e FI`\r\n",
+					"                                        ,fi.valor_total_envolvido_op AS `VALOR TOTAL ENVOLVIDO OP`\r\n",
+					"                                        ,fi.valor_total_envolvido_fi AS `VALOR TOTAL ENVOLVIDO FI`\r\n",
+					"                                        ,fi.valor_total_envolvido_op_fi AS `VALOR TOTAL ENVOLVIDO OP e FI`\r\n",
+					"                                    FROM fotografia_item fi\r\n",
+					"                                        INNER JOIN (SELECT cod_fotografia, MAX(cod_ver_fotografia) as max_version\r\n",
+					"                                                        FROM fotografia\r\n",
+					"                                                            WHERE status = 4\r\n",
+					"                                                        GROUP BY cod_fotografia) ft_version \r\n",
+					"                                                            ON ft_version.cod_fotografia = fi.cod_fotografia \r\n",
+					"                                                                AND ft_version.max_version = fi.cod_ver_fotografia\r\n",
+					"                                    where fi.sequencial = '{num_processo}' and fi.cod_calendario_monetario in ({cod_calendars})\r\n",
+					"                                \"\"\")\r\n",
+					"\r\n",
+					"            # queryProcesso.to_excel(f\"{path_write_final}_processo.xlsx\", sheet_name='Sheet_name_1', index=False)\r\n",
+					"\r\n",
+					"        export_excel(query_relatorio, path_write_final)\r\n",
+					"\r\n",
+					"        return True\r\n",
+					"\r\n",
+					"    except Exception as e:\r\n",
+					"        print(f\"FAIL! {str(e)}\")\r\n",
+					"        return False\r\n",
+					"                "
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"success = None\r\n",
+					"\r\n",
+					"try:\r\n",
+					"    success = generateExcel(sqlWorkspaceName,\r\n",
+					"              schema_dbo,\r\n",
+					"              schema_rl3,\r\n",
+					"              schema_silver,\r\n",
+					"              fotografia_item,\r\n",
+					"              fotografia,\r\n",
+					"              fotografia_item_pedidos_trabalhistas,\r\n",
+					"              num_processo,\r\n",
+					"              cod_calendars,\r\n",
+					"              path_write_final\r\n",
+					"             )\r\n",
+					"except Exception as e:\r\n",
+					"    print(f\"FAIL! {str(e)}\")\r\n",
+					"    success = False\r\n",
+					"finally:\r\n",
+					"    response = {\r\n",
+					"                \"status\": \"DONE\" if success else \"FAIL!\",\r\n",
+					"                \"id\": idProcess,\r\n",
+					"                \"path\": path_response,\r\n",
+					"                \"is_process\": is_process,\r\n",
+					"                \"end_time\": generated2,\r\n",
+					"                \"userid\": idUser,\r\n",
+					"                \"num_processo\": num_processo,\r\n",
+					"                \"cod_calendars\": cod_calendars,\r\n",
+					"                \"eventType\": \"EXPORT_REPORT_CONTINGENCY\"\r\n",
+					"                }\r\n",
+					"\r\n",
+					"json_response = json.dumps(response)\r\n",
+					"\r\n",
+					"print(json_response)\r\n",
+					"\r\n",
+					"producer = EventHubProducerClient.from_connection_string(\r\n",
+					"    conn_str=eventhub_connection, consumer_group=\"$Default\", eventhub_name=eventhub_output\r\n",
+					")\r\n",
+					"\r\n",
+					"with producer:\r\n",
+					"    event_data_batch = producer.create_batch()\r\n",
+					"    event_data_batch.add(EventData(json_response))\r\n",
+					"    producer.send_batch(event_data_batch)\r\n",
+					"                "
+				],
+				"execution_count": 18
+			}
+		]
+	}
+}

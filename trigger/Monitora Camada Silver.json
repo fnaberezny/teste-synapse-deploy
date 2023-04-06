@@ -1,0 +1,28 @@
+{
+	"name": "Monitora Camada Silver",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "SILVER_INGESTION_CONTROL_TABLE",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"nome_pasta": "@triggerBody().folderPath"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/datalake/blobs/data/silver/tables/",
+			"blobPathEndsWith": ".tmp",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Storage/storageAccounts/dlstlfjarvisprod",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

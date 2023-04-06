@@ -1,0 +1,965 @@
+{
+	"name": "SILVER_INGESTION_EXTERNAL_CONTENT_RL3",
+	"properties": {
+		"activities": [
+			{
+				"name": "ConsultaTabelas",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": "SELECT\nt.ingestion_table_id\n      ,t.table_name\n      ,t.full_processing\n      ,t.query_path\n      ,schema_path\n      ,dateadd(minute,-30,T.last_update) as last_update\n      ,t.status_last_update\n      ,t.message_last_update\n      ,t.last_process_start\n      ,t.last_process_end\n      ,t.primary_key\n      ,t.conditional_clause\n      ,t.active\n      ,t.tp_table\n      ,t.pre_script\n      ,t.pk_maker\n      ,t.acao_fotografia\n      ,t.script_processo_fotografia\nFROM\nSilver.jarvis_ctrl_ingestion_silvertables T\nJOIN\nSilver.jarvis_sync_control C ON C.table_name = REPLACE(T.table_name,'_STG','') AND dateadd(minute,-30,T.last_update) < C.SILVER_UPDATE\nWHERE\ntp_table IN ('STG','COS')\nAND\nactive = 1\n\nUNION\n\nSELECT\nT.*\nFROM\nSilver.jarvis_ctrl_ingestion_silvertables T\nWHERE\ntp_table IN ('STG','COS')\nAND\nactive = 1\nAND\nfull_processing = 1\nORDER BY\ntp_table DESC,\nT.table_name DESC",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SynapseDedicado_SelfHosted",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": "jarvis_ctrl_ingestion_silvertables"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ProcessaTabelas",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ConsultaTabelas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('ConsultaTabelas').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Ler query",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "DS_BlobStorage_CSV_SelfHosted",
+									"type": "DatasetReference",
+									"parameters": {
+										"file_url": {
+											"value": "@split(toLower(item().query_path),'/' )[6]",
+											"type": "Expression"
+										},
+										"file_path": "data/queries_silver"
+									}
+								},
+								"firstRowOnly": true
+							}
+						},
+						{
+							"name": "Controla tipo de carga",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Ler query",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@item().full_processing",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Insere Dados Com Condicional",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderQuery": {
+													"value": "@if(equals(item().tp_table,'COS')\n    ,concat(replace(replace(activity('Ler query').output.firstRow.Prop_0,'\\r\\n\\t',''),';' ,' ' ),' ',item().conditional_clause),\n    concat(replace(replace(activity('Ler query').output.firstRow.Prop_0,'\\r\\n\\t',''),';' ,' ' ),' ',item().conditional_clause\n    ,'DATETIMEFROMPARTS(',\n    substring(item().last_update,0,4),','\n    ,substring(item().last_update,5,2),','\n    ,substring(item().last_update,8,2),','\n    ,substring(item().last_update,11,2),','\n    ,substring(item().last_update,14,2),','\n    ,substring(item().last_update,17,2),',00'\n    ,' )'))",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "SqlDWSink",
+												"writeBehavior": "Upsert",
+												"upsertSettings": {
+													"keys": {
+														"value": "@array(item().primary_key)",
+														"type": "Expression"
+													},
+													"interimSchemaName": "Silver"
+												},
+												"sqlWriterUseTableLock": false,
+												"tableOption": "autoCreate",
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "DS_SynapseServeless_SelfHosted",
+												"type": "DatasetReference",
+												"parameters": {
+													"database": "silver"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "DS_SynapseDedicado_SelfHosted",
+												"type": "DatasetReference",
+												"parameters": {
+													"Schema": "Silver",
+													"Table": "@toLower(item().table_name)"
+												}
+											}
+										]
+									},
+									{
+										"name": "Atualiza Registros de Sucesso Condicional",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Insere Dados Com Condicional",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "Silver.update_status_jarvis_ctrl_ingestion_silvertables ",
+											"storedProcedureParameters": {
+												"full_processing": {
+													"value": "FALSE",
+													"type": "Boolean"
+												},
+												"last_process_start": {
+													"value": {
+														"value": "@convertTimeZone(activity('Insere Dados Com Condicional').output.executionDetails[0].start,'UTC','E. South America Standard Time')",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"last_update": {
+													"value": {
+														"value": "@convertTimeZone(activity('Insere Dados Com Condicional').output.executionDetails[0].start,'UTC','E. South America Standard Time')",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"message_last_up": {
+													"value": "CARGA PROCESSADA COM SUCESSO",
+													"type": "String"
+												},
+												"status_last_up": {
+													"value": "SUCCESS",
+													"type": "String"
+												},
+												"table_name": {
+													"value": {
+														"value": "@item().table_name",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "SelfHosted Lake",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "Atualiza Registros com falha Condicional",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Insere Dados Com Condicional",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "Silver.update_status_jarvis_ctrl_ingestion_silvertables ",
+											"storedProcedureParameters": {
+												"full_processing": {
+													"value": {
+														"value": "@item().full_processing",
+														"type": "Expression"
+													},
+													"type": "Boolean"
+												},
+												"last_process_start": {
+													"value": {
+														"value": "@pipeline().TriggerTime",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"last_update": {
+													"value": {
+														"value": "@item().last_update",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"message_last_up": {
+													"value": {
+														"value": "@concat('falha ao processar a tabela ',item().table_name)",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"status_last_up": {
+													"value": "FAIL",
+													"type": "String"
+												},
+												"table_name": {
+													"value": {
+														"value": "@item().table_name",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "SelfHosted Lake",
+											"type": "LinkedServiceReference"
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Insere Dados sem condicional_a",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderQuery": {
+													"value": "@concat(replace(activity('Ler query').output.firstRow.Prop_0,'\\r\\n\\t',''))",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "SqlDWSink",
+												"writeBehavior": "Insert",
+												"sqlWriterUseTableLock": false,
+												"tableOption": "autoCreate",
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"parallelCopies": 16,
+											"dataIntegrationUnits": 8,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "DS_SynapseServeless_SelfHosted",
+												"type": "DatasetReference",
+												"parameters": {
+													"database": "silver"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "DS_SynapseDedicado_SelfHosted",
+												"type": "DatasetReference",
+												"parameters": {
+													"Schema": "Silver",
+													"Table": {
+														"value": "@toLower(item().table_name)\n",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Atualiza Registros de Sucesso Full",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Insere Dados sem condicional_a",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "Silver.update_status_jarvis_ctrl_ingestion_silvertables ",
+											"storedProcedureParameters": {
+												"full_processing": {
+													"value": "FALSE",
+													"type": "Boolean"
+												},
+												"last_process_start": {
+													"value": {
+														"value": "@convertTimeZone(activity('Insere Dados sem condicional_a').output.executionDetails[0].start,'UTC','E. South America Standard Time')",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"last_update": {
+													"value": {
+														"value": "@convertTimeZone(activity('Insere Dados sem condicional_a').output.executionDetails[0].start,'UTC','E. South America Standard Time')",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"message_last_up": {
+													"value": "CARGA PROCESSADA COM SUCESSO",
+													"type": "String"
+												},
+												"status_last_up": {
+													"value": "SUCCESS",
+													"type": "String"
+												},
+												"table_name": {
+													"value": {
+														"value": "@item().table_name",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "SelfHosted Lake",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "Atualiza Registros com falha Full",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Insere Dados sem condicional_a",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "Silver.update_status_jarvis_ctrl_ingestion_silvertables ",
+											"storedProcedureParameters": {
+												"full_processing": {
+													"value": {
+														"value": "@item().full_processing",
+														"type": "Expression"
+													},
+													"type": "Boolean"
+												},
+												"last_process_start": {
+													"value": {
+														"value": "@pipeline().TriggerTime",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"last_update": {
+													"value": {
+														"value": "@item().last_update",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"message_last_up": {
+													"value": {
+														"value": "@concat('falha ao processar a tabela ',item().table_name)",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"status_last_up": {
+													"value": "FAIL",
+													"type": "String"
+												},
+												"table_name": {
+													"value": {
+														"value": "@item().table_name",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "SelfHosted Lake",
+											"type": "LinkedServiceReference"
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Atualiza Registros com falha query",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Ler query",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "Silver.update_status_jarvis_ctrl_ingestion_silvertables ",
+								"storedProcedureParameters": {
+									"full_processing": {
+										"value": {
+											"value": "@item().full_processing",
+											"type": "Expression"
+										},
+										"type": "Boolean"
+									},
+									"last_process_start": {
+										"value": {
+											"value": "@pipeline().TriggerTime",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"last_update": {
+										"value": {
+											"value": "@item().last_update",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"message_last_up": {
+										"value": {
+											"value": "@concat('falha ao ler query de:',item().table_name)",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"status_last_up": {
+										"value": "FAIL",
+										"type": "String"
+									},
+									"table_name": {
+										"value": {
+											"value": "@item().table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "SelfHosted Lake",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Insere_processos_pendentes",
+							"type": "Switch",
+							"dependsOn": [
+								{
+									"activity": "Controla tipo de carga",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@string(item().acao_fotografia)",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "2",
+										"activities": [
+											{
+												"name": "Gera Processos Pendentes",
+												"type": "SqlPoolStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Ler Calendario_atual",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"sqlPool": {
+													"referenceName": "syndpjarvisprod",
+													"type": "SqlPoolReference"
+												},
+												"typeProperties": {
+													"storedProcedureName": "[rl3].[processos_pendentes_full]",
+													"storedProcedureParameters": {
+														"cod_calendario_monetario": {
+															"value": {
+																"value": "@activity('Ler Calendario_atual').output.firstRow.cod_calendario_monetario",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"pipe_id": {
+															"value": {
+																"value": "@pipeline().RunId",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"table_changed": {
+															"value": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															},
+															"type": "String"
+														}
+													}
+												}
+											},
+											{
+												"name": "Ler Calendario_atual",
+												"type": "Lookup",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlDWSource",
+														"sqlReaderQuery": "select MAX(cod_calendario_monetario) AS cod_calendario_monetario from\n[Silver].[calendario_monetario_p3]\nwhere\nsts_ativo = 1",
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"dataset": {
+														"referenceName": "DS_SynapseDedicado_SelfHosted",
+														"type": "DatasetReference",
+														"parameters": {
+															"Schema": "silver",
+															"Table": "calendario_monetario_p3"
+														}
+													},
+													"firstRowOnly": true
+												}
+											}
+										]
+									},
+									{
+										"value": "1",
+										"activities": [
+											{
+												"name": "Ler query processo",
+												"type": "Lookup",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "DelimitedTextSource",
+														"storeSettings": {
+															"type": "AzureBlobStorageReadSettings",
+															"recursive": true,
+															"enablePartitionDiscovery": false
+														},
+														"formatSettings": {
+															"type": "DelimitedTextReadSettings"
+														}
+													},
+													"dataset": {
+														"referenceName": "DS_BlobStorage_CSV_SelfHosted",
+														"type": "DatasetReference",
+														"parameters": {
+															"file_url": {
+																"value": "@split(toLower(item().script_processo_fotografia),'/' )[7]",
+																"type": "Expression"
+															},
+															"file_path": "data/queries_silver/scripts_processo"
+														}
+													},
+													"firstRowOnly": true
+												}
+											},
+											{
+												"name": "Registra Processos Pendentes",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "Ler query processo",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlDWSource",
+														"sqlReaderQuery": {
+															"value": "@concat(replace(concat(replace(activity('Ler query processo').output.firstRow.Prop_0,'from','FROM')),'FROM',concat(',','''',pipeline().RunId,''' AS pipeline_id,null AS photo_signature, null as projecao_signature, null AS pedidos_signature,null as cosmos_signature,null as tipo_processo, ''',item().table_name,''' as table_changed FROM ')),'''',replace(item().last_update,'T',' '),'''')",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "SqlDWSink",
+														"writeBehavior": "Insert",
+														"sqlWriterUseTableLock": false
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "DS_SynapseDedicado_SelfHosted",
+														"type": "DatasetReference",
+														"parameters": {
+															"Schema": "rl3",
+															"Table": "teste"
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "DS_SynapseDedicado_SelfHosted",
+														"type": "DatasetReference",
+														"parameters": {
+															"Schema": "rl3",
+															"Table": "processos_pendentes"
+														}
+													}
+												]
+											}
+										]
+									}
+								],
+								"defaultActivities": [
+									{
+										"name": "Aguarda Finalizacao",
+										"type": "Wait",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Diferencia Modulos",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Insere_processos_pendentes",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "SelfHosted Lake",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "UPDATE pp\nSET \n    tipo_processo =  CASE\n                        WHEN mn.cod_modulo = 6\n                        THEN 'T'\n                        ELSE 'N'\n                    END \nFROM\nrl3.processos_pendentes AS pp\nJOIN silver.processo AS p ON p.num_processo = pp.num_processo\nJOIN silver.modulo_natureza AS mn ON mn.cod_natureza = p.cod_natureza\n                                AND mn.cod_especificacao_natureza = p.cod_especificacao_natureza\n                                AND mn.cod_detalhe_especific_natureza = p.cod_detalhe_especific_natureza\nwhere\nphoto_signature is null;\n",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "check_table_exists",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select iif(exists(select * from sys.objects where [type] = ''U'' and [name] = ''', item().table_name, '''), 1, 0) as [exists]')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "DS_SynapseServeless_SelfHosted",
+									"type": "DatasetReference",
+									"parameters": {
+										"database": "bronze"
+									}
+								}
+							}
+						},
+						{
+							"name": "If table exists",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "check_table_exists",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(activity('check_table_exists').output.firstRow['exists'], 1)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Apaga Registros",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "SILVER_DELETE_FROM_BRONZE",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": false
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Chama_Fotografia Carga",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ProcessaTabelas",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "P3_PROCESSA_FOTOGRAFIA",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": false,
+					"parameters": {
+						"pipe_origem": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"tp_table": {
+				"type": "string",
+				"defaultValue": "'stg'"
+			}
+		},
+		"variables": {
+			"table_name": {
+				"type": "String"
+			},
+			"tipo_carga": {
+				"type": "Boolean"
+			},
+			"condional": {
+				"type": "String"
+			},
+			"chave": {
+				"type": "String"
+			},
+			"start_process_time": {
+				"type": "String"
+			},
+			"Ultima_Carga": {
+				"type": "String"
+			},
+			"Inicio_Carga": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "SILVER"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-01T04:01:58Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

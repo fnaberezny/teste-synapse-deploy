@@ -1,0 +1,24 @@
+{
+	"name": "Every 4min",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "SILVER_INGESTION_COSMOS_DB",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 4,
+				"startTime": "2023-01-18T18:54:00",
+				"timeZone": "E. South America Standard Time"
+			}
+		}
+	}
+}

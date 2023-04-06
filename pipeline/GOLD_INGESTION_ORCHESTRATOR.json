@@ -1,0 +1,75 @@
+{
+	"name": "GOLD_INGESTION_ORCHESTRATOR",
+	"properties": {
+		"activities": [
+			{
+				"name": "UPDATES COUNT",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlPoolSource",
+						"sqlReaderQuery": "SELECT\ncount(*) as updates\nFROM\njarvis_ctrl_ingestion_goldtables T\nJOIN\njarvis_sync_control C ON C.table_name = REPLACE(t.table_name,'STG_','') AND T.last_update < C.SILVER_UPDATE\nWHERE\nt.ACTIVE  = 1\nAND\nt.TP_TABLE IN('STG') ",
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "SqlPoolTable11212",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name_select": "jarvis_ctrl_ingestion_goldtables",
+							"table_schema_select": "Silver"
+						}
+					}
+				}
+			},
+			{
+				"name": "UPDATE CONDITIONAL",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "UPDATES COUNT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@if(greaterOrEquals(activity('UPDATES COUNT').output.count,0),'TRUE','FALSE')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "FATOS UPDATE",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "GOLD_INGESTION_FACT",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "Pipes_Antigos"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-11-23T21:19:55Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

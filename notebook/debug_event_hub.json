@@ -1,0 +1,217 @@
+{
+	"name": "debug_event_hub",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "acb903e2-fa32-4c4b-aa69-55299245c0a6"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_spark",
+				"display_name": "scala"
+			},
+			"language_info": {
+				"name": "scala"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import org.apache.spark.sql.types._ \r\n",
+					"import org.apache.spark.sql.functions._ \r\n",
+					"import org.apache.spark.eventhubs.{EventHubsConf, EventPosition, EventHubsUtils}\r\n",
+					"import io.delta.implicits._\r\n",
+					"import org.apache.spark.sql.Encoders\r\n",
+					"import org.apache.spark.sql.types.{StructType, DataTypes, IntegerType}\r\n",
+					"import java.sql.{Timestamp, Date}\r\n",
+					"import org.apache.spark.sql.{functions => f}\r\n",
+					"import org.apache.spark.sql.functions.col\r\n",
+					"import org.apache.spark.sql.{Dataset, Row}\r\n",
+					"import org.apache.spark.sql.functions.current_timestamp\r\n",
+					"import java.time.Instant\r\n",
+					"import java.time.Duration\r\n",
+					"import org.apache.spark.sql.streaming.Trigger\r\n",
+					"import org.apache.spark.eventhubs._\r\n",
+					"import java.util.Calendar\r\n",
+					"import java.text.SimpleDateFormat"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"val namespaceName = \"evhntlfjarvistest\"\r\n",
+					"val eventHubName = \"param_processo_excel_p3\"\r\n",
+					"val sasKeyName = \"syn_policy\"\r\n",
+					"val events = \"eventhubs\"\r\n",
+					"val eventHubConn = \"Endpoint=sb://evhntlfjarvistest.servicebus.windows.net/;SharedAccessKeyName=syn_policy;SharedAccessKey=wovMx3oZUzMORoajFZV2OF2+cAoocDE8WEF1wO4mWqY=\"\r\n",
+					"val pathCheckpointLocation = \"abfss://datalake@dlstlfjarvistest.dfs.core.windows.net/tmp/checkpoint/bronze/tables/param_processo_excel_p3\"\r\n",
+					"val pathWrite = \"abfss://datalake@dlstlfjarvistest.dfs.core.windows.net/data/bronze/tables/param_processo_excel_p3\""
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"val connStr = new com.microsoft.azure.eventhubs.ConnectionStringBuilder()\r\n",
+					"    .setNamespaceName(namespaceName)\r\n",
+					"    .setEventHubName(eventHubName)\r\n",
+					"    .setSasKeyName(sasKeyName)\r\n",
+					"    .setSasKey(eventHubConn)\r\n",
+					"    .setOperationTimeout(Duration\r\n",
+					"    .ofSeconds(120))"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"val ehConf = EventHubsConf(connStr.toString)\r\n",
+					"    .setStartingPosition(EventPosition\r\n",
+					"    .fromStartOfStream)\r\n",
+					"    .setEndingPosition(EventPosition\r\n",
+					"    .fromEndOfStream)"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"val incomingStream = spark.readStream\r\n",
+					"  .format(\"eventhubs\")\r\n",
+					"  .options(ehConf.toMap)\r\n",
+					"  .load()"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"val incomingFilteredNull: Dataset[Row] = incomingStream\r\n",
+					"    .filter(incomingStream(\"body\")\r\n",
+					"    .isNotNull)"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"val parsedIntoCols = incomingFilteredNull.select(col(\"body\").cast(\"string\").alias(\"json\")).select(\"json\")"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"// Write in the console\r\n",
+					"\r\n",
+					"parsedIntoCols\r\n",
+					"    .writeStream\r\n",
+					"    .format(\"console\")\r\n",
+					"    .option(\"truncate\", false)\r\n",
+					"    .option(\"numRows\",100)\r\n",
+					"    .outputMode(\"append\")\r\n",
+					"    .start()\r\n",
+					"    .awaitTermination()"
+				],
+				"execution_count": 9
+			}
+		]
+	}
+}

@@ -1,0 +1,115 @@
+{
+	"name": "CheckConfigs",
+	"properties": {
+		"folder": {
+			"name": "test"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "synspjarvisprd",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "67634209-becd-4836-aca9-26122b376c2f"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod/bigDataPools/synspjarvisprd",
+				"name": "synspjarvisprd",
+				"type": "Spark",
+				"endpoint": "https://syn-tlf-jarvis-prod.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/synspjarvisprd",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 8,
+				"memory": 56,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"class AKVConfig:\n",
+					"    def __init__(self, akv_name=\"kv-tlf-jarvis-dev\"):\n",
+					"        try:\n",
+					"            self.eventhub_conn = mssparkutils.credentials.getSecret(akv_name, \"eventhubfile\")\n",
+					"            self.input = mssparkutils.credentials.getSecret(akv_name, \"ehinput\")\n",
+					"            self.output = mssparkutils.credentials.getSecret(akv_name, \"ehoutput\")\n",
+					"            self.blob_url = mssparkutils.credentials.getSecret(akv_name, \"bloburl\")\n",
+					"            self.path_response = mssparkutils.credentials.getSecret(akv_name, \"evhpathresponse\")\n",
+					"            self.checkpoint_file_gen = mssparkutils.credentials.getSecret(akv_name, \"checkpointFileGen\")\n",
+					"            self.file_fields_list = mssparkutils.credentials.getSecret(akv_name, \"fileFieldsList\")\n",
+					"        except Exception as e:\n",
+					"            print(f\"FAIL! Error {str(e)}\")"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"a = AKVConfig(akv_name='kv-tlf-jarvis-prod')"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"print(a.blob_url, a.checkpoint_file_gen, a.eventhub_conn, a.input, a.output, a.path_response)"
+				],
+				"execution_count": 3
+			}
+		]
+	}
+}

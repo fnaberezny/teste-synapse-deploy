@@ -1,0 +1,10 @@
+{
+	"name": "synapse-ws-sqlOnDemand--syn-tlf-jarvis-prod",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/71cc41f4-8e37-4c60-abbb-b9003b91c554/resourceGroups/rg-jarvis-production/providers/Microsoft.Synapse/workspaces/syn-tlf-jarvis-prod",
+		"groupId": "sqlOnDemand",
+		"fqdns": [
+			"syn-tlf-jarvis-prod-ondemand.7f056c86-7db9-4b14-b8af-ce26925d32d0.sql.azuresynapse.net"
+		]
+	}
+}
