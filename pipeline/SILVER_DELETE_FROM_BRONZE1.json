@@ -1,0 +1,165 @@
+{
+	"name": "SILVER_DELETE_FROM_BRONZE1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Delete do Dedicado",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Insere Registros a deletar",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "Pool Dedicated",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "@concat( 'delete d'\n       , ' from silver.', pipeline().parameters.table_name, ' d'\n       , ' inner join Silver.delete_log dl'\n       , ' on dl.[key] = ', pipeline().parameters.key\n       , ' and dl.updated = 0'\n       , ' and dl.[table] = ''', pipeline().parameters.table_name, ''''\n       )",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Insere Registros a deletar",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat( 'select '\n       , pipeline().parameters.key\n       , ' as [key], '\n       , ''''\n       , pipeline().parameters.table_name\n       , ''''\n       , ' as [table]'\n       , ', getdate() as [log_datetime]'\n       , ', 0 as [updated]'\n       , ', '''\n       , pipeline().RunId\n       , ''''\n       , ' as [pipe_id]'\n       , ' from '\n       , replace(pipeline().parameters.table_name, '_STG', '')\n       , ' where cast(left(current_ts, 19) as datetime) >= dateadd(minute, -15, ''', pipeline().parameters.current_ts, ''')'\n       , ' and op_type = ''D'''\n       )",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"writeBehavior": "Upsert",
+						"upsertSettings": {
+							"keys": [
+								"key",
+								"table"
+							],
+							"interimSchemaName": "silver"
+						},
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Lake3",
+						"type": "DatasetReference",
+						"parameters": {
+							"database": "bronze"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Jarvis_Pool_Dedicado1615235",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "silver",
+							"Table": "delete_log"
+						}
+					}
+				]
+			},
+			{
+				"name": "Atualiza controle",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Delete do Dedicado",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "Pool Dedicated",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "@concat(\n    'update [Silver].[delete_log] set [updated] = 1 where [pipe_id] = ''',pipeline().RunId,'''')",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"table_name": {
+				"type": "string",
+				"defaultValue": "VALOR_DATA_PROCESSO"
+			},
+			"key": {
+				"type": "string",
+				"defaultValue": "CONCAT(cod_empresa, num_processo, cod_valor_data_processo)"
+			},
+			"current_ts": {
+				"type": "string",
+				"defaultValue": "2020-09-20 21:45:33.570"
+			}
+		},
+		"folder": {
+			"name": "SILVER"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-06T13:58:53Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

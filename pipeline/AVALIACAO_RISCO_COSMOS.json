@@ -1,0 +1,128 @@
+{
+	"name": "AVALIACAO_RISCO_COSMOS",
+	"properties": {
+		"activities": [
+			{
+				"name": "avaliacao_risco",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "FlattenHierarchy"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_LakeStorage_Xlsx_SelfHosted",
+						"type": "DatasetReference",
+						"parameters": {
+							"sheetname": "avaliacao_risco",
+							"folder": "avaliacao_risco",
+							"filename": "carga_inicial_avaliacao_risco.xlsx"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_LakeStorage_Parquet_SelfHosted",
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": {
+								"value": "carga_inicial_avaliacao_risco.parquet",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "fileAvaliacaoRiscoLoadIntoCosmosProcesso",
+				"description": "",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "avaliacao_risco",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "fileAvaliacaoRiscoLoadIntoCosmosProcesso",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"filename": {
+							"value": {
+								"value": "@concat(variables('utcnow'), '.parquet')",
+								"type": "Expression"
+							},
+							"type": "string"
+						}
+					},
+					"snapshot": true,
+					"executorSize": "Medium",
+					"conf": {
+						"spark.dynamicAllocation.enabled": true,
+						"spark.dynamicAllocation.minExecutors": 1,
+						"spark.dynamicAllocation.maxExecutors": 8
+					},
+					"driverSize": "Medium",
+					"numExecutors": 1
+				}
+			}
+		],
+		"variables": {
+			"utcnow": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "P3/CARGAS_INICIAIS"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-01T03:49:41Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

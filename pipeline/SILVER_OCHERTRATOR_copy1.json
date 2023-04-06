@@ -1,0 +1,67 @@
+{
+	"name": "SILVER_OCHERTRATOR_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "UPDATES COUNT",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": "SELECT\ncount(*) as updates\nFROM\nsilver.jarvis_ctrl_ingestion_silvertables T\nJOIN\nsilver.jarvis_sync_control C ON C.table_name = REPLACE(t.table_name,'STG_','') AND T.last_update  <C.SILVER_UPDATE\nWHERE\nt.ACTIVE  = 1\nAND\nt.TP_TABLE IN('STG') ",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Jarvis_Pool_Dedicado15812",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": "Silver",
+							"Table": "jarvis_sync_control "
+						}
+					}
+				}
+			},
+			{
+				"name": "UPDATE CONDITIONAL",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "UPDATES COUNT",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@if(greaterOrEquals(activity('UPDATES COUNT').output.firstRow.updates,1),'TRUE','FALSE')\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"nome_pasta": {
+				"type": "string",
+				"defaultValue": "teste"
+			}
+		},
+		"folder": {
+			"name": "SILVER"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-04T14:46:51Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

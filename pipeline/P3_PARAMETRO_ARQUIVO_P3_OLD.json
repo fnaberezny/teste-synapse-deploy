@@ -1,0 +1,259 @@
+{
+	"name": "P3_PARAMETRO_ARQUIVO_P3_OLD",
+	"properties": {
+		"activities": [
+			{
+				"name": "create_csv_spark_file_generation",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "get-num_mes_ano",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "drop_temp_tables",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT \n    '@{pipeline().parameters.id_code}' as id,\n    '@{pipeline().parameters.photography_id}' as photographyId,\n    '@{pipeline().parameters.sig_escritorio_contratado}' as sig_escritorio_contratado,\n    '@{pipeline().parameters.cod_divisao_processo}' as  cod_divisao_processo,\n    '@{pipeline().parameters.cod_calendario_monetario}' as cod_calendario,\n    '@{pipeline().parameters.user_id}' as nom_usuario_responsavel,\n    '@{pipeline().parameters.user_id}' as nom_usuario_fotografo,\n    '@{substring(pipeline().parameters.start_time, 0, 10)}' as dtc_data_fotografia,\n    '@{activity('get-num_mes_ano').output?.firstRow?.num_mes}' num_mes,\n    '@{activity('get-num_mes_ano').output?.firstRow?.num_ano}' num_ano\n    , CASE WHEN lower('@{pipeline().parameters.failed}') = 'true' THEN 'FAIL'\n        ELSE 'DONE' \n    END as status",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Jarvis_Lake662",
+						"type": "DatasetReference",
+						"parameters": {
+							"Database": " ",
+							"Table": " "
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_DataLake_CSV662",
+						"type": "DatasetReference",
+						"parameters": {
+							"fs": "datalake",
+							"path": "data/silver/tables/parametro_fotografia_p3",
+							"file": {
+								"value": "parametro_fotografia_p3_@{pipeline().parameters.id_code}_@{utcNow('yyyyMMdd_Hmmss')}.csv",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "get-num_mes_ano",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "SELECT FORMAT(dtc_final, 'MM') AS num_mes,\n       FORMAT(dtc_final, 'yyyy') AS num_ano\n  FROM Silver.calendario_monetario \n WHERE cod_calendario_monetario = @{pipeline().parameters.cod_calendario_monetario}",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Jarvis_Pool_Dedicado16152",
+						"type": "DatasetReference",
+						"parameters": {
+							"Schema": " ",
+							"Table": " "
+						}
+					}
+				}
+			},
+			{
+				"name": "update_parametro",
+				"description": "Update parametro sucesso",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "create_csv_spark_file_generation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "---VERIFICAR SE É FLUXO DE ERRO\nIF EXISTS (\n    SELECT 1 as IS_ERROR \n    WHERE lower('@{pipeline().parameters.failed}') = 'true'\n)\n    BEGIN\n        --ATUALIZA TABELA DE PARAMETRO COM FALHA\n        UPDATE f set f.STATUS = 2\n        FROM Silver.param_fotografia_evh f\n        WHERE f.ID = '@{pipeline().parameters.id_code}';\n\n        THROW 50002, 'Falha no processamento desta fotografia, id: @{pipeline().parameters.id_code}', 1;\n    END\nELSE\n    BEGIN\n        --ATUALIZA SUCESSO\n        UPDATE f set f.STATUS = 1\n        FROM Silver.param_fotografia_evh f\n        WHERE f.ID = '@{pipeline().parameters.id_code}';\n    END;",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "update_parametro_fail",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "create_csv_spark_file_generation",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "--ATUALIZA TABELA DE PARAMETRO COM FALHA\nUPDATE f set f.STATUS = 2\n   FROM Silver.param_fotografia_evh f\nWHERE f.ID = '@{pipeline().parameters.id_code}';\n\nTHROW 50002, 'Falha no processamento desta fotografia, id: @{pipeline().parameters.id_code}', 1;\n",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "drop_temp_tables",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SelfHosted Lake",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "IF OBJECT_ID('[Silver].[tmp_fti_ativo_inativo__@{replace(pipeline().parameters.id_code, '-', '')}]', 'U') IS NOT NULL\n    DROP TABLE [Silver].[tmp_fti_ativo_inativo__@{replace(pipeline().parameters.id_code, '-', '')}];\n\nIF OBJECT_ID('[Silver].[tmp_fti_pos_corte__@{replace(pipeline().parameters.id_code, '-', '')}]', 'U') IS NOT NULL\n    DROP TABLE [Silver].[tmp_fti_pos_corte__@{replace(pipeline().parameters.id_code, '-', '')}];\n\nIF OBJECT_ID('[Silver].[tmp_fti_definitivo__@{replace(pipeline().parameters.id_code, '-', '')}]', 'U') IS NOT NULL\n    DROP TABLE [Silver].[tmp_fti_definitivo__@{replace(pipeline().parameters.id_code, '-', '')}];\n\nIF OBJECT_ID('[Silver].[tmp_fti_deposito__@{replace(pipeline().parameters.id_code, '-', '')}]', 'U') IS NOT NULL\n    DROP TABLE [Silver].[tmp_fti_deposito__@{replace(pipeline().parameters.id_code, '-', '')}];\n\nIF OBJECT_ID('[Silver].[tmp_fti_reavaliacao_processo__@{replace(pipeline().parameters.id_code, '-', '')}]', 'U') IS NOT NULL\n    DROP TABLE [Silver].[tmp_fti_reavaliacao_processo__@{replace(pipeline().parameters.id_code, '-', '')}];\n\nIF OBJECT_ID('[Silver].[tmp_fti_reavaliacao_pedido__@{replace(pipeline().parameters.id_code, '-', '')}]', 'U') IS NOT NULL\n    DROP TABLE [Silver].[tmp_fti_reavaliacao_pedido__@{replace(pipeline().parameters.id_code, '-', '')}];\n\nIF OBJECT_ID('[Silver].[tmp_fti_anterior__@{replace(pipeline().parameters.id_code, '-', '')}]', 'U') IS NOT NULL\n    DROP TABLE [Silver].[tmp_fti_anterior__@{replace(pipeline().parameters.id_code, '-', '')}];\n\nIF OBJECT_ID('[Silver].[tmp_fti_dados_cadastrais__@{replace(pipeline().parameters.id_code, '-', '')}]', 'U') IS NOT NULL\n    DROP TABLE [Silver].[tmp_fti_dados_cadastrais__@{replace(pipeline().parameters.id_code, '-', '')}];\n\nIF OBJECT_ID('[Silver].[tmp_fti_dados_cadastrais_calculados__@{replace(pipeline().parameters.id_code, '-', '')}]', 'U') IS NOT NULL\n    DROP TABLE [Silver].[tmp_fti_dados_cadastrais_calculados__@{replace(pipeline().parameters.id_code, '-', '')}];",
+								"type": "Expression"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"cod_calendario_monetario": {
+				"type": "string",
+				"defaultValue": "155"
+			},
+			"cod_divisao_processo": {
+				"type": "string",
+				"defaultValue": "4"
+			},
+			"sig_escritorio_contratado": {
+				"type": "string",
+				"defaultValue": "LDOR"
+			},
+			"id_code": {
+				"type": "string",
+				"defaultValue": "d65e13d4-10ee-4343-b4bc-2ff85ca5648c"
+			},
+			"photography_id": {
+				"type": "string",
+				"defaultValue": "45249"
+			},
+			"user_id": {
+				"type": "string",
+				"defaultValue": "BA86365"
+			},
+			"start_time": {
+				"type": "string",
+				"defaultValue": "2022-08-15 00:00:00"
+			},
+			"failed": {
+				"type": "bool",
+				"defaultValue": false
+			}
+		},
+		"folder": {
+			"name": "P3/OLD"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-31T20:29:14Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
